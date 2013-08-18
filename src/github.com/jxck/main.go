@@ -3,19 +3,17 @@ package main
 import (
 	. "github.com/jxck/hpac"
 	"log"
+	"net/http"
 )
+
+var header = http.Header{
+	":path":       []string{"/my-example/index.html"},
+	"user-agent":  []string{"my-user-agent"},
+	"mynewheader": []string{"first"},
+}
 
 func main() {
 	log.SetFlags(log.Lshortfile)
-	RequestHeaderTable.Add(Header{"hoge", "fuga"})
 
-	log.Println(RequestHeaderTable)
-
-	ref := ReferenceSet{}
-	ref.Add("hoge", "fuga")
-	log.Println(ref)
-	ref.Set("hoge", "piyo")
-	log.Println(ref)
-	ref.Del("hoge")
-	log.Println(ref)
+	log.Println(EncodeInteger(10, 5))
 }

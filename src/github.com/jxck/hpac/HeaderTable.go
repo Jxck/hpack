@@ -1,7 +1,11 @@
 package hpac
 
+type HeaderName string
+type HeaderValue string
+
 type Header struct {
-	HeaderName, HeaderValue string
+	Name  HeaderName
+	Value HeaderValue
 }
 
 type HeaderTable []Header
