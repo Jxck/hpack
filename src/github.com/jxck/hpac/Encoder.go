@@ -25,15 +25,43 @@ func NewEncoder() Encoder {
 func EncodeInteger(I int, N int) *bytes.Buffer {
 	buf := new(bytes.Buffer)
 
-	// If I < 2^N - 1, encode I on N bits
-	if I < int(math.Pow(2, float64(N)))-1 {
+	// 2^N -1
+	boundary := int(math.Pow(2, float64(N))) - 1
+
+	if I < boundary {
+		// If I < 2^N - 1, encode I on N bits
 		err := binary.Write(buf, binary.BigEndian, uint8(I))
 		if err != nil {
 			log.Println("binary.Write failed:", err)
 		}
+	} else {
+		// Else, encode 2^N - 1 on N bits and do the following steps:
+		err := binary.Write(buf, binary.BigEndian, uint8(boundary))
+		if err != nil {
+			log.Println("binary.Write failed:", err)
+		}
+
+		// Set I to (I - (2^N - 1)) and Q to 1
+		I = I - boundary
+		Q := 1
+		R := 0
+
+		for Q > 0 {
+			// Compute Q and R, quotient and remainder of I divided by 2^7
+			R = I % 128
+			Q = (I - R) / 128
+			log.Println(Q, R)
+
+			// If Q is strictly greater than 0, write one 1 bit; otherwise, write one 0 bit
+			var b uint8 = 0
+			if Q > 0 {
+				b = 128
+			}
+			// 10000000 26
+			log.Printf("%b", b | uint8(R))
+			I = Q
+		}
 	}
-
-
 
 	return buf
 }
