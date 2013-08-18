@@ -57,8 +57,12 @@ func EncodeInteger(I int, N int) *bytes.Buffer {
 			if Q > 0 {
 				b = 128
 			}
-			// 10000000 26
-			log.Printf("%b", b | uint8(R))
+
+			b = b | uint8(R)
+			err := binary.Write(buf, binary.BigEndian, b)
+			if err != nil {
+				log.Println("binary.Write failed:", err)
+			}
 			I = Q
 		}
 	}
