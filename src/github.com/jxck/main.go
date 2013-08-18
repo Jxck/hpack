@@ -15,5 +15,10 @@ var header = http.Header{
 func main() {
 	log.SetFlags(log.Lshortfile)
 
-	log.Println(EncodeInteger(10, 5))
+	buf := EncodeInteger(10, 5)
+
+	log.Printf("%v %v", buf.Bytes(), len(buf.Bytes()))
+	for i, j := range buf.Bytes() {
+		log.Printf("%v, %b", i, j)
+	}
 }
