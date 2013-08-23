@@ -27,23 +27,27 @@ func TestDecoder1(t *testing.T) {
 	log.Println(buf.WriteString("/my-example/index.html"))
 	frame := DecodeHeader(buf)
 
-	if frame.Flag1 != 0 {
-		t.Errorf("got %v\nwant %v", frame.Flag1, 0)
+	f, ok := frame.(*IncrementalIndexingName)
+	if !ok {
+		t.Fatal("Parsed incorrect frame type:", frame)
 	}
-	if frame.Flag2 != 1 {
-		t.Errorf("got %v\nwant %v", frame.Flag2, 1)
+	if f.Flag1 != 0 {
+		t.Errorf("got %v\nwant %v", f.Flag1, 0)
 	}
-	if frame.Flag3 != 0 {
-		t.Errorf("got %v\nwant %v", frame.Flag3, 0)
+	if f.Flag2 != 1 {
+		t.Errorf("got %v\nwant %v", f.Flag2, 1)
 	}
-	if frame.Index != 3 {
-		t.Errorf("got %v\nwant %v", frame.Index, 3)
+	if f.Flag3 != 0 {
+		t.Errorf("got %v\nwant %v", f.Flag3, 0)
 	}
-	if frame.ValueLength != 22 {
-		t.Errorf("got %v\nwant %v", frame.Index, 22)
+	if f.Index != 3 {
+		t.Errorf("got %v\nwant %v", f.Index, 3)
 	}
-	if frame.ValueString != "/my-example/index.html" {
-		t.Errorf("got %v\nwant %v", frame.ValueString, "/my-example/index.html")
+	if f.ValueLength != 22 {
+		t.Errorf("got %v\nwant %v", f.Index, 22)
+	}
+	if f.ValueString != "/my-example/index.html" {
+		t.Errorf("got %v\nwant %v", f.ValueString, "/my-example/index.html")
 	}
 }
 
@@ -54,22 +58,26 @@ func TestDecoder2(t *testing.T) {
 	log.Println(buf.WriteString("my-user-agent"))
 	frame := DecodeHeader(buf)
 
-	if frame.Flag1 != 0 {
-		t.Errorf("got %v\nwant %v", frame.Flag1, 0)
+	f, ok := frame.(*IncrementalIndexingName)
+	if !ok {
+		t.Fatal("Parsed incorrect frame type:", frame)
 	}
-	if frame.Flag2 != 1 {
-		t.Errorf("got %v\nwant %v", frame.Flag2, 1)
+	if f.Flag1 != 0 {
+		t.Errorf("got %v\nwant %v", f.Flag1, 0)
 	}
-	if frame.Flag3 != 0 {
-		t.Errorf("got %v\nwant %v", frame.Flag3, 0)
+	if f.Flag2 != 1 {
+		t.Errorf("got %v\nwant %v", f.Flag2, 1)
 	}
-	if frame.Index != 12 {
-		t.Errorf("got %v\nwant %v", frame.Index, 12)
+	if f.Flag3 != 0 {
+		t.Errorf("got %v\nwant %v", f.Flag3, 0)
 	}
-	if frame.ValueLength != 13 {
-		t.Errorf("got %v\nwant %v", frame.Index, 13)
+	if f.Index != 12 {
+		t.Errorf("got %v\nwant %v", f.Index, 12)
 	}
-	if frame.ValueString != "my-user-agent" {
-		t.Errorf("got %v\nwant %v", frame.ValueString, "my-user-agent")
+	if f.ValueLength != 13 {
+		t.Errorf("got %v\nwant %v", f.Index, 13)
+	}
+	if f.ValueString != "my-user-agent" {
+		t.Errorf("got %v\nwant %v", f.ValueString, "my-user-agent")
 	}
 }

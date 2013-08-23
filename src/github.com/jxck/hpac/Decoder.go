@@ -6,7 +6,19 @@ import (
 	"log"
 )
 
-type Frame struct {
+type Frame interface {
+}
+
+// TODO: RENAME
+// 0   1   2   3   4   5   6   7
+// +---+---+---+---+---+---+---+---+
+// | 0 | 1 | 0 |    Index (5+)     |
+// +---+---+---+-------------------+
+// |       Value Length (8+)       |
+// +-------------------------------+
+// | Value String (Length octets)  |
+// +-------------------------------+
+type IncrementalIndexingName struct {
 	Flag1       uint8
 	Flag2       uint8
 	Flag3       uint8
@@ -15,7 +27,7 @@ type Frame struct {
 	ValueString string
 }
 
-func DecodeHeader(buf *bytes.Buffer) *Frame {
+func DecodeHeader(buf *bytes.Buffer) Frame {
 	var types uint8
 	if err := binary.Read(buf, binary.BigEndian, &types); err != nil {
 		log.Println("binary.Read failed:", err)
@@ -81,20 +93,7 @@ func DecodeHeader(buf *bytes.Buffer) *Frame {
 
 	} else if types>>5 == 0x2 {
 
-		// 0   1   2   3   4   5   6   7
-		// +---+---+---+---+---+---+---+---+
-		// | 0 | 1 | 0 |    Index (5+)     |
-		// +---+---+---+-------------------+
-		// |       Value Length (8+)       |
-		// +-------------------------------+
-		// | Value String (Length octets)  |
-		// +-------------------------------+
-
-		// 0x44      (literal header with incremental indexing, name index = 3)
-		// 0x16      (header value string length = 22)
-		// /my-example/index.html
-
-		var frame = &Frame{}
+		var frame = &IncrementalIndexingName{}
 
 		frame.Flag1 = types >> 7
 		frame.Flag2 = (types & 0x40) >> 6
