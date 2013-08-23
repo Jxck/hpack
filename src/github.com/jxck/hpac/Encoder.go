@@ -50,7 +50,6 @@ func EncodeInteger(I int, N int) *bytes.Buffer {
 			// Compute Q and R, quotient and remainder of I divided by 2^7
 			R = I % 128
 			Q = (I - R) / 128
-			log.Println(Q, R)
 
 			// If Q is strictly greater than 0, write one 1 bit; otherwise, write one 0 bit
 			var b uint8 = 0

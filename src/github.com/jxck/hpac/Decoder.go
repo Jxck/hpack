@@ -66,7 +66,6 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 	if err := binary.Read(buf, binary.BigEndian, &types); err != nil {
 		log.Println("binary.Read failed:", err)
 	}
-	log.Printf("%b\n", types)
 	if types>>7 == 1 {
 
 		frame := &IndexedHeader{}
