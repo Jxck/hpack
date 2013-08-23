@@ -9,6 +9,15 @@ import (
 type Frame interface {
 }
 
+// 	0   1   2   3   4   5   6   7
+// +---+---+---+---+---+---+---+---+
+// | 1 |        Index (7+)         |
+// +---+---------------------------+
+type IndexedHeader struct {
+	Flag1 uint8
+	Index uint8
+}
+
 // TODO: RENAME
 
 // 0   1   2   3   4   5   6   7
@@ -59,11 +68,12 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 	log.Printf("%b\n", types)
 	if types>>7 == 1 {
 
-		// 	0   1   2   3   4   5   6   7
-		// +---+---+---+---+---+---+---+---+
-		// | 1 |        Index (7+)         |
-		// +---+---------------------------+
+		frame := &IndexedHeader{}
+		frame.Flag1 = 1
+		frame.Index = types & 0x7F
+
 		log.Println("Indexed Header Representation")
+		return frame
 
 	} else if types == 0 {
 
@@ -135,8 +145,6 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		frame.ValueString = string(valueBytes)
 
 		log.Println("Literal Header with Incremental Indexing - Indexed Name")
-		log.Println("&v", frame)
-
 		return frame
 
 	} else if types&0x60 == 0x60 {
