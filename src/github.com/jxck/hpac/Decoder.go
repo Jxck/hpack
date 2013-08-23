@@ -99,7 +99,7 @@ func DecodeHeader(buf *bytes.Buffer) *Frame {
 		frame.Flag1 = types >> 7
 		frame.Flag2 = (types & 0x40) >> 6
 		frame.Flag3 = (types & 0x20) >> 5
-		frame.Index = (types & 0x1F)
+		frame.Index = (types & 0x1F) - 1
 
 		binary.Read(buf, binary.BigEndian, &frame.ValueLength) // err
 
