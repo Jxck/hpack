@@ -15,13 +15,13 @@ type Frame struct {
 	ValueString string
 }
 
-func DecodeHeader(buf *bytes.Buffer) *Frame{
+func DecodeHeader(buf *bytes.Buffer) *Frame {
 	var types uint8
 	if err := binary.Read(buf, binary.BigEndian, &types); err != nil {
 		log.Println("binary.Read failed:", err)
 	}
 	log.Printf("%b\n", types)
-	if types >> 7 == 1 {
+	if types>>7 == 1 {
 
 		// 	0   1   2   3   4   5   6   7
 		// +---+---+---+---+---+---+---+---+
@@ -79,7 +79,7 @@ func DecodeHeader(buf *bytes.Buffer) *Frame{
 		// +-------------------------------+
 		log.Println("Literal Header without Indexing - New Name")
 
-	} else if types >> 5 == 0x2 {
+	} else if types>>5 == 0x2 {
 
 		// 0   1   2   3   4   5   6   7
 		// +---+---+---+---+---+---+---+---+
@@ -94,7 +94,6 @@ func DecodeHeader(buf *bytes.Buffer) *Frame{
 		// 0x16      (header value string length = 22)
 		// /my-example/index.html
 
-
 		var frame = &Frame{}
 
 		frame.Flag1 = types >> 7
@@ -104,17 +103,12 @@ func DecodeHeader(buf *bytes.Buffer) *Frame{
 
 		binary.Read(buf, binary.BigEndian, &frame.ValueLength) // err
 
-		// 2 byte 目の length が value のサイズなっているパターン
-		// length 分の []byte を用意する
 		valueBytes := make([]byte, frame.ValueLength)
 
-		// その分読み取れる
 		binary.Read(buf, binary.BigEndian, &valueBytes) // err
 
-		// 文字列にして入れる
 		frame.ValueString = string(valueBytes)
 
-		// 完成
 		log.Println("Literal Header with Incremental Indexing - Indexed Name")
 		log.Println("&v", frame)
 

@@ -1,9 +1,9 @@
 package hpac
 
 import (
-	"testing"
 	"bytes"
 	"log"
+	"testing"
 )
 
 /*
@@ -29,21 +29,21 @@ func TestDecoder(t *testing.T) {
 
 	if frame.Flag1 != 0 {
 		t.Errorf("got %v\nwant %v", frame.Flag1, 0)
-	}	
+	}
 	if frame.Flag2 != 1 {
 		t.Errorf("got %v\nwant %v", frame.Flag2, 1)
-	}	
+	}
 	if frame.Flag3 != 0 {
 		t.Errorf("got %v\nwant %v", frame.Flag3, 0)
-	}	
+	}
 	// TODO: Pending
 	// if frame.Index != 3 {
 	// 	t.Errorf("got %v\nwant %v", frame.Index, 3)
-	// }	
+	// }
 	if frame.ValueLength != 22 {
 		t.Errorf("got %v\nwant %v", frame.Index, 22)
-	}	
+	}
 	if frame.ValueString != "/my-example/index.html" {
 		t.Errorf("got %v\nwant %v", frame.ValueString, "/my-example/index.html")
-	}	
+	}
 }
