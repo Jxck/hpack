@@ -32,7 +32,7 @@ func TestFirstHeaderSet1(t *testing.T) {
 		t.Errorf("got %v\nwant %v", f.Index, 3)
 	}
 	if f.ValueLength != 22 {
-		t.Errorf("got %v\nwant %v", f.Index, 22)
+		t.Errorf("got %v\nwant %v", f.ValueLength, 22)
 	}
 	if f.ValueString != "/my-example/index.html" {
 		t.Errorf("got %v\nwant %v", f.ValueString, "/my-example/index.html")
@@ -66,7 +66,7 @@ func TestFirstHeaderSet2(t *testing.T) {
 		t.Errorf("got %v\nwant %v", f.Index, 12)
 	}
 	if f.ValueLength != 13 {
-		t.Errorf("got %v\nwant %v", f.Index, 13)
+		t.Errorf("got %v\nwant %v", f.ValueLength, 13)
 	}
 	if f.ValueString != "my-user-agent" {
 		t.Errorf("got %v\nwant %v", f.ValueString, "my-user-agent")
@@ -181,10 +181,10 @@ func TestSecondHeaderSet3(t *testing.T) {
 		t.Errorf("got %v\nwant %v", f.Index, 3)
 	}
 	if f.SubstitutedIndex != 38 {
-		t.Errorf("got %v\nwant %v", f.Index, 38)
+		t.Errorf("got %v\nwant %v", f.SubstitutedIndex, 38)
 	}
 	if f.ValueLength != 31 {
-		t.Errorf("got %v\nwant %v", f.Index, 31)
+		t.Errorf("got %v\nwant %v", f.ValueLength, 31)
 	}
 	if f.ValueString != "/my-example/resources/script.js" {
 		t.Errorf("got %v\nwant %v", f.ValueString, "/my-example/resources/script.js")
