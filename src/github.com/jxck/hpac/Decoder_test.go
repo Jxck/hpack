@@ -136,3 +136,22 @@ func TestSecondHeaderSet1(t *testing.T) {
 	}
 	t.Log(f.Index)
 }
+
+func TestSecondHeaderSet2(t *testing.T) {
+
+	// 0xa8       (indexed header, index = 40: removal from reference set)
+	buf := bytes.NewBuffer([]byte{0xA8}) // 10101000
+
+	frame := DecodeHeader(buf)
+
+	f, ok := frame.(*IndexedHeader)
+	if !ok {
+		t.Fatal("Parsed incorrect frame type:", frame)
+	}
+	if f.Flag1 != 1 {
+		t.Errorf("got %v\nwant %v", f.Flag1, 1)
+	}
+	if f.Index != 40 {
+		t.Errorf("got %v\nwant %v", f.Index, 40)
+	}
+}

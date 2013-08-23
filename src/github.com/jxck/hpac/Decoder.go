@@ -61,6 +61,7 @@ type IncrementalNewName struct {
 }
 
 func DecodeHeader(buf *bytes.Buffer) Frame {
+	log.SetFlags(log.Lshortfile)
 	var types uint8
 	if err := binary.Read(buf, binary.BigEndian, &types); err != nil {
 		log.Println("binary.Read failed:", err)
