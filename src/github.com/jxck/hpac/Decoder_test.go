@@ -155,3 +155,38 @@ func TestSecondHeaderSet2(t *testing.T) {
 		t.Errorf("got %v\nwant %v", f.Index, 40)
 	}
 }
+
+func TestSecondHeaderSet3(t *testing.T) {
+
+	// 0x04       (literal header, substitution indexing, name index = 3)
+	// 0x26       (replaced entry index = 38)
+	// 0x1f       (header value string length = 31)
+	// /my-example/resources/script.js
+	buf := bytes.NewBuffer([]byte{0x04, 0x26, 0x1f}) // 00000100 00100110 00011111
+	buf.WriteString("/my-example/resources/script.js")
+
+	frame := DecodeHeader(buf)
+
+	f, ok := frame.(*SubstitutionIndexedName)
+	if !ok {
+		t.Fatal("Parsed incorrect frame type:", frame)
+	}
+	if f.Flag1 != 0 {
+		t.Errorf("got %v\nwant %v", f.Flag1, 0)
+	}
+	if f.Flag2 != 0 {
+		t.Errorf("got %v\nwant %v", f.Flag2, 0)
+	}
+	if f.Index != 3 {
+		t.Errorf("got %v\nwant %v", f.Index, 3)
+	}
+	if f.SubstitutedIndex != 38 {
+		t.Errorf("got %v\nwant %v", f.Index, 38)
+	}
+	if f.ValueLength != 31 {
+		t.Errorf("got %v\nwant %v", f.Index, 31)
+	}
+	if f.ValueString != "/my-example/resources/script.js" {
+		t.Errorf("got %v\nwant %v", f.ValueString, "/my-example/resources/script.js")
+	}
+}

@@ -60,6 +60,25 @@ type IncrementalNewName struct {
 	ValueString string
 }
 
+// 0   1   2   3   4   5   6   7
+// +---+---+---+---+---+---+---+---+
+// | 0 | 0 |      Index (6+)       |
+// +---+---+-----------------------+
+// |    Substituted Index (8+)     |
+// +-------------------------------+
+// |       Value Length (8+)       |
+// +-------------------------------+
+// | Value String (Length octets)  |
+// +-------------------------------+
+type SubstitutionIndexedName struct {
+	Flag1            uint8
+	Flag2            uint8
+	Index            uint8
+	SubstitutedIndex uint8
+	ValueLength      uint8
+	ValueString      string
+}
+
 func DecodeHeader(buf *bytes.Buffer) Frame {
 	log.SetFlags(log.Lshortfile)
 	var types uint8
@@ -161,17 +180,20 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 
 	} else {
 
-		// 0   1   2   3   4   5   6   7
-		// +---+---+---+---+---+---+---+---+
-		// | 0 | 0 |      Index (6+)       |
-		// +---+---+-----------------------+
-		// |    Substituted Index (8+)     |
-		// +-------------------------------+
-		// |       Value Length (8+)       |
-		// +-------------------------------+
-		// | Value String (Length octets)  |
-		// +-------------------------------+
+		var frame = &SubstitutionIndexedName{}
+
+		frame.Flag1 = 0
+		frame.Flag2 = 0
+		frame.Index = (types & 0x1F) - 1
+
+		binary.Read(buf, binary.BigEndian, &frame.SubstitutedIndex) // err
+		binary.Read(buf, binary.BigEndian, &frame.ValueLength)      // err
+		valueBytes := make([]byte, frame.ValueLength)
+		binary.Read(buf, binary.BigEndian, &valueBytes) // err
+		frame.ValueString = string(valueBytes)
+
 		log.Println("Literal Header with Substitution Indexing - Indexed Name")
+		return frame
 
 	}
 	return nil
