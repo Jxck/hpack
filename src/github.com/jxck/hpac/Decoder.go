@@ -1,4 +1,4 @@
-package main
+package hpac
 
 import (
 	"bytes"
@@ -6,151 +6,146 @@ import (
 	"log"
 )
 
-func DecodeHeader(buf *bytes.Buffer) {
+type Frame struct {
+	Flag1       uint8
+	Flag2       uint8
+	Flag3       uint8
+	Index       uint8
+	ValueLength uint8
+	ValueString string
+}
+
+func DecodeHeader(buf *bytes.Buffer) *Frame{
 	var types uint8
 	if err := binary.Read(buf, binary.BigEndian, &types); err != nil {
 		log.Println("binary.Read failed:", err)
 	}
-	log.Printf("0%b\n", types)
-	if types&0x80 == 1 {
+	log.Printf("%b\n", types)
+	if types >> 7 == 1 {
+
 		// 	0   1   2   3   4   5   6   7
 		// +---+---+---+---+---+---+---+---+
 		// | 1 |        Index (7+)         |
 		// +---+---------------------------+
 		log.Println("Indexed Header Representation")
+
+	} else if types == 0 {
+
+		// 0   1   2   3   4   5   6   7
+		// +---+---+---+---+---+---+---+---+
+		// | 0 | 0 |           0           |
+		// +---+---+-----------------------+
+		// |       Name Length (8+)        |
+		// +-------------------------------+
+		// |  Name String (Length octets)  |
+		// +-------------------------------+
+		// |    Substituted Index (8+)     |
+		// +-------------------------------+
+		// |       Value Length (8+)       |
+		// +-------------------------------+
+		// | Value String (Length octets)  |
+		// +-------------------------------+
+		log.Println("Literal Header with Substitution Indexing - New Name")
+
+	} else if types == 0x40 {
+
+		// 0   1   2   3   4   5   6   7
+		// +---+---+---+---+---+---+---+---+
+		// | 0 | 1 | 0 |         0         |
+		// +---+---+---+-------------------+
+		// |       Name Length (8+)        |
+		// +-------------------------------+
+		// |  Name String (Length octets)  |
+		// +-------------------------------+
+		// |       Value Length (8+)       |
+		// +-------------------------------+
+		// | Value String (Length octets)  |
+		// +-------------------------------+
+		log.Println("Literal Header with Incremental Indexing - New Name")
+
+	} else if types == 0x60 {
+
+		// 0   1   2   3   4   5   6   7
+		// +---+---+---+---+---+---+---+---+
+		// | 0 | 1 | 1 |         0         |
+		// +---+---+---+-------------------+
+		// |       Name Length (8+)        |
+		// +-------------------------------+
+		// |  Name String (Length octets)  |
+		// +-------------------------------+
+		// |       Value Length (8+)       |
+		// +-------------------------------+
+		// | Value String (Length octets)  |
+		// +-------------------------------+
+		log.Println("Literal Header without Indexing - New Name")
+
+	} else if types >> 5 == 0x2 {
+
+		// 0   1   2   3   4   5   6   7
+		// +---+---+---+---+---+---+---+---+
+		// | 0 | 1 | 0 |    Index (5+)     |
+		// +---+---+---+-------------------+
+		// |       Value Length (8+)       |
+		// +-------------------------------+
+		// | Value String (Length octets)  |
+		// +-------------------------------+
+
+		// 0x44      (literal header with incremental indexing, name index = 3)
+		// 0x16      (header value string length = 22)
+		// /my-example/index.html
+
+
+		var frame = &Frame{}
+
+		frame.Flag1 = types >> 7
+		frame.Flag2 = (types & 0x40) >> 6
+		frame.Flag3 = (types & 0x20) >> 5
+		frame.Index = (types & 0x1F)
+
+		binary.Read(buf, binary.BigEndian, &frame.ValueLength) // err
+
+		// 2 byte 目の length が value のサイズなっているパターン
+		// length 分の []byte を用意する
+		valueBytes := make([]byte, frame.ValueLength)
+
+		// その分読み取れる
+		binary.Read(buf, binary.BigEndian, &valueBytes) // err
+
+		// 文字列にして入れる
+		frame.ValueString = string(valueBytes)
+
+		// 完成
+		log.Println("Literal Header with Incremental Indexing - Indexed Name")
+		log.Println("&v", frame)
+
+		return frame
+
+	} else if types&0x60 == 0x60 {
+
+		//   0   1   2   3   4   5   6   7
+		// +---+---+---+---+---+---+---+---+
+		// | 0 | 1 | 1 |    Index (5+)     |
+		// +---+---+---+-------------------+
+		// |       Value Length (8+)       |
+		// +-------------------------------+
+		// | Value String (Length octets)  |
+		// +-------------------------------+
+		log.Println("Literal Header without Indexing - Indexed Name")
+
 	} else {
-		if types == 0 {
 
-			// 0   1   2   3   4   5   6   7
-			// +---+---+---+---+---+---+---+---+
-			// | 0 | 0 |           0           |
-			// +---+---+-----------------------+
-			// |       Name Length (8+)        |
-			// +-------------------------------+
-			// |  Name String (Length octets)  |
-			// +-------------------------------+
-			// |    Substituted Index (8+)     |
-			// +-------------------------------+
-			// |       Value Length (8+)       |
-			// +-------------------------------+
-			// | Value String (Length octets)  |
-			// +-------------------------------+
-			log.Println("Literal Header with Substitution Indexing - New Name")
+		// 0   1   2   3   4   5   6   7
+		// +---+---+---+---+---+---+---+---+
+		// | 0 | 0 |      Index (6+)       |
+		// +---+---+-----------------------+
+		// |    Substituted Index (8+)     |
+		// +-------------------------------+
+		// |       Value Length (8+)       |
+		// +-------------------------------+
+		// | Value String (Length octets)  |
+		// +-------------------------------+
+		log.Println("Literal Header with Substitution Indexing - Indexed Name")
 
-		} else if types == 0x40 {
-
-			// 0   1   2   3   4   5   6   7
-			// +---+---+---+---+---+---+---+---+
-			// | 0 | 1 | 0 |         0         |
-			// +---+---+---+-------------------+
-			// |       Name Length (8+)        |
-			// +-------------------------------+
-			// |  Name String (Length octets)  |
-			// +-------------------------------+
-			// |       Value Length (8+)       |
-			// +-------------------------------+
-			// | Value String (Length octets)  |
-			// +-------------------------------+
-			log.Println("Literal Header with Incremental Indexing - New Name")
-
-		} else if types == 0x60 {
-
-			// 0   1   2   3   4   5   6   7
-			// +---+---+---+---+---+---+---+---+
-			// | 0 | 1 | 1 |         0         |
-			// +---+---+---+-------------------+
-			// |       Name Length (8+)        |
-			// +-------------------------------+
-			// |  Name String (Length octets)  |
-			// +-------------------------------+
-			// |       Value Length (8+)       |
-			// +-------------------------------+
-			// | Value String (Length octets)  |
-			// +-------------------------------+
-			log.Println("Literal Header without Indexing - New Name")
-
-		} else if types&0x60 == 0x40 {
-			// 0   1   2   3   4   5   6   7
-			// +---+---+---+---+---+---+---+---+
-			// | 0 | 1 | 0 |    Index (5+)     |
-			// +---+---+---+-------------------+
-			// |       Value Length (8+)       |
-			// +-------------------------------+
-			// | Value String (Length octets)  |
-			// +-------------------------------+
-			log.Println("Literal Header with Incremental Indexing - Indexed Name")
-
-		} else if types&0x60 == 0x60 {
-
-			//   0   1   2   3   4   5   6   7
-			// +---+---+---+---+---+---+---+---+
-			// | 0 | 1 | 1 |    Index (5+)     |
-			// +---+---+---+-------------------+
-			// |       Value Length (8+)       |
-			// +-------------------------------+
-			// | Value String (Length octets)  |
-			// +-------------------------------+
-			log.Println("Literal Header without Indexing - Indexed Name")
-
-		} else {
-
-			// 0   1   2   3   4   5   6   7
-			// +---+---+---+---+---+---+---+---+
-			// | 0 | 0 |      Index (6+)       |
-			// +---+---+-----------------------+
-			// |    Substituted Index (8+)     |
-			// +-------------------------------+
-			// |       Value Length (8+)       |
-			// +-------------------------------+
-			// | Value String (Length octets)  |
-			// +-------------------------------+
-			log.Println("Literal Header with Substitution Indexing - Indexed Name")
-
-		}
 	}
-}
-
-func main() {
-	log.SetFlags(log.Lshortfile)
-	var buf *bytes.Buffer
-	var d uint8
-
-	d = 0x44 //     (literal header with incremental indexing, name index = 3)
-	buf = new(bytes.Buffer)
-	binary.Write(buf, binary.BigEndian, d)
-	DecodeHeader(buf)
-
-	//d = 0x4D //     (literal header with incremental indexing, name index = 12)
-	//buf = new(bytes.Buffer)
-	//binary.Write(buf, binary.BigEndian, d)
-	//DecodeHeader(buf)
-
-	//d = 0x40 //     (literal header with incremental indexing, new name)
-	//buf = new(bytes.Buffer)
-	//binary.Write(buf, binary.BigEndian, d)
-	//DecodeHeader(buf)
-
-	//d = 0xa6 //      (indexed header, index = 38: removal from reference set)
-	//buf = new(bytes.Buffer)
-	//binary.Write(buf, binary.BigEndian, d)
-	//DecodeHeader(buf)
-
-	//d = 0xa8 //      (indexed header, index = 40: removal from reference set)
-	//buf = new(bytes.Buffer)
-	//binary.Write(buf, binary.BigEndian, d)
-	//DecodeHeader(buf)
-
-	//d = 0x04 //      (literal header, substitution indexing, name index = 3)
-	//buf = new(bytes.Buffer)
-	//binary.Write(buf, binary.BigEndian, d)
-	//DecodeHeader(buf)
-
-	//d = 0x26 //      (replaced entry index = 38)
-	//buf = new(bytes.Buffer)
-	//binary.Write(buf, binary.BigEndian, d)
-	//DecodeHeader(buf)
-
-	//0x5f
-	//0x0a  (literal header, incremental indexing, name index = 40)
-	//0x06       (header value string length = 6)
+	return nil
 }
