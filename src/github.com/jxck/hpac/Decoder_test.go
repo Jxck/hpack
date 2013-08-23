@@ -2,18 +2,17 @@ package hpac
 
 import (
 	"bytes"
-	"log"
 	"testing"
 )
 
-func TestDecoder1(t *testing.T) {
-	log.SetFlags(log.Lshortfile)
+func TestFirstHeaderSet1(t *testing.T) {
 
 	// 0x44      (literal header with incremental indexing, name index = 3)
 	// 0x16      (header value string length = 22)
 	// /my-example/index.html
 	buf := bytes.NewBuffer([]byte{0x44, 0x16}) // 0100 0100 0001 0110
-	log.Println(buf.WriteString("/my-example/index.html"))
+	buf.WriteString("/my-example/index.html")
+
 	frame := DecodeHeader(buf)
 
 	f, ok := frame.(*IncrementalIndexingName)
@@ -40,14 +39,14 @@ func TestDecoder1(t *testing.T) {
 	}
 }
 
-func TestDecoder2(t *testing.T) {
-	log.SetFlags(log.Lshortfile)
+func TestFirstHeaderSet2(t *testing.T) {
 
 	// 0x4D      (literal header with incremental indexing, name index = 12)
 	// 0x0D      (header value string length = 13)
 	// my-user-agent
 	buf := bytes.NewBuffer([]byte{0x4D, 0x0D}) // 01001101 00001101
-	log.Println(buf.WriteString("my-user-agent"))
+	buf.WriteString("my-user-agent")
+
 	frame := DecodeHeader(buf)
 
 	f, ok := frame.(*IncrementalIndexingName)
@@ -74,8 +73,7 @@ func TestDecoder2(t *testing.T) {
 	}
 }
 
-func TestDecoder3(t *testing.T) {
-	log.SetFlags(log.Lshortfile)
+func TestFirstHeaderSet3(t *testing.T) {
 
 	// 0x40      (literal header with incremental indexing, new name)
 	// 0x0B      (header name string length = 11)
@@ -83,9 +81,10 @@ func TestDecoder3(t *testing.T) {
 	// 0x05      (header value string length = 5)
 	// first
 	buf := bytes.NewBuffer([]byte{0x40, 0x0B}) // 01000000 00001011
-	log.Println(buf.WriteString("mynewheader"))
-	log.Println(buf.WriteByte(0x05))
-	log.Println(buf.WriteString("first"))
+	buf.WriteString("mynewheader")
+	buf.WriteByte(0x05)
+	buf.WriteString("first")
+
 	frame := DecodeHeader(buf)
 
 	f, ok := frame.(*IncrementalNewName)
