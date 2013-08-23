@@ -10,6 +10,7 @@ type Frame interface {
 }
 
 // TODO: RENAME
+
 // 0   1   2   3   4   5   6   7
 // +---+---+---+---+---+---+---+---+
 // | 0 | 1 | 0 |    Index (5+)     |
@@ -23,6 +24,29 @@ type IncrementalIndexingName struct {
 	Flag2       uint8
 	Flag3       uint8
 	Index       uint8
+	ValueLength uint8
+	ValueString string
+}
+
+// 0   1   2   3   4   5   6   7
+// +---+---+---+---+---+---+---+---+
+// | 0 | 1 | 0 |         0         |
+// +---+---+---+-------------------+
+// |       Name Length (8+)        |
+// +-------------------------------+
+// |  Name String (Length octets)  |
+// +-------------------------------+
+// |       Value Length (8+)       |
+// +-------------------------------+
+// | Value String (Length octets)  |
+// +-------------------------------+
+type IncrementalNewName struct {
+	Flag1       uint8
+	Flag2       uint8
+	Flag3       uint8
+	Flag4       uint8
+	NameLength  uint8
+	NameString  string
 	ValueLength uint8
 	ValueString string
 }
@@ -61,19 +85,24 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 
 	} else if types == 0x40 {
 
-		// 0   1   2   3   4   5   6   7
-		// +---+---+---+---+---+---+---+---+
-		// | 0 | 1 | 0 |         0         |
-		// +---+---+---+-------------------+
-		// |       Name Length (8+)        |
-		// +-------------------------------+
-		// |  Name String (Length octets)  |
-		// +-------------------------------+
-		// |       Value Length (8+)       |
-		// +-------------------------------+
-		// | Value String (Length octets)  |
-		// +-------------------------------+
+		frame := &IncrementalNewName{}
+		frame.Flag1 = 0
+		frame.Flag2 = 1
+		frame.Flag3 = 0
+		frame.Flag4 = 0
+
+		binary.Read(buf, binary.BigEndian, &frame.NameLength) // err
+		nameBytes := make([]byte, frame.NameLength)
+		binary.Read(buf, binary.BigEndian, &nameBytes) // err
+		frame.NameString = string(nameBytes)
+
+		binary.Read(buf, binary.BigEndian, &frame.ValueLength) // err
+		valueBytes := make([]byte, frame.ValueLength)
+		binary.Read(buf, binary.BigEndian, &valueBytes) // err
+		frame.ValueString = string(valueBytes)
+
 		log.Println("Literal Header with Incremental Indexing - New Name")
+		return frame
 
 	} else if types == 0x60 {
 
@@ -101,11 +130,8 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		frame.Index = (types & 0x1F) - 1
 
 		binary.Read(buf, binary.BigEndian, &frame.ValueLength) // err
-
 		valueBytes := make([]byte, frame.ValueLength)
-
 		binary.Read(buf, binary.BigEndian, &valueBytes) // err
-
 		frame.ValueString = string(valueBytes)
 
 		log.Println("Literal Header with Incremental Indexing - Indexed Name")
