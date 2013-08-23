@@ -190,3 +190,42 @@ func TestSecondHeaderSet3(t *testing.T) {
 		t.Errorf("got %v\nwant %v", f.ValueString, "/my-example/resources/script.js")
 	}
 }
+
+func TestSecondHeaderSet4(t *testing.T) {
+
+	t.Skip()
+	// 0x5f 0x0a  (literal header, incremental indexing, name index = 40) 40n5=[31 9]
+	// 0x06       (header value string length = 6)
+	// second
+
+	// 0101 1111
+	// 0000 1010
+	// 0000 0110
+	buf := bytes.NewBuffer([]byte{0x5f, 0x0a, 0x06})
+	buf.WriteString("second")
+
+	frame := DecodeHeader(buf)
+
+	f, ok := frame.(*IncrementalIndexingName)
+	if !ok {
+		t.Fatal("Parsed incorrect frame type:", frame)
+	}
+	if f.Flag1 != 0 {
+		t.Errorf("got %v\nwant %v", f.Flag1, 0)
+	}
+	if f.Flag2 != 1 {
+		t.Errorf("got %v\nwant %v", f.Flag2, 1)
+	}
+	if f.Flag3 != 0 {
+		t.Errorf("got %v\nwant %v", f.Flag3, 0)
+	}
+	if f.Index != 40 {
+		t.Errorf("got %v\nwant %v", f.Index, 40)
+	}
+	if f.ValueLength != 6 {
+		t.Errorf("got %v\nwant %v", f.ValueLength, 6)
+	}
+	if f.ValueString != "second" {
+		t.Errorf("got %v\nwant %v", f.ValueString, "second")
+	}
+}
