@@ -18,11 +18,11 @@ import (
 //          Encode (I % 128 + 128) on 8 bits
 //          I = I / 128
 //     encode (I) on 8 bits
-func EncodeInteger(I int, N int) *bytes.Buffer {
+func EncodeInteger(I int, N float64) *bytes.Buffer {
 	buf := new(bytes.Buffer)
 
 	// 2^N -1
-	boundary := int(math.Pow(2, float64(N))) - 1
+	boundary := int(math.Pow(2, N)) - 1
 
 	if I < boundary {
 		// If I < 2^N - 1, encode I on N bits
@@ -91,8 +91,8 @@ func EncodeInteger(I int, N int) *bytes.Buffer {
 // c) (183*128) + (141-128) = 23473
 // b) (23437*128) + (161-128) = 2999969
 // a) 2999969 + 31 = 3000000
-func DecodeInteger(buf []byte, N uint8) uint32 {
-	boundary := byte(math.Pow(2, float64(N)) - 1)
+func DecodeInteger(buf []byte, N float64) uint32 {
+	boundary := byte(math.Pow(2, N) - 1)
 	if buf[0] == boundary {
 		var I uint32
 		i := len(buf) - 1
@@ -109,13 +109,14 @@ func DecodeInteger(buf []byte, N uint8) uint32 {
 	return uint32(buf[0])
 }
 
-func ReadPrefixedInteger(buf *bytes.Buffer, N int) *bytes.Buffer {
+func ReadPrefixedInteger(buf *bytes.Buffer, N float64) *bytes.Buffer {
 	var tmp uint8
-	boundary := byte(math.Pow(2, float64(N)) - 1)
+	boundary := byte(math.Pow(2, N) - 1)
 	binary.Read(buf, binary.BigEndian, &tmp)
 
 	tmp = tmp & boundary
 	prefix := bytes.NewBuffer([]byte{tmp})
+
 	if tmp < boundary {
 		return prefix
 	}
