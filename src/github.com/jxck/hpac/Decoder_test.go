@@ -193,14 +193,10 @@ func TestSecondHeaderSet3(t *testing.T) {
 
 func TestSecondHeaderSet4(t *testing.T) {
 
-	t.Skip()
-	// 0x5f 0x0a  (literal header, incremental indexing, name index = 40) 40n5=[31 9]
-	// 0x06       (header value string length = 6)
+	// 0x5f 0101 1111 (literal header, incremental indexing, name index = 40) 40n5=[31 9]
+	// 0x0a 0000 1010
+	// 0x06 0000 0110 (header value string length = 6)
 	// second
-
-	// 0101 1111
-	// 0000 1010
-	// 0000 0110
 	buf := bytes.NewBuffer([]byte{0x5f, 0x0a, 0x06})
 	buf.WriteString("second")
 
