@@ -29,15 +29,21 @@ func TestDecodeInteger(t *testing.T) {
 		t.Errorf("got %v\nwant %v", n, 10)
 	}
 
+	buf = EncodeInteger(40, 5)
+	t.Log(buf.Bytes())
+	n = DecodeInteger(buf.Bytes(), 5)
+	if n != 40 {
+		t.Errorf("got %v\nwant %v", n, 40)
+	}
+
 	buf = EncodeInteger(1337, 5)
 	n = DecodeInteger(buf.Bytes(), 5)
 	if n != 1337 {
 		t.Errorf("got %v\nwant %v", n, 1337)
 	}
 
-	buf = EncodeInteger(3000000, 5) // [31 161 141 183 1]
+	buf = EncodeInteger(3000000, 5)
 	n = DecodeInteger(buf.Bytes(), 5)
-	//t.Log((((1*128)+(183-128))*128+(141-128))*128+161-128+ 31)
 	if n != 3000000 {
 		t.Errorf("got %v\nwant %v", n, 3000000)
 	}
