@@ -39,9 +39,9 @@ type IncrementalNewName struct {
 type SubstitutionIndexedName struct {
 	Flag1            uint8
 	Flag2            uint8
-	Index            uint8
-	SubstitutedIndex uint8
-	ValueLength      uint8
+	Index            uint32
+	SubstitutedIndex uint32
+	ValueLength      uint32
 	ValueString      string
 }
 
@@ -182,17 +182,17 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		// +-------------------------------+
 		// | Value String (Length octets)  |
 		// +-------------------------------+
-		var frame = &SubstitutionIndexedName{}
 
+		// unread first byte for parse frame
+		buf.UnreadByte()
+
+		var frame = &SubstitutionIndexedName{}
 		frame.Flag1 = 0
 		frame.Flag2 = 0
-		frame.Index = (types & 0x1F) - 1
-
-		binary.Read(buf, binary.BigEndian, &frame.SubstitutedIndex) // err
-		binary.Read(buf, binary.BigEndian, &frame.ValueLength)      // err
-		valueBytes := make([]byte, frame.ValueLength)
-		binary.Read(buf, binary.BigEndian, &valueBytes) // err
-		frame.ValueString = string(valueBytes)
+		frame.Index = DecodePrefixedInteger(buf, 6) - 1
+		frame.SubstitutedIndex = DecodePrefixedInteger(buf, 8)
+		frame.ValueLength = DecodePrefixedInteger(buf, 8)
+		frame.ValueString = DecodeString(buf, frame.ValueLength)
 
 		log.Println("Literal Header with Substitution Indexing - Indexed Name")
 		return frame
