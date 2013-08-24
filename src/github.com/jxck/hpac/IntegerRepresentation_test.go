@@ -1,50 +1,72 @@
 package hpac
 
 import (
+	"bytes"
 	"testing"
 )
 
 func TestEncodeInteger(t *testing.T) {
-	buf := EncodeInteger(10, 5)
-	expect := []uint8{10}
-	for i, j := range buf.Bytes() {
-		if expect[i] != j {
-			t.Errorf("got %v\nwant %v", j, expect[i])
-		}
+	var I int
+	var actual, expected []uint8
+
+	I = 10
+	expected = []uint8{10}
+	actual = EncodeInteger(I, 5).Bytes()
+	if !bytes.Equal(expected, actual) {
+		t.Errorf("got %v\nwant %v", actual, expected)
 	}
 
-	buf = EncodeInteger(1337, 5)
-	expect = []uint8{31, 154, 10}
-	for i, j := range buf.Bytes() {
-		if expect[i] != j {
-			t.Errorf("got %v\nwant %v", j, expect[i])
-		}
+	I = 40
+	expected = []uint8{31, 9}
+	actual = EncodeInteger(I, 5).Bytes()
+	if !bytes.Equal(expected, actual) {
+		t.Errorf("got %v\nwant %v", actual, expected)
+	}
+
+	I = 1337
+	expected = []uint8{31, 154, 10}
+	actual = EncodeInteger(I, 5).Bytes()
+	if !bytes.Equal(expected, actual) {
+		t.Errorf("got %v\nwant %v", actual, expected)
+	}
+
+	I = 3000000
+	expected = []uint8{31, 161, 141, 183, 1}
+	actual = EncodeInteger(I, 5).Bytes()
+	if !bytes.Equal(expected, actual) {
+		t.Errorf("got %v\nwant %v", actual, expected)
 	}
 }
 
 func TestDecodeInteger(t *testing.T) {
-	buf := EncodeInteger(10, 5)
-	n := DecodeInteger(buf.Bytes(), 5)
-	if n != 10 {
-		t.Errorf("got %v\nwant %v", n, 10)
+	var actual, expected uint32
+	var buf []uint8
+
+	buf = []uint8{10}
+	expected = 10
+	actual = DecodeInteger(buf, 5)
+	if actual != expected {
+		t.Errorf("got %v\nwant %v", actual, expected)
 	}
 
-	buf = EncodeInteger(40, 5)
-	t.Log(buf.Bytes())
-	n = DecodeInteger(buf.Bytes(), 5)
-	if n != 40 {
-		t.Errorf("got %v\nwant %v", n, 40)
+	buf = []uint8{31, 9}
+	expected = 40
+	actual = DecodeInteger(buf, 5)
+	if actual != expected {
+		t.Errorf("got %v\nwant %v", actual, expected)
 	}
 
-	buf = EncodeInteger(1337, 5)
-	n = DecodeInteger(buf.Bytes(), 5)
-	if n != 1337 {
-		t.Errorf("got %v\nwant %v", n, 1337)
+	buf = []uint8{31, 154, 10}
+	expected = 1337
+	actual = DecodeInteger(buf, 5)
+	if actual != expected {
+		t.Errorf("got %v\nwant %v", actual, expected)
 	}
 
-	buf = EncodeInteger(3000000, 5)
-	n = DecodeInteger(buf.Bytes(), 5)
-	if n != 3000000 {
-		t.Errorf("got %v\nwant %v", n, 3000000)
+	buf = []uint8{31, 161, 141, 183, 1}
+	expected = 3000000
+	actual = DecodeInteger(buf, 5)
+	if actual != expected {
+		t.Errorf("got %v\nwant %v", actual, expected)
 	}
 }
