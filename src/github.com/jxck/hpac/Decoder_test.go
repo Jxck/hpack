@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestFirstHeaderSet1(t *testing.T) {
+func TestIncrementalIndexingName1(t *testing.T) {
 
 	// 0x44      (literal header with incremental indexing, name index = 3)
 	// 0x16      (header value string length = 22)
@@ -39,8 +39,8 @@ func TestFirstHeaderSet1(t *testing.T) {
 	}
 }
 
-func TestFirstHeaderSet2(t *testing.T) {
-
+func TestIncrementalIndexingName2(t *testing.T) {
+		
 	// 0x4D      (literal header with incremental indexing, name index = 12)
 	// 0x0D      (header value string length = 13)
 	// my-user-agent
@@ -73,7 +73,7 @@ func TestFirstHeaderSet2(t *testing.T) {
 	}
 }
 
-func TestFirstHeaderSet3(t *testing.T) {
+func TestIncrementalNewName(t *testing.T) {
 
 	// 0x40      (literal header with incremental indexing, new name)
 	// 0x0B      (header name string length = 11)
@@ -117,8 +117,8 @@ func TestFirstHeaderSet3(t *testing.T) {
 	}
 }
 
-func TestSecondHeaderSet1(t *testing.T) {
-
+func TestIndexedHeader1(t *testing.T) {
+		
 	// 0xa6       (indexed header, index = 38: removal from reference set)
 	buf := bytes.NewBuffer([]byte{0xA6}) // 10100110
 
@@ -137,7 +137,7 @@ func TestSecondHeaderSet1(t *testing.T) {
 	t.Log(f.Index)
 }
 
-func TestSecondHeaderSet2(t *testing.T) {
+func TestIndexedHeader2(t *testing.T) {
 
 	// 0xa8       (indexed header, index = 40: removal from reference set)
 	buf := bytes.NewBuffer([]byte{0xA8}) // 10101000
@@ -156,7 +156,7 @@ func TestSecondHeaderSet2(t *testing.T) {
 	}
 }
 
-func TestSecondHeaderSet3(t *testing.T) {
+func TestSubstitutionIndexedName(t *testing.T) {
 
 	// 0x04       (literal header, substitution indexing, name index = 3)
 	// 0x26       (replaced entry index = 38)
@@ -191,7 +191,7 @@ func TestSecondHeaderSet3(t *testing.T) {
 	}
 }
 
-func TestSecondHeaderSet4(t *testing.T) {
+func TestIncrementalIndexingName3(t *testing.T) {
 
 	// 0x5f 0101 1111 (literal header, incremental indexing, name index = 40) 40n5=[31 9]
 	// 0x0a 0000 1010
