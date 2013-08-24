@@ -23,7 +23,6 @@ func NewEncoder() Encoder {
 }
 
 func EncodeInteger(I int, N int) *bytes.Buffer {
-	log.Printf("%v %v = ", I, N)
 	buf := new(bytes.Buffer)
 
 	// 2^N -1
@@ -33,13 +32,13 @@ func EncodeInteger(I int, N int) *bytes.Buffer {
 		// If I < 2^N - 1, encode I on N bits
 		err := binary.Write(buf, binary.BigEndian, uint8(I))
 		if err != nil {
-			log.Println("binary.Write failed:", err)
+			log.Fatal("binary.Write failed:", err)
 		}
 	} else {
 		// encode 2^N - 1 on N bits
 		err := binary.Write(buf, binary.BigEndian, uint8(boundary))
 		if err != nil {
-			log.Println("binary.Write failed:", err)
+			log.Fatal("binary.Write failed:", err)
 		}
 
 		// I = I - (2^N - 1)
@@ -50,7 +49,7 @@ func EncodeInteger(I int, N int) *bytes.Buffer {
 			// Encode (I % 128 + 128) on 8 bits
 			err := binary.Write(buf, binary.BigEndian, uint8(I%128+128))
 			if err != nil {
-				log.Println("binary.Write failed:", err)
+				log.Fatal("binary.Write failed:", err)
 			}
 			// I = I / 128
 			I = I / 128
@@ -59,10 +58,9 @@ func EncodeInteger(I int, N int) *bytes.Buffer {
 		// encode (I) on 8 bits
 		err = binary.Write(buf, binary.BigEndian, uint8(I))
 		if err != nil {
-			log.Println("binary.Write failed:", err)
+			log.Fatal("binary.Write failed:", err)
 		}
 	}
-	log.Println(buf.Bytes())
 	return buf
 }
 
