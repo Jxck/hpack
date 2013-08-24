@@ -109,7 +109,7 @@ func DecodeInteger(buf []byte, N uint8) uint32 {
 	return uint32(buf[0])
 }
 
-func ReadPrefixedInteger(N int, buf *bytes.Buffer) *bytes.Buffer {
+func ReadPrefixedInteger(buf *bytes.Buffer, N int) *bytes.Buffer {
 	var tmp uint8
 	boundary := byte(math.Pow(2, float64(N)) - 1)
 	binary.Read(buf, binary.BigEndian, &tmp)

@@ -153,7 +153,7 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		// unread first byte for parse frame
 		buf.UnreadByte()
 
-		tmp := DecodeInteger(ReadPrefixedInteger(5, buf).Bytes(), 5)
+		tmp := DecodeInteger(ReadPrefixedInteger(buf, 5).Bytes(), 5)
 		frame.Index = tmp - 1
 
 		binary.Read(buf, binary.BigEndian, &frame.ValueLength) // err
