@@ -21,7 +21,7 @@ type IncrementalIndexingName struct {
 	Flag2       uint8
 	Flag3       uint8
 	Index       uint32
-	ValueLength uint8
+	ValueLength uint32
 	ValueString string
 }
 
@@ -155,7 +155,7 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 
 		frame.Index = DecodePrefixedInteger(buf, 5) - 1
 
-		binary.Read(buf, binary.BigEndian, &frame.ValueLength) // err
+		frame.ValueLength = DecodePrefixedInteger(buf, 8)
 		valueBytes := make([]byte, frame.ValueLength)
 		binary.Read(buf, binary.BigEndian, &valueBytes) // err
 		frame.ValueString = string(valueBytes)
