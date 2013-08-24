@@ -45,6 +45,17 @@ type SubstitutionIndexedName struct {
 	ValueString      string
 }
 
+type SubstitutionNewName struct {
+	Flag1            uint8
+	Flag2            uint8
+	Flag3            uint8
+	NameLength       uint32
+	NameString       string
+	SubstitutedIndex uint32
+	ValueLength      uint32
+	ValueString      string
+}
+
 func DecodeHeader(buf *bytes.Buffer) Frame {
 	log.SetFlags(log.Lshortfile)
 	var types uint8
@@ -81,7 +92,19 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		// +-------------------------------+
 		// | Value String (Length octets)  |
 		// +-------------------------------+
+
+		frame := &SubstitutionNewName{}
+		frame.Flag1 = 0
+		frame.Flag2 = 0
+		frame.Flag3 = 0
+		frame.NameLength = DecodePrefixedInteger(buf, 8)
+		frame.NameString = DecodeString(buf, frame.NameLength)
+		frame.SubstitutedIndex = DecodePrefixedInteger(buf, 8)
+		frame.ValueLength = DecodePrefixedInteger(buf, 8)
+		frame.ValueString = DecodeString(buf, frame.ValueLength)
+
 		log.Println("Literal Header with Substitution Indexing - New Name")
+		return frame
 
 	} else if types == 0x40 {
 
