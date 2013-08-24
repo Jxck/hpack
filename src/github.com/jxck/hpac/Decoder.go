@@ -9,10 +9,6 @@ import (
 type Frame interface {
 }
 
-// 	0   1   2   3   4   5   6   7
-// +---+---+---+---+---+---+---+---+
-// | 1 |        Index (7+)         |
-// +---+---------------------------+
 type IndexedHeader struct {
 	Flag1 uint8
 	Index uint8
@@ -20,14 +16,6 @@ type IndexedHeader struct {
 
 // TODO: RENAME
 
-// 0   1   2   3   4   5   6   7
-// +---+---+---+---+---+---+---+---+
-// | 0 | 1 | 0 |    Index (5+)     |
-// +---+---+---+-------------------+
-// |       Value Length (8+)       |
-// +-------------------------------+
-// | Value String (Length octets)  |
-// +-------------------------------+
 type IncrementalIndexingName struct {
 	Flag1       uint8
 	Flag2       uint8
@@ -37,18 +25,6 @@ type IncrementalIndexingName struct {
 	ValueString string
 }
 
-// 0   1   2   3   4   5   6   7
-// +---+---+---+---+---+---+---+---+
-// | 0 | 1 | 0 |         0         |
-// +---+---+---+-------------------+
-// |       Name Length (8+)        |
-// +-------------------------------+
-// |  Name String (Length octets)  |
-// +-------------------------------+
-// |       Value Length (8+)       |
-// +-------------------------------+
-// | Value String (Length octets)  |
-// +-------------------------------+
 type IncrementalNewName struct {
 	Flag1       uint8
 	Flag2       uint8
@@ -60,16 +36,6 @@ type IncrementalNewName struct {
 	ValueString string
 }
 
-// 0   1   2   3   4   5   6   7
-// +---+---+---+---+---+---+---+---+
-// | 0 | 0 |      Index (6+)       |
-// +---+---+-----------------------+
-// |    Substituted Index (8+)     |
-// +-------------------------------+
-// |       Value Length (8+)       |
-// +-------------------------------+
-// | Value String (Length octets)  |
-// +-------------------------------+
 type SubstitutionIndexedName struct {
 	Flag1            uint8
 	Flag2            uint8
@@ -86,6 +52,11 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		log.Println("binary.Read failed:", err)
 	}
 	if types>>7 == 1 {
+
+		// 	0   1   2   3   4   5   6   7
+		// +---+---+---+---+---+---+---+---+
+		// | 1 |        Index (7+)         |
+		// +---+---------------------------+
 
 		frame := &IndexedHeader{}
 		frame.Flag1 = 1
@@ -113,6 +84,19 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		log.Println("Literal Header with Substitution Indexing - New Name")
 
 	} else if types == 0x40 {
+
+		// 0   1   2   3   4   5   6   7
+		// +---+---+---+---+---+---+---+---+
+		// | 0 | 1 | 0 |         0         |
+		// +---+---+---+-------------------+
+		// |       Name Length (8+)        |
+		// +-------------------------------+
+		// |  Name String (Length octets)  |
+		// +-------------------------------+
+		// |       Value Length (8+)       |
+		// +-------------------------------+
+		// | Value String (Length octets)  |
+		// +-------------------------------+
 
 		frame := &IncrementalNewName{}
 		frame.Flag1 = 0
@@ -151,6 +135,15 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 
 	} else if types>>5 == 0x2 {
 
+		// 0   1   2   3   4   5   6   7
+		// +---+---+---+---+---+---+---+---+
+		// | 0 | 1 | 0 |    Index (5+)     |
+		// +---+---+---+-------------------+
+		// |       Value Length (8+)       |
+		// +-------------------------------+
+		// | Value String (Length octets)  |
+		// +-------------------------------+
+
 		var frame = &IncrementalIndexingName{}
 
 		frame.Flag1 = 0
@@ -185,6 +178,16 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 
 	} else {
 
+		// 0   1   2   3   4   5   6   7
+		// +---+---+---+---+---+---+---+---+
+		// | 0 | 0 |      Index (6+)       |
+		// +---+---+-----------------------+
+		// |    Substituted Index (8+)     |
+		// +-------------------------------+
+		// |       Value Length (8+)       |
+		// +-------------------------------+
+		// | Value String (Length octets)  |
+		// +-------------------------------+
 		var frame = &SubstitutionIndexedName{}
 
 		frame.Flag1 = 0
