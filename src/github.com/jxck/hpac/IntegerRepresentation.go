@@ -131,3 +131,8 @@ func ReadPrefixedInteger(buf *bytes.Buffer, N float64) *bytes.Buffer {
 
 	return prefix
 }
+
+func DecodePrefixedInteger(buf *bytes.Buffer, N float64) uint32 {
+	tmp := ReadPrefixedInteger(buf, N).Bytes()
+	return DecodeInteger(tmp, N)
+}
