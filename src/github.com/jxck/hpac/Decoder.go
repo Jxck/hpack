@@ -30,9 +30,9 @@ type IncrementalNewName struct {
 	Flag2       uint8
 	Flag3       uint8
 	Flag4       uint8
-	NameLength  uint8
+	NameLength  uint32
 	NameString  string
-	ValueLength uint8
+	ValueLength uint32
 	ValueString string
 }
 
@@ -103,16 +103,10 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		frame.Flag2 = 1
 		frame.Flag3 = 0
 		frame.Flag4 = 0
-
-		binary.Read(buf, binary.BigEndian, &frame.NameLength) // err
-		nameBytes := make([]byte, frame.NameLength)
-		binary.Read(buf, binary.BigEndian, &nameBytes) // err
-		frame.NameString = string(nameBytes)
-
-		binary.Read(buf, binary.BigEndian, &frame.ValueLength) // err
-		valueBytes := make([]byte, frame.ValueLength)
-		binary.Read(buf, binary.BigEndian, &valueBytes) // err
-		frame.ValueString = string(valueBytes)
+		frame.NameLength = DecodePrefixedInteger(buf, 8)
+		frame.NameString = DecodeString(buf, frame.NameLength)
+		frame.ValueLength = DecodePrefixedInteger(buf, 8)
+		frame.ValueString = DecodeString(buf, frame.ValueLength)
 
 		log.Println("Literal Header with Incremental Indexing - New Name")
 		return frame
