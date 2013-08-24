@@ -144,21 +144,16 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		// | Value String (Length octets)  |
 		// +-------------------------------+
 
-		var frame = &IncrementalIndexingName{}
-
-		frame.Flag1 = 0
-		frame.Flag2 = 1
-		frame.Flag3 = 0
-
 		// unread first byte for parse frame
 		buf.UnreadByte()
 
+		var frame = &IncrementalIndexingName{}
+		frame.Flag1 = 0
+		frame.Flag2 = 1
+		frame.Flag3 = 0
 		frame.Index = DecodePrefixedInteger(buf, 5) - 1
-
 		frame.ValueLength = DecodePrefixedInteger(buf, 8)
-		valueBytes := make([]byte, frame.ValueLength)
-		binary.Read(buf, binary.BigEndian, &valueBytes) // err
-		frame.ValueString = string(valueBytes)
+		frame.ValueString = DecodeString(buf, frame.ValueLength)
 
 		log.Println("Literal Header with Incremental Indexing - Indexed Name")
 		return frame
@@ -204,4 +199,10 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 
 	}
 	return nil
+}
+
+func DecodeString(buf *bytes.Buffer, n uint32) string {
+	valueBytes := make([]byte, n)
+	binary.Read(buf, binary.BigEndian, &valueBytes) // err
+	return string(valueBytes)
 }
