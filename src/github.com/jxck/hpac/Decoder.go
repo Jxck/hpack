@@ -9,6 +9,7 @@ import (
 type Frame interface {
 }
 
+// Indexed Header Representation
 type IndexedHeader struct {
 	Flag1 uint8
 	Index uint8
@@ -16,7 +17,16 @@ type IndexedHeader struct {
 
 // TODO: RENAME
 
-type IncrementalIndexingName struct {
+// Literal Header without Indexing - New Name
+type NewNameWithoutIndexing struct {
+}
+
+// Literal Header without Indexing - Indexed Name
+type IndexedNameWithoutIndexing struct {
+}
+
+// Literal Header with Incremental Indexing - Indexed Name
+type IndexedNameWithIncrementalIndexing struct {
 	Flag1       uint8
 	Flag2       uint8
 	Flag3       uint8
@@ -25,7 +35,8 @@ type IncrementalIndexingName struct {
 	ValueString string
 }
 
-type IncrementalNewName struct {
+// Literal Header with Incremental Indexing - New Name
+type NewNameWithIncrementalIndexing struct {
 	Flag1       uint8
 	Flag2       uint8
 	Flag3       uint8
@@ -36,7 +47,8 @@ type IncrementalNewName struct {
 	ValueString string
 }
 
-type SubstitutionIndexedName struct {
+// Literal Header with Substitution Indexing - Indexed Name
+type IndexedNameWithSubstitutionIndexing struct {
 	Flag1            uint8
 	Flag2            uint8
 	Index            uint32
@@ -45,7 +57,8 @@ type SubstitutionIndexedName struct {
 	ValueString      string
 }
 
-type SubstitutionNewName struct {
+// Literal Header with Substitution Indexing - New Name
+type NewNameWithSubstitutionIndexing struct {
 	Flag1            uint8
 	Flag2            uint8
 	Flag3            uint8
@@ -93,7 +106,7 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		// | Value String (Length octets)  |
 		// +-------------------------------+
 
-		frame := &SubstitutionNewName{}
+		frame := &NewNameWithSubstitutionIndexing{}
 		frame.Flag1 = 0
 		frame.Flag2 = 0
 		frame.Flag3 = 0
@@ -121,7 +134,7 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		// | Value String (Length octets)  |
 		// +-------------------------------+
 
-		frame := &IncrementalNewName{}
+		frame := &NewNameWithIncrementalIndexing{}
 		frame.Flag1 = 0
 		frame.Flag2 = 1
 		frame.Flag3 = 0
@@ -164,7 +177,7 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		// unread first byte for parse frame
 		buf.UnreadByte()
 
-		var frame = &IncrementalIndexingName{}
+		var frame = &IndexedNameWithIncrementalIndexing{}
 		frame.Flag1 = 0
 		frame.Flag2 = 1
 		frame.Flag3 = 0
@@ -203,7 +216,7 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		// unread first byte for parse frame
 		buf.UnreadByte()
 
-		var frame = &SubstitutionIndexedName{}
+		var frame = &IndexedNameWithSubstitutionIndexing{}
 		frame.Flag1 = 0
 		frame.Flag2 = 0
 		frame.Index = DecodePrefixedInteger(buf, 6) - 1

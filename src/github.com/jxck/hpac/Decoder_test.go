@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestIncrementalIndexingName1(t *testing.T) {
+func TestIndexedNameWithIncrementalIndexing1(t *testing.T) {
 
 	// 0x44      (literal header with incremental indexing, name index = 3)
 	// 0x16      (header value string length = 22)
@@ -15,7 +15,7 @@ func TestIncrementalIndexingName1(t *testing.T) {
 
 	frame := DecodeHeader(buf)
 
-	f, ok := frame.(*IncrementalIndexingName)
+	f, ok := frame.(*IndexedNameWithIncrementalIndexing)
 	if !ok {
 		t.Fatal("Parsed incorrect frame type:", frame)
 	}
@@ -39,7 +39,7 @@ func TestIncrementalIndexingName1(t *testing.T) {
 	}
 }
 
-func TestIncrementalIndexingName2(t *testing.T) {
+func TestIndexedNameWithIncrementalIndexing2(t *testing.T) {
 
 	// 0x4D      (literal header with incremental indexing, name index = 12)
 	// 0x0D      (header value string length = 13)
@@ -49,7 +49,7 @@ func TestIncrementalIndexingName2(t *testing.T) {
 
 	frame := DecodeHeader(buf)
 
-	f, ok := frame.(*IncrementalIndexingName)
+	f, ok := frame.(*IndexedNameWithIncrementalIndexing)
 	if !ok {
 		t.Fatal("Parsed incorrect frame type:", frame)
 	}
@@ -73,7 +73,7 @@ func TestIncrementalIndexingName2(t *testing.T) {
 	}
 }
 
-func TestIncrementalNewName(t *testing.T) {
+func TestNewNameWithIncrementalIndexing(t *testing.T) {
 
 	// 0x40      (literal header with incremental indexing, new name)
 	// 0x0B      (header name string length = 11)
@@ -87,7 +87,7 @@ func TestIncrementalNewName(t *testing.T) {
 
 	frame := DecodeHeader(buf)
 
-	f, ok := frame.(*IncrementalNewName)
+	f, ok := frame.(*NewNameWithIncrementalIndexing)
 	if !ok {
 		t.Fatal("Parsed incorrect frame type:", frame)
 	}
@@ -156,7 +156,7 @@ func TestIndexedHeader2(t *testing.T) {
 	}
 }
 
-func TestSubstitutionIndexedName(t *testing.T) {
+func TestIndexedNameWithSubstitutionIndexing(t *testing.T) {
 
 	// 0x04       (literal header, substitution indexing, name index = 3)
 	// 0x26       (replaced entry index = 38)
@@ -167,7 +167,7 @@ func TestSubstitutionIndexedName(t *testing.T) {
 
 	frame := DecodeHeader(buf)
 
-	f, ok := frame.(*SubstitutionIndexedName)
+	f, ok := frame.(*IndexedNameWithSubstitutionIndexing)
 	if !ok {
 		t.Fatal("Parsed incorrect frame type:", frame)
 	}
@@ -191,7 +191,7 @@ func TestSubstitutionIndexedName(t *testing.T) {
 	}
 }
 
-func TestIncrementalIndexingName3(t *testing.T) {
+func TestIndexedNameWithIncrementalIndexing3(t *testing.T) {
 
 	// 0x5f 0101 1111 (literal header, incremental indexing, name index = 40) 40n5=[31 9]
 	// 0x0a 0000 1010
@@ -202,7 +202,7 @@ func TestIncrementalIndexingName3(t *testing.T) {
 
 	frame := DecodeHeader(buf)
 
-	f, ok := frame.(*IncrementalIndexingName)
+	f, ok := frame.(*IndexedNameWithIncrementalIndexing)
 	if !ok {
 		t.Fatal("Parsed incorrect frame type:", frame)
 	}
@@ -226,7 +226,7 @@ func TestIncrementalIndexingName3(t *testing.T) {
 	}
 }
 
-func TestSubstitutionNewName(t *testing.T) {
+func TestNewNameWithSubstitutionIndexing(t *testing.T) {
 
 	// 0x0       (literal header with substitution indexing, new name)
 	// 0x0B      (header name string length = 11)
@@ -242,7 +242,7 @@ func TestSubstitutionNewName(t *testing.T) {
 
 	frame := DecodeHeader(buf)
 
-	f, ok := frame.(*SubstitutionNewName)
+	f, ok := frame.(*NewNameWithSubstitutionIndexing)
 	if !ok {
 		t.Fatal("Parsed incorrect frame type:", frame)
 	}
@@ -288,7 +288,7 @@ func Test(t *testing.T) {
 
 	frame := DecodeHeader(buf)
 
-	f, ok := frame.(*SubstitutionNewName)
+	f, ok := frame.(*NewNameWithSubstitutionIndexing)
 	if !ok {
 		t.Fatal("Parsed incorrect frame type:", frame)
 	}
