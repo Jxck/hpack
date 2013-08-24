@@ -19,6 +19,14 @@ type IndexedHeader struct {
 
 // Literal Header without Indexing - New Name
 type NewNameWithoutIndexing struct {
+	Flag1       uint8
+	Flag2       uint8
+	Flag3       uint8
+	Index       uint32
+	NameLength  uint32
+	NameString  string
+	ValueLength uint32
+	ValueString string
 }
 
 // Literal Header without Indexing - Indexed Name
@@ -161,7 +169,19 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		// +-------------------------------+
 		// | Value String (Length octets)  |
 		// +-------------------------------+
+
+		var frame = &NewNameWithoutIndexing{}
+		frame.Flag1 = 0
+		frame.Flag2 = 1
+		frame.Flag3 = 1
+		frame.Index = 0
+		frame.NameLength = DecodePrefixedInteger(buf, 8)
+		frame.NameString = DecodeString(buf, frame.NameLength)
+		frame.ValueLength = DecodePrefixedInteger(buf, 8)
+		frame.ValueString = DecodeString(buf, frame.ValueLength)
+
 		log.Println("Literal Header without Indexing - New Name")
+		return frame
 
 	} else if types>>5 == 0x2 {
 
