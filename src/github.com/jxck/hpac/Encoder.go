@@ -110,19 +110,18 @@ var p = log.Println
 
 func DecodeInteger(buf []byte, N uint8) uint32 {
 	boundary := byte(math.Pow(2, float64(N)) - 1)
-	var tmp uint32
 	if buf[0] == boundary {
+		var I uint32
 		i := len(buf) - 1
-		tmp += uint32(buf[i])
+		I += uint32(buf[i])
 		for i > 1 {
-			tmp *= 128
+			I *= 128
 			i--
-			tmp += uint32(buf[i]) - 128
-			p(tmp)
+			I += uint32(buf[i]) - 128
 		}
-		tmp += 31
+		I += 31
 
-		return tmp
+		return I
 	}
 	return uint32(buf[0])
 }
