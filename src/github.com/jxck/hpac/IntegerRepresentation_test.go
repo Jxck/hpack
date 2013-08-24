@@ -70,3 +70,15 @@ func TestDecodeInteger(t *testing.T) {
 		t.Errorf("got %v\nwant %v", actual, expected)
 	}
 }
+
+func TestReadPrefixedInteger(t *testing.T) {
+	// 0x1F 0001 1111
+	// 0x0a 0000 1010
+	// 0x06 0000 0110
+	buf := bytes.NewBuffer([]byte{0x1f, 0x0a, 0x06})
+	expected := []byte{0x1F, 0xA}
+	actual := ReadPrefixedInteger(5, buf).Bytes()
+	if !bytes.Equal(expected, actual) {
+		t.Errorf("got %v\nwant %v", actual, expected)
+	}
+}

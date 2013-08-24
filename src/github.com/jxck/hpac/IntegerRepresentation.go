@@ -108,3 +108,24 @@ func DecodeInteger(buf []byte, N uint8) uint32 {
 	}
 	return uint32(buf[0])
 }
+
+func ReadPrefixedInteger(N int, buf *bytes.Buffer) *bytes.Buffer {
+	var tmp uint8
+	boundary := byte(math.Pow(2, float64(N)) - 1)
+	binary.Read(buf, binary.BigEndian, &tmp)
+
+	prefix := bytes.NewBuffer([]byte{tmp})
+	if tmp < boundary {
+		return prefix
+	}
+
+	for {
+		binary.Read(buf, binary.BigEndian, &tmp) // err
+		prefix.WriteByte(tmp)
+		if tmp < 128 {
+			break
+		}
+	}
+
+	return prefix
+}
