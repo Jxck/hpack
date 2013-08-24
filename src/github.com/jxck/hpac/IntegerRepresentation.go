@@ -114,6 +114,7 @@ func ReadPrefixedInteger(N int, buf *bytes.Buffer) *bytes.Buffer {
 	boundary := byte(math.Pow(2, float64(N)) - 1)
 	binary.Read(buf, binary.BigEndian, &tmp)
 
+	tmp = tmp & boundary
 	prefix := bytes.NewBuffer([]byte{tmp})
 	if tmp < boundary {
 		return prefix

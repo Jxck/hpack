@@ -153,23 +153,15 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 
 		var frame = &IncrementalIndexingName{}
 
-		frame.Flag1 = types >> 7
-		frame.Flag2 = (types & 0x40) >> 6
-		frame.Flag3 = (types & 0x20) >> 5
-		frame.Index = uint32((types & 0x1F) - 1)
+		frame.Flag1 = 0
+		frame.Flag2 = 1
+		frame.Flag3 = 0
 
-		log.Println(frame.Index)
-		if frame.Index == 30 { // (2^5 -1) - 1
-			prefix := bytes.NewBuffer([]byte{0x1F}) // 11111(31)
-			var tmp uint8
-			binary.Read(buf, binary.BigEndian, &tmp) // err
-			prefix.WriteByte(tmp)
-			for tmp > 128 {
-				binary.Read(buf, binary.BigEndian, &tmp) // err
-				prefix.WriteByte(tmp)
-			}
-			frame.Index = DecodeInteger(prefix.Bytes(), 5) - 1
-		}
+		// unread first byte for parse frame
+		buf.UnreadByte()
+
+		tmp := DecodeInteger(ReadPrefixedInteger(5, buf).Bytes(), 5)
+		frame.Index = tmp - 1
 
 		binary.Read(buf, binary.BigEndian, &frame.ValueLength) // err
 		valueBytes := make([]byte, frame.ValueLength)
