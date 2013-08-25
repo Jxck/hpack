@@ -87,7 +87,7 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 	if err := binary.Read(buf, binary.BigEndian, &types); err != nil {
 		log.Println("binary.Read failed:", err)
 	}
-	if types>>7 == 1 {
+	if types > 0x80 {
 
 		// 	0   1   2   3   4   5   6   7
 		// +---+---+---+---+---+---+---+---+
