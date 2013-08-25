@@ -48,7 +48,7 @@ type NewNameWithIncrementalIndexing struct {
 	Flag1       uint8
 	Flag2       uint8
 	Flag3       uint8
-	Flag4       uint8
+	Index       uint8
 	NameLength  uint32
 	NameString  string
 	ValueLength uint32
@@ -69,7 +69,7 @@ type IndexedNameWithSubstitutionIndexing struct {
 type NewNameWithSubstitutionIndexing struct {
 	Flag1            uint8
 	Flag2            uint8
-	Flag3            uint8
+	Index            uint8
 	NameLength       uint32
 	NameString       string
 	SubstitutedIndex uint32
@@ -117,7 +117,7 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		frame := &NewNameWithSubstitutionIndexing{}
 		frame.Flag1 = 0
 		frame.Flag2 = 0
-		frame.Flag3 = 0
+		frame.Index = 0
 		frame.NameLength = DecodePrefixedInteger(buf, 8)
 		frame.NameString = DecodeString(buf, frame.NameLength)
 		frame.SubstitutedIndex = DecodePrefixedInteger(buf, 8)
@@ -146,7 +146,7 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		frame.Flag1 = 0
 		frame.Flag2 = 1
 		frame.Flag3 = 0
-		frame.Flag4 = 0
+		frame.Index = 0
 		frame.NameLength = DecodePrefixedInteger(buf, 8)
 		frame.NameString = DecodeString(buf, frame.NameLength)
 		frame.ValueLength = DecodePrefixedInteger(buf, 8)

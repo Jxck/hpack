@@ -100,8 +100,8 @@ func TestNewNameWithIncrementalIndexing(t *testing.T) {
 	if f.Flag3 != 0 {
 		t.Errorf("got %v\nwant %v", f.Flag3, 0)
 	}
-	if f.Flag4 != 0 {
-		t.Errorf("got %v\nwant %v", f.Flag4, 0)
+	if f.Index != 0 {
+		t.Errorf("got %v\nwant %v", f.Index, 0)
 	}
 	if f.NameLength != 11 {
 		t.Errorf("got %v\nwant %v", f.NameLength, 11)
@@ -252,8 +252,8 @@ func TestNewNameWithSubstitutionIndexing(t *testing.T) {
 	if f.Flag2 != 0 {
 		t.Errorf("got %v\nwant %v", f.Flag2, 0)
 	}
-	if f.Flag3 != 0 {
-		t.Errorf("got %v\nwant %v", f.Flag3, 0)
+	if f.Index != 0 {
+		t.Errorf("got %v\nwant %v", f.Index, 0)
 	}
 	if f.NameLength != 11 {
 		t.Errorf("got %v\nwant %v", f.NameLength, 11)
