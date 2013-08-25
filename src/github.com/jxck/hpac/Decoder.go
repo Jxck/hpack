@@ -205,6 +205,8 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		frame.Flag1 = 0
 		frame.Flag2 = 1
 		frame.Flag3 = 0
+		// 0 describes "not in the header table", but index of Header Table start with 0
+		// so Index is represented as +1 integer
 		frame.Index = DecodePrefixedInteger(buf, 5) - 1
 		frame.ValueLength = DecodePrefixedInteger(buf, 8)
 		frame.ValueString = DecodeString(buf, frame.ValueLength)
