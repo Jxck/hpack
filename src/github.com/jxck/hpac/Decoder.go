@@ -15,8 +15,6 @@ type IndexedHeader struct {
 	Index uint8
 }
 
-// TODO: RENAME
-
 // Literal Header without Indexing - New Name
 type NewNameWithoutIndexing struct {
 	Flag1       uint8
