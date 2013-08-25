@@ -315,3 +315,37 @@ func TestNewNameWithoutIndexing(t *testing.T) {
 		t.Errorf("got %v\nwant %v", f.ValueString, "first")
 	}
 }
+
+func TestIndexedNameWithoutIndexing(t *testing.T) {
+
+	// 0x64      (literal header without indexing, name index = 3)
+	// 0x05      (header value string length = 5)
+	// first
+	buf := bytes.NewBuffer([]byte{0x64, 0x05}) // 0110 00011 0000 0101
+	buf.WriteString("first")
+
+	frame := DecodeHeader(buf)
+
+	f, ok := frame.(*IndexedNameWithoutIndexing)
+	if !ok {
+		t.Fatal("Parsed incorrect frame type:", frame)
+	}
+	if f.Flag1 != 0 {
+		t.Errorf("got %v\nwant %v", f.Flag1, 0)
+	}
+	if f.Flag2 != 1 {
+		t.Errorf("got %v\nwant %v", f.Flag2, 1)
+	}
+	if f.Flag3 != 1 {
+		t.Errorf("got %v\nwant %v", f.Flag3, 1)
+	}
+	if f.Index != 3 {
+		t.Errorf("got %v\nwant %v", f.Index, 3)
+	}
+	if f.ValueLength != 5 {
+		t.Errorf("got %v\nwant %v", f.ValueLength, 5)
+	}
+	if f.ValueString != "first" {
+		t.Errorf("got %v\nwant %v", f.ValueString, "first")
+	}
+}
