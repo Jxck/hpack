@@ -2,44 +2,55 @@ package main
 
 import (
 	"log"
+	"net/http"
 )
 
-type HeaderName string
-type HeaderValue string
-
 type Header struct {
-	Name  HeaderName
-	Value HeaderValue
+	Name  string
+	Value string
 }
 
-type HeaderTable []*Header // Header はポインタにしておく
+// ヘッダはポインタにしておく
+type HeaderTable []*Header
 
 //func (ht *HeaderTable) Add(header Header) {
 //	*ht = append(*ht, header)
 //}
 
-func (ht HeaderTable) SearchHeader(name HeaderName) int {
+func (ht HeaderTable) SearchHeader(name, value string) (int, *Header) {
 	for i, h := range ht {
 		if h.Name == name {
-			return i
+			if h.Value == value {
+				return i, h
+			}
 		}
 	}
-	return -1
+	return -1, nil
 }
 
 func NewRequestHeaderTable() HeaderTable {
 	return HeaderTable{
 		{":scheme", "http"},
 		{":scheme", "https"},
-		{":host", "A"},
+		{":host", ""},
 		{":path", "/"},
 	}
 }
+
 func main() {
+
+	var header = http.Header{
+		":scheme":     []string{"http"},
+		":path":       []string{"/index.html"},
+		"mynewheader": []string{"first"},
+	}
+
 	log.SetFlags(log.Lshortfile)
 
-	header := NewRequestHeaderTable()
+	_ = header
 
-	i := header.SearchHeader(":host")
-	log.Println(header[i])
+	headerTable := NewRequestHeaderTable()
+
+	log.Println(headerTable.SearchHeader(":scheme", "http"))
+	log.Println(headerTable.SearchHeader(":path", "/index.html"))
 }
