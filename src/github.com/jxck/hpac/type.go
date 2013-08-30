@@ -14,6 +14,12 @@ type IndexedHeader struct {
 	Index uint8
 }
 
+func NewIndexedHeader() (frame *IndexedHeader) {
+	frame = &IndexedHeader{}
+	frame.Flag1 = 1
+	return
+}
+
 // Literal Header without Indexing - New Name
 //
 // 0   1   2   3   4   5   6   7
@@ -39,6 +45,15 @@ type NewNameWithoutIndexing struct {
 	ValueString string
 }
 
+func NewNewNameWithoutIndexing() (frame *NewNameWithoutIndexing) {
+	frame = &NewNameWithoutIndexing{}
+	frame.Flag1 = 0
+	frame.Flag2 = 1
+	frame.Flag3 = 1
+	frame.Index = 0
+	return
+}
+
 // Literal Header without Indexing - Indexed Name
 //
 //   0   1   2   3   4   5   6   7
@@ -58,6 +73,14 @@ type IndexedNameWithoutIndexing struct {
 	ValueString string
 }
 
+func NewIndexedNameWithoutIndexing() (frame *IndexedNameWithoutIndexing) {
+	frame = &IndexedNameWithoutIndexing{}
+	frame.Flag1 = 0
+	frame.Flag2 = 1
+	frame.Flag3 = 1
+	return
+}
+
 // Literal Header with Incremental Indexing - Indexed Name
 //
 // 0   1   2   3   4   5   6   7
@@ -75,6 +98,14 @@ type IndexedNameWithIncrementalIndexing struct {
 	Index       uint32
 	ValueLength uint32
 	ValueString string
+}
+
+func NewIndexedNameWithIncrementalIndexing() (frame *IndexedNameWithIncrementalIndexing) {
+	frame = &IndexedNameWithIncrementalIndexing{}
+	frame.Flag1 = 0
+	frame.Flag2 = 1
+	frame.Flag3 = 0
+	return
 }
 
 // Literal Header with Incremental Indexing - New Name
@@ -102,6 +133,15 @@ type NewNameWithIncrementalIndexing struct {
 	ValueString string
 }
 
+func NewNewNameWithIncrementalIndexing() (frame *NewNameWithIncrementalIndexing) {
+	frame = &NewNameWithIncrementalIndexing{}
+	frame.Flag1 = 0
+	frame.Flag2 = 1
+	frame.Flag3 = 0
+	frame.Index = 0
+	return
+}
+
 // Literal Header with Substitution Indexing - Indexed Name
 //
 // 0   1   2   3   4   5   6   7
@@ -121,6 +161,13 @@ type IndexedNameWithSubstitutionIndexing struct {
 	SubstitutedIndex uint32
 	ValueLength      uint32
 	ValueString      string
+}
+
+func NewIndexedNameWithSubstitutionIndexing() (frame *IndexedNameWithSubstitutionIndexing) {
+	frame = &IndexedNameWithSubstitutionIndexing{}
+	frame.Flag1 = 0
+	frame.Flag2 = 0
+	return
 }
 
 // Literal Header with Substitution Indexing - New Name
@@ -148,4 +195,12 @@ type NewNameWithSubstitutionIndexing struct {
 	SubstitutedIndex uint32
 	ValueLength      uint32
 	ValueString      string
+}
+
+func NewNewNameWithSubstitutionIndexing() (frame *NewNameWithSubstitutionIndexing) {
+	frame = &NewNameWithSubstitutionIndexing{}
+	frame.Flag1 = 0
+	frame.Flag2 = 0
+	frame.Index = 0
+	return
 }
