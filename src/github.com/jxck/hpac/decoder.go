@@ -14,11 +14,6 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 	}
 	if types > 0x80 {
 
-		// 	0   1   2   3   4   5   6   7
-		// +---+---+---+---+---+---+---+---+
-		// | 1 |        Index (7+)         |
-		// +---+---------------------------+
-
 		frame := &IndexedHeader{}
 		frame.Flag1 = 1
 		frame.Index = types & 0x7F
@@ -27,21 +22,6 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		return frame
 
 	} else if types == 0 {
-
-		// 0   1   2   3   4   5   6   7
-		// +---+---+---+---+---+---+---+---+
-		// | 0 | 0 |           0           |
-		// +---+---+-----------------------+
-		// |       Name Length (8+)        |
-		// +-------------------------------+
-		// |  Name String (Length octets)  |
-		// +-------------------------------+
-		// |    Substituted Index (8+)     |
-		// +-------------------------------+
-		// |       Value Length (8+)       |
-		// +-------------------------------+
-		// | Value String (Length octets)  |
-		// +-------------------------------+
 
 		frame := &NewNameWithSubstitutionIndexing{}
 		frame.Flag1 = 0
@@ -58,19 +38,6 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 
 	} else if types == 0x40 {
 
-		// 0   1   2   3   4   5   6   7
-		// +---+---+---+---+---+---+---+---+
-		// | 0 | 1 | 0 |         0         |
-		// +---+---+---+-------------------+
-		// |       Name Length (8+)        |
-		// +-------------------------------+
-		// |  Name String (Length octets)  |
-		// +-------------------------------+
-		// |       Value Length (8+)       |
-		// +-------------------------------+
-		// | Value String (Length octets)  |
-		// +-------------------------------+
-
 		frame := &NewNameWithIncrementalIndexing{}
 		frame.Flag1 = 0
 		frame.Flag2 = 1
@@ -86,19 +53,6 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 
 	} else if types == 0x60 {
 
-		// 0   1   2   3   4   5   6   7
-		// +---+---+---+---+---+---+---+---+
-		// | 0 | 1 | 1 |         0         |
-		// +---+---+---+-------------------+
-		// |       Name Length (8+)        |
-		// +-------------------------------+
-		// |  Name String (Length octets)  |
-		// +-------------------------------+
-		// |       Value Length (8+)       |
-		// +-------------------------------+
-		// | Value String (Length octets)  |
-		// +-------------------------------+
-
 		var frame = &NewNameWithoutIndexing{}
 		frame.Flag1 = 0
 		frame.Flag2 = 1
@@ -113,15 +67,6 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		return frame
 
 	} else if types>>5 == 0x2 {
-
-		// 0   1   2   3   4   5   6   7
-		// +---+---+---+---+---+---+---+---+
-		// | 0 | 1 | 0 |    Index (5+)     |
-		// +---+---+---+-------------------+
-		// |       Value Length (8+)       |
-		// +-------------------------------+
-		// | Value String (Length octets)  |
-		// +-------------------------------+
 
 		// unread first byte for parse frame
 		buf.UnreadByte()
@@ -141,15 +86,6 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 
 	} else if types&0x60 == 0x60 {
 
-		//   0   1   2   3   4   5   6   7
-		// +---+---+---+---+---+---+---+---+
-		// | 0 | 1 | 1 |    Index (5+)     |
-		// +---+---+---+-------------------+
-		// |       Value Length (8+)       |
-		// +-------------------------------+
-		// | Value String (Length octets)  |
-		// +-------------------------------+
-
 		buf.UnreadByte()
 
 		var frame = &IndexedNameWithoutIndexing{}
@@ -164,17 +100,6 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		return frame
 
 	} else {
-
-		// 0   1   2   3   4   5   6   7
-		// +---+---+---+---+---+---+---+---+
-		// | 0 | 0 |      Index (6+)       |
-		// +---+---+-----------------------+
-		// |    Substituted Index (8+)     |
-		// +-------------------------------+
-		// |       Value Length (8+)       |
-		// +-------------------------------+
-		// | Value String (Length octets)  |
-		// +-------------------------------+
 
 		// unread first byte for parse frame
 		buf.UnreadByte()
