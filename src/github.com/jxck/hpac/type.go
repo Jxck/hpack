@@ -38,10 +38,10 @@ type NewNameWithoutIndexing struct {
 	Flag1       uint8
 	Flag2       uint8
 	Flag3       uint8
-	Index       uint32
-	NameLength  uint32
+	Index       uint64
+	NameLength  uint64
 	NameString  string
-	ValueLength uint32
+	ValueLength uint64
 	ValueString string
 }
 
@@ -68,8 +68,8 @@ type IndexedNameWithoutIndexing struct {
 	Flag1       uint8
 	Flag2       uint8
 	Flag3       uint8
-	Index       uint32
-	ValueLength uint32
+	Index       uint64
+	ValueLength uint64
 	ValueString string
 }
 
@@ -95,8 +95,8 @@ type IndexedNameWithIncrementalIndexing struct {
 	Flag1       uint8
 	Flag2       uint8
 	Flag3       uint8
-	Index       uint32
-	ValueLength uint32
+	Index       uint64
+	ValueLength uint64
 	ValueString string
 }
 
@@ -127,9 +127,9 @@ type NewNameWithIncrementalIndexing struct {
 	Flag2       uint8
 	Flag3       uint8
 	Index       uint8
-	NameLength  uint32
+	NameLength  uint64
 	NameString  string
-	ValueLength uint32
+	ValueLength uint64
 	ValueString string
 }
 
@@ -157,9 +157,9 @@ func NewNewNameWithIncrementalIndexing() (frame *NewNameWithIncrementalIndexing)
 type IndexedNameWithSubstitutionIndexing struct {
 	Flag1            uint8
 	Flag2            uint8
-	Index            uint32
-	SubstitutedIndex uint32
-	ValueLength      uint32
+	Index            uint64
+	SubstitutedIndex uint64
+	ValueLength      uint64
 	ValueString      string
 }
 
@@ -190,10 +190,10 @@ type NewNameWithSubstitutionIndexing struct {
 	Flag1            uint8
 	Flag2            uint8
 	Index            uint8
-	NameLength       uint32
+	NameLength       uint64
 	NameString       string
-	SubstitutedIndex uint32
-	ValueLength      uint32
+	SubstitutedIndex uint64
+	ValueLength      uint64
 	ValueString      string
 }
 

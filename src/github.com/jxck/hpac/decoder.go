@@ -99,7 +99,7 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 	return nil
 }
 
-func DecodeString(buf *bytes.Buffer, n uint32) string {
+func DecodeString(buf *bytes.Buffer, n uint64) string {
 	valueBytes := make([]byte, n)
 	binary.Read(buf, binary.BigEndian, &valueBytes) // err
 	return string(valueBytes)

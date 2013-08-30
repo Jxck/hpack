@@ -18,7 +18,7 @@ import (
 //          Encode (I % 128 + 128) on 8 bits
 //          I = I / 128
 //     encode (I) on 8 bits
-func EncodeInteger(I uint64, N uint64) *bytes.Buffer {
+func EncodeInteger(I uint64, N uint8) *bytes.Buffer {
 	buf := new(bytes.Buffer)
 
 	// 2^N -1
@@ -92,29 +92,27 @@ func EncodeInteger(I uint64, N uint64) *bytes.Buffer {
 // b) (23437*128) + (161-128) = 2999969
 // a) 2999969 + 31 = 3000000
 //
-// TODO: fix prefix (buf []byte, N uint64) uint64
-func DecodeInteger(buf []byte, N float64) uint32 {
-	boundary := byte(math.Pow(2, N) - 1)
+func DecodeInteger(buf []byte, N uint8) uint64 {
+	boundary := byte(math.Pow(2, float64(N)) - 1)
 	if buf[0] == boundary {
-		var I uint32
+		var I uint64
 		i := len(buf) - 1
-		I += uint32(buf[i])
+		I += uint64(buf[i])
 		for i > 1 {
 			I *= 128
 			i--
-			I += uint32(buf[i]) - 128
+			I += uint64(buf[i]) - 128
 		}
 		I += 31
 
 		return I
 	}
-	return uint32(buf[0])
+	return uint64(buf[0])
 }
 
-// TODO: fix prefix (buf *bytes.Buffer, N uint64)
-func ReadPrefixedInteger(buf *bytes.Buffer, N float64) *bytes.Buffer {
+func ReadPrefixedInteger(buf *bytes.Buffer, N uint8) *bytes.Buffer {
 	var tmp uint8
-	boundary := byte(math.Pow(2, N) - 1)
+	boundary := byte(math.Pow(2, float64(N)) - 1)
 	binary.Read(buf, binary.BigEndian, &tmp)
 
 	tmp = tmp & boundary
@@ -135,8 +133,7 @@ func ReadPrefixedInteger(buf *bytes.Buffer, N float64) *bytes.Buffer {
 	return prefix
 }
 
-// TODO: fix prefix (buf *bytes.Buffer, N uint64) uint64
-func DecodePrefixedInteger(buf *bytes.Buffer, N float64) uint32 {
+func DecodePrefixedInteger(buf *bytes.Buffer, N uint8) uint64 {
 	tmp := ReadPrefixedInteger(buf, N).Bytes()
 	return DecodeInteger(tmp, N)
 }

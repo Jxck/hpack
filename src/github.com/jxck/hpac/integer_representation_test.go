@@ -39,7 +39,7 @@ func TestEncodeInteger(t *testing.T) {
 }
 
 func TestDecodeInteger(t *testing.T) {
-	var actual, expected uint32
+	var actual, expected uint64
 	var buf []uint8
 
 	buf = []uint8{10}
