@@ -18,11 +18,11 @@ import (
 //          Encode (I % 128 + 128) on 8 bits
 //          I = I / 128
 //     encode (I) on 8 bits
-func EncodeInteger(I int, N float64) *bytes.Buffer {
+func EncodeInteger(I uint64, N uint64) *bytes.Buffer {
 	buf := new(bytes.Buffer)
 
 	// 2^N -1
-	boundary := int(math.Pow(2, N)) - 1
+	boundary := uint64(math.Pow(2, float64(N))) - 1
 
 	if I < boundary {
 		// If I < 2^N - 1, encode I on N bits
@@ -91,6 +91,8 @@ func EncodeInteger(I int, N float64) *bytes.Buffer {
 // c) (183*128) + (141-128) = 23473
 // b) (23437*128) + (161-128) = 2999969
 // a) 2999969 + 31 = 3000000
+//
+// TODO: fix prefix (buf []byte, N uint64) uint64
 func DecodeInteger(buf []byte, N float64) uint32 {
 	boundary := byte(math.Pow(2, N) - 1)
 	if buf[0] == boundary {
@@ -109,6 +111,7 @@ func DecodeInteger(buf []byte, N float64) uint32 {
 	return uint32(buf[0])
 }
 
+// TODO: fix prefix (buf *bytes.Buffer, N uint64)
 func ReadPrefixedInteger(buf *bytes.Buffer, N float64) *bytes.Buffer {
 	var tmp uint8
 	boundary := byte(math.Pow(2, N) - 1)
@@ -132,6 +135,7 @@ func ReadPrefixedInteger(buf *bytes.Buffer, N float64) *bytes.Buffer {
 	return prefix
 }
 
+// TODO: fix prefix (buf *bytes.Buffer, N uint64) uint64
 func DecodePrefixedInteger(buf *bytes.Buffer, N float64) uint32 {
 	tmp := ReadPrefixedInteger(buf, N).Bytes()
 	return DecodeInteger(tmp, N)

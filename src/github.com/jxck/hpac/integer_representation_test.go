@@ -6,7 +6,7 @@ import (
 )
 
 func TestEncodeInteger(t *testing.T) {
-	var I int
+	var I uint64
 	var actual, expected []uint8
 
 	I = 10
