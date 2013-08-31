@@ -97,7 +97,6 @@ func TestIndexedNameWithoutIndexingEncode(t *testing.T) {
 }
 
 func TestIndexedNameWithIncrementalIndexingDecode(t *testing.T) {
-
 	// 0x44      (literal header with incremental indexing, name index = 3)
 	// 0x16      (header value string length = 22)
 	// /my-example/index.html
@@ -105,7 +104,6 @@ func TestIndexedNameWithIncrementalIndexingDecode(t *testing.T) {
 	buf.WriteString("/my-example/index.html")
 
 	frame := DecodeHeader(buf)
-
 	f, ok := frame.(*IndexedNameWithIncrementalIndexing)
 	if !ok {
 		t.Fatal("Parsed incorrect frame type:", frame)
@@ -130,8 +128,7 @@ func TestIndexedNameWithIncrementalIndexingDecode(t *testing.T) {
 	}
 }
 
-func TestNewNameWithIncrementalIndexing(t *testing.T) {
-
+func TestNewNameWithIncrementalIndexingDecode(t *testing.T) {
 	// 0x40      (literal header with incremental indexing, new name)
 	// 0x0B      (header name string length = 11)
 	// mynewheader
@@ -143,7 +140,6 @@ func TestNewNameWithIncrementalIndexing(t *testing.T) {
 	buf.WriteString("first")
 
 	frame := DecodeHeader(buf)
-
 	f, ok := frame.(*NewNameWithIncrementalIndexing)
 	if !ok {
 		t.Fatal("Parsed incorrect frame type:", frame)
@@ -174,8 +170,7 @@ func TestNewNameWithIncrementalIndexing(t *testing.T) {
 	}
 }
 
-func TestIndexedNameWithSubstitutionIndexing(t *testing.T) {
-
+func TestIndexedNameWithSubstitutionIndexingDecode(t *testing.T) {
 	// 0x04       (literal header, substitution indexing, name index = 3)
 	// 0x26       (replaced entry index = 38)
 	// 0x1f       (header value string length = 31)
@@ -184,7 +179,6 @@ func TestIndexedNameWithSubstitutionIndexing(t *testing.T) {
 	buf.WriteString("/my-example/resources/script.js")
 
 	frame := DecodeHeader(buf)
-
 	f, ok := frame.(*IndexedNameWithSubstitutionIndexing)
 	if !ok {
 		t.Fatal("Parsed incorrect frame type:", frame)
@@ -209,6 +203,7 @@ func TestIndexedNameWithSubstitutionIndexing(t *testing.T) {
 	}
 }
 
+/*
 func TestIndexedNameWithIncrementalIndexing3(t *testing.T) {
 
 	// 0x5f 0101 1111 (literal header, incremental indexing, name index = 40) 40n5=[31 9]
@@ -243,6 +238,7 @@ func TestIndexedNameWithIncrementalIndexing3(t *testing.T) {
 		t.Errorf("got %v\nwant %v", f.ValueString, "second")
 	}
 }
+*/
 
 func TestNewNameWithSubstitutionIndexing(t *testing.T) {
 
