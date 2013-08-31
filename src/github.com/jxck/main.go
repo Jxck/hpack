@@ -1,11 +1,15 @@
 package main
 
 import (
-	"bytes"
-	. "github.com/jxck/hpac"
+	//	"bytes"
+	"github.com/jxck/hpac"
 	"log"
 	"net/http"
 )
+
+func init() {
+	log.SetFlags(log.Lshortfile)
+}
 
 type Header struct {
 	Name  string
@@ -57,6 +61,26 @@ func (ht HeaderTable) SearchHeader(name, value string) (int, *Header) {
 	return -1, nil // literal without index
 }
 
+func Search(headers http.Header, headerTable HeaderTable) {
+	for name, values := range headers {
+		for i := range values {
+			value := values[i]
+			index, h := headerTable.SearchHeader(name, value)
+			if h != nil {
+				log.Println("index header", i, h)
+				frame := hpac.NewIndexedHeader()
+				frame.Index = uint8(i)
+				f := hpac.EncodeHeader(frame)
+				log.Printf("%T %v", f, f.Bytes())
+			} else if index != -1 {
+				log.Println("literal with index")
+			} else {
+				log.Println("literal without index")
+			}
+		}
+	}
+}
+
 func NewRequestHeaderTable() HeaderTable {
 	return HeaderTable{
 		{":scheme", "http"},
@@ -67,8 +91,6 @@ func NewRequestHeaderTable() HeaderTable {
 }
 
 func main() {
-	log.SetFlags(log.Lshortfile)
-
 	var headers = http.Header{
 		":scheme":     []string{"http"},
 		":path":       []string{"/index.html"},
@@ -76,17 +98,5 @@ func main() {
 	}
 
 	headerTable := NewRequestHeaderTable()
-	for name, values := range headers {
-		for i := range values {
-			value := values[i]
-			index, h := headerTable.SearchHeader(name, value)
-			if h != nil {
-				log.Println("index header")
-			} else if index != -1 {
-				log.Println("literal with index")
-			} else {
-				log.Println("literal without index")
-			}
-		}
-	}
+	Search(headers, headerTable)
 }
