@@ -67,13 +67,19 @@ func Search(headers http.Header, headerTable HeaderTable) {
 			value := values[i]
 			index, h := headerTable.SearchHeader(name, value)
 			if h != nil {
-				log.Println("index header", i, h)
+				log.Println("index header", index, h, name, value)
 				frame := hpac.NewIndexedHeader()
-				frame.Index = uint8(i)
+				frame.Index = uint8(index)
 				f := hpac.EncodeHeader(frame)
 				log.Printf("%T %v", f, f.Bytes())
 			} else if index != -1 {
-				log.Println("literal with index")
+				log.Println("literal with index", index, h, name, values)
+				frame := hpac.NewIndexedNameWithIncrementalIndexing()
+				frame.Index = uint64(index)
+				frame.ValueLength = uint64(len(value))
+				frame.ValueString = value
+				f := hpac.EncodeHeader(frame)
+				log.Printf("%T %v", f, f.Bytes())
 			} else {
 				log.Println("literal without index")
 			}
