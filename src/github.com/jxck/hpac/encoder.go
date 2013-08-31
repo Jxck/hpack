@@ -31,6 +31,9 @@ func EncodeHeader(frame Frame) *bytes.Buffer {
 	case *IndexedNameWithoutIndexing:
 		f := frame.(*IndexedNameWithoutIndexing)
 		return encodeIndexedNameWithoutIndexing(f)
+	case *IndexedNameWithIncrementalIndexing:
+		f := frame.(*IndexedNameWithIncrementalIndexing)
+		return encodeIndexedNameWithIncrementalIndexing(f)
 	default:
 		log.Println("unmatch")
 		return nil
@@ -55,6 +58,18 @@ func encodeNewNameWithoutIndexing(frame *NewNameWithoutIndexing) *bytes.Buffer {
 func encodeIndexedNameWithoutIndexing(frame *IndexedNameWithoutIndexing) *bytes.Buffer {
 	index := EncodeInteger(frame.Index+1, 5).Bytes()
 	buf := bytes.NewBuffer([]byte{0x60 + index[0]})
+	index = index[1:]
+	if len(index) > 0 {
+		buf.Write(index)
+	}
+	buf.Write(EncodeInteger(frame.ValueLength, 8).Bytes())
+	buf.WriteString(frame.ValueString)
+	return buf
+}
+
+func encodeIndexedNameWithIncrementalIndexing(frame *IndexedNameWithIncrementalIndexing) *bytes.Buffer {
+	index := EncodeInteger(frame.Index+1, 5).Bytes()
+	buf := bytes.NewBuffer([]byte{0x40 + index[0]})
 	index = index[1:]
 	if len(index) > 0 {
 		buf.Write(index)

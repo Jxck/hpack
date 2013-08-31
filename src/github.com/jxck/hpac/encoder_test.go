@@ -5,18 +5,18 @@ import (
 	"testing"
 )
 
-func TestIndexedHeaderDecode(t *testing.T) {
+func TestIndexedHeaderEncode(t *testing.T) {
 	frame := NewIndexedHeader()
-	frame.Index = 10
+	frame.Index = 38
 
 	actual := EncodeHeader(frame).Bytes()
-	expected := []byte{138}
+	expected := []byte{0xA6}
 	if !bytes.Equal(actual, expected) {
 		t.Errorf("got %v\nwant %v", actual, expected)
 	}
 }
 
-func TestNewNameWithoutIndexingDecode(t *testing.T) {
+func TestNewNameWithoutIndexingEncode(t *testing.T) {
 	frame := NewNewNameWithoutIndexing()
 	frame.NameLength = 11
 	frame.NameString = "mynewheader"
@@ -43,6 +43,21 @@ func TestIndexedNameWithoutIndexingDecode(t *testing.T) {
 	actual := EncodeHeader(frame).Bytes()
 	buf := bytes.NewBuffer([]byte{0x64, 0x05})
 	buf.WriteString("first")
+	expected := buf.Bytes()
+	if !bytes.Equal(actual, expected) {
+		t.Errorf("got %v\nwant %v", actual, expected)
+	}
+}
+
+func TestIndexedNameWithIncrementalIndexingEncode(t *testing.T) {
+	frame := NewIndexedNameWithIncrementalIndexing()
+	frame.Index = 3
+	frame.ValueLength = 22
+	frame.ValueString = "/my-example/index.html"
+
+	actual := EncodeHeader(frame).Bytes()
+	buf := bytes.NewBuffer([]byte{0x44, 0x16})
+	buf.WriteString("/my-example/index.html")
 	expected := buf.Bytes()
 	if !bytes.Equal(actual, expected) {
 		t.Errorf("got %v\nwant %v", actual, expected)
