@@ -241,7 +241,6 @@ func TestIndexedNameWithIncrementalIndexing3(t *testing.T) {
 */
 
 func TestNewNameWithSubstitutionIndexing(t *testing.T) {
-
 	// 0x0       (literal header with substitution indexing, new name)
 	// 0x0B      (header name string length = 11)
 	// mynewheader

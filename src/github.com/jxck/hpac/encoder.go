@@ -40,6 +40,9 @@ func EncodeHeader(frame Frame) *bytes.Buffer {
 	case *IndexedNameWithSubstitutionIndexing:
 		f := frame.(*IndexedNameWithSubstitutionIndexing)
 		return encodeIndexedNameWithSubstitutionIndexing(f)
+	case *NewNameWithSubstitutionIndexing:
+		f := frame.(*NewNameWithSubstitutionIndexing)
+		return encodeNewNameWithSubstitutionIndexing(f)
 	default:
 		log.Println("unmatch")
 		return nil
@@ -97,6 +100,16 @@ func encodeNewNameWithIncrementalIndexing(frame *NewNameWithIncrementalIndexing)
 func encodeIndexedNameWithSubstitutionIndexing(frame *IndexedNameWithSubstitutionIndexing) *bytes.Buffer {
 	buf := bytes.NewBuffer([]byte{})
 	buf.Write(EncodeInteger(frame.Index+1, 6).Bytes())
+	buf.Write(EncodeInteger(frame.SubstitutedIndex, 8).Bytes())
+	buf.Write(EncodeInteger(frame.ValueLength, 8).Bytes())
+	buf.WriteString(frame.ValueString)
+	return buf
+}
+
+func encodeNewNameWithSubstitutionIndexing(frame *NewNameWithSubstitutionIndexing) *bytes.Buffer {
+	buf := bytes.NewBuffer([]byte{0})
+	buf.Write(EncodeInteger(frame.NameLength, 8).Bytes())
+	buf.WriteString(frame.NameString)
 	buf.Write(EncodeInteger(frame.SubstitutedIndex, 8).Bytes())
 	buf.Write(EncodeInteger(frame.ValueLength, 8).Bytes())
 	buf.WriteString(frame.ValueString)
