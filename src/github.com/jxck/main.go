@@ -69,7 +69,7 @@ func Search(headers http.Header, headerTable HeaderTable) {
 			if h != nil {
 				log.Println("index header", index, h, name, value)
 				frame := hpac.NewIndexedHeader()
-				frame.Index = uint8(index)
+				frame.Index = uint64(index)
 				f := hpac.EncodeHeader(frame)
 				log.Printf("%T %v", f, f.Bytes())
 			} else if index != -1 {
@@ -94,6 +94,12 @@ func NewRequestHeaderTable() HeaderTable {
 		{":host", ""},
 		{":path", "/"},
 	}
+}
+
+
+
+func (c *Context) Encode(header *http.Header) {
+
 }
 
 func main() {
