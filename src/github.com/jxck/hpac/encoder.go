@@ -5,21 +5,6 @@ import (
 	"log"
 )
 
-type Encoder struct {
-	requestHeaderTable  HeaderTable
-	responseHeaderTable HeaderTable
-	referenceSet        ReferenceSet
-}
-
-func NewEncoder() Encoder {
-	var encoder = Encoder{
-		requestHeaderTable:  RequestHeaderTable,
-		responseHeaderTable: ResponseHeaderTable,
-		referenceSet:        ReferenceSet{},
-	}
-	return encoder
-}
-
 func EncodeHeader(frame Frame) *bytes.Buffer {
 	switch frame.(type) {
 	case *IndexedHeader:

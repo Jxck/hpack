@@ -19,6 +19,10 @@ type Header struct {
 // ヘッダはポインタにしておく
 type HeaderTable []*Header
 
+//func (ht *HeaderTable) Add(header Header) {
+//	*ht = append(*ht, header)
+//}
+
 // name と value が HeaderTable にあるかを探す
 // name, value とも一致 => index, *Header
 // name はある          => index, nil
@@ -95,6 +99,7 @@ func NewRequestHeaderTable() HeaderTable {
 	}
 }
 
+
 func main() {
 	var headers = http.Header{
 		":scheme":     []string{"http"},
@@ -102,6 +107,12 @@ func main() {
 		"mynewheader": []string{"first"},
 	}
 
-	headerTable := NewRequestHeaderTable()
-	Search(headers, headerTable)
+	context := hpac.NewContext()
+
+	wire := context.Encode(headers)
+
+	log.Println(wire)
+
+////	headerTable := NewRequestHeaderTable()
+////	Search(headers, headerTable)
 }
