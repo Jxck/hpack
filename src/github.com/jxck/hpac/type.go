@@ -11,7 +11,7 @@ type Frame interface {
 // +---+---------------------------+
 type IndexedHeader struct {
 	Flag1 uint8
-	Index uint8
+	Index uint64
 }
 
 func NewIndexedHeader() (frame *IndexedHeader) {

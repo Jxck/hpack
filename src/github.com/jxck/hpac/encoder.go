@@ -50,8 +50,12 @@ func EncodeHeader(frame Frame) *bytes.Buffer {
 }
 
 func encodeIndexedHeader(frame *IndexedHeader) *bytes.Buffer {
-	index := frame.Index
-	buf := bytes.NewBuffer([]byte{index + 0x80})
+	index := EncodeInteger(frame.Index, 7).Bytes()
+	buf := bytes.NewBuffer([]byte{0x80 + index[0]})
+	index = index[1:]
+	if len(index) > 0 {
+		buf.Write(index)
+	}
 	return buf
 }
 

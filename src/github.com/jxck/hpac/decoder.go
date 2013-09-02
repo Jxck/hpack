@@ -12,10 +12,14 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 	if err := binary.Read(buf, binary.BigEndian, &types); err != nil {
 		log.Println("binary.Read failed:", err)
 	}
-	if types > 0x80 {
+	if types > 0x80 { // TODO: should  >=
+
+		// unread first byte for parse frame
+		buf.UnreadByte()
 
 		frame := NewIndexedHeader()
-		frame.Index = types & 0x7F
+		frame.Index = DecodePrefixedInteger(buf, 7)
+		log.Println(frame.Index)
 
 		log.Println("Indexed Header Representation")
 		return frame
