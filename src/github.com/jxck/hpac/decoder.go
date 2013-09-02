@@ -22,7 +22,8 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		log.Println("Indexed Header Representation")
 		return frame
 
-	} else if types == 0 {
+	}
+	if types == 0 {
 
 		frame := NewNewNameWithSubstitutionIndexing()
 		frame.NameLength = DecodePrefixedInteger(buf, 8)
@@ -34,7 +35,8 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		log.Println("Literal Header with Substitution Indexing - New Name")
 		return frame
 
-	} else if types == 0x40 {
+	}
+	if types == 0x40 {
 
 		frame := NewNewNameWithIncrementalIndexing()
 		frame.NameLength = DecodePrefixedInteger(buf, 8)
@@ -45,7 +47,8 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		log.Println("Literal Header with Incremental Indexing - New Name")
 		return frame
 
-	} else if types == 0x60 {
+	}
+	if types == 0x60 {
 
 		frame := NewNewNameWithoutIndexing()
 		frame.NameLength = DecodePrefixedInteger(buf, 8)
@@ -56,7 +59,8 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		log.Println("Literal Header without Indexing - New Name")
 		return frame
 
-	} else if types>>5 == 0x2 {
+	}
+	if types>>5 == 0x2 {
 
 		// unread first byte for parse frame
 		buf.UnreadByte()
@@ -71,7 +75,8 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		log.Println("Literal Header with Incremental Indexing - Indexed Name")
 		return frame
 
-	} else if types&0x60 == 0x60 {
+	}
+	if types&0x60 == 0x60 {
 
 		// unread first byte for parse frame
 		buf.UnreadByte()
@@ -84,7 +89,8 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		log.Println("Literal Header without Indexing - Indexed Name")
 		return frame
 
-	} else {
+	}
+	if types>>6 == 0 {
 
 		// unread first byte for parse frame
 		buf.UnreadByte()
