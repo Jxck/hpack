@@ -6,4 +6,3 @@ import (
 
 func TestInitialize(t *testing.T) {
 }
-
