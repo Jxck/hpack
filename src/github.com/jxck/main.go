@@ -23,8 +23,7 @@ type HeaderTable []*Header
 //	*ht = append(*ht, header)
 //}
 
-// name と value が HeaderTable にあるかを探す
-// name, value とも一致 => index, *Header
+// name と value が HeaderTable にあるかを探す // name, value とも一致 => index, *Header
 // name はある          => index, nil
 // ない                 => -1, nil
 func (ht HeaderTable) SearchHeader(name, value string) (int, *Header) {
@@ -97,11 +96,6 @@ func NewRequestHeaderTable() HeaderTable {
 }
 
 
-
-func (c *Context) Encode(header *http.Header) {
-
-}
-
 func main() {
 	var headers = http.Header{
 		":scheme":     []string{"http"},
@@ -109,6 +103,12 @@ func main() {
 		"mynewheader": []string{"first"},
 	}
 
-	headerTable := NewRequestHeaderTable()
-	Search(headers, headerTable)
+	context := hpac.NewContext()
+
+	wire := context.Encode(headers)
+
+	log.Println(wire)
+
+////	headerTable := NewRequestHeaderTable()
+////	Search(headers, headerTable)
 }
