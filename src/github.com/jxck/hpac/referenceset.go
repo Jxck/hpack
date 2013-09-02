@@ -19,7 +19,3 @@ func (r ReferenceSet) Set(key, value string) bool {
 func (r ReferenceSet) Del(key string) {
 	delete(r, key)
 }
-
-func (r ReferenceSet) Find(key string) string {
-	return r[key]
-}

@@ -49,12 +49,3 @@ func TestDel(t *testing.T) {
 		t.Errorf("got %v\nwant %v", len(ref), 0)
 	}
 }
-
-func TestFind(t *testing.T) {
-	ref := ReferenceSet{"hoge": "fuga"}
-
-	value := ref.Find("hoge")
-	if value != "fuga" {
-		t.Errorf("got %v\nwant %v", value, "fuga")
-	}
-}
