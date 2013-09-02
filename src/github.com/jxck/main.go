@@ -19,10 +19,6 @@ type Header struct {
 // ヘッダはポインタにしておく
 type HeaderTable []*Header
 
-//func (ht *HeaderTable) Add(header Header) {
-//	*ht = append(*ht, header)
-//}
-
 // name と value が HeaderTable にあるかを探す
 // name, value とも一致 => index, *Header
 // name はある          => index, nil
@@ -63,25 +59,28 @@ func (ht HeaderTable) SearchHeader(name, value string) (int, *Header) {
 
 func Search(headers http.Header, headerTable HeaderTable) {
 	for name, values := range headers {
-		for i := range values {
-			value := values[i]
+		for _, value := range values {
 			index, h := headerTable.SearchHeader(name, value)
 			if h != nil {
-				log.Println("index header", index, h, name, value)
 				frame := hpac.NewIndexedHeader()
-				frame.Index = uint8(index)
+				frame.Index = uint64(index)
 				f := hpac.EncodeHeader(frame)
-				log.Printf("%T %v", f, f.Bytes())
+				log.Printf("indexed header [%v:%v] is in HT[%v]=%v  %v", name, value, index, h, f.Bytes())
 			} else if index != -1 {
-				log.Println("literal with index", index, h, name, values)
 				frame := hpac.NewIndexedNameWithIncrementalIndexing()
 				frame.Index = uint64(index)
 				frame.ValueLength = uint64(len(value))
 				frame.ValueString = value
 				f := hpac.EncodeHeader(frame)
-				log.Printf("%T %v", f, f.Bytes())
+				log.Printf("literal with index [%v:%v] is in HT[%v] %v", name, value, index, f.Bytes())
 			} else {
-				log.Println("literal without index")
+				frame := hpac.NewNewNameWithoutIndexing()
+				frame.NameLength = uint64(len(name))
+				frame.NameString = name
+				frame.ValueLength = uint64(len(value))
+				frame.ValueString = value
+				f := hpac.EncodeHeader(frame)
+				log.Printf("literal without index [%v:%v] is not in HT %v", name, value, f.Bytes())
 			}
 		}
 	}
