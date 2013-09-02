@@ -7,7 +7,6 @@ import (
 )
 
 func DecodeHeader(buf *bytes.Buffer) Frame {
-	log.SetFlags(log.Lshortfile)
 	var types uint8
 	if err := binary.Read(buf, binary.BigEndian, &types); err != nil {
 		log.Println("binary.Read failed:", err)
@@ -19,7 +18,6 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 
 		frame := NewIndexedHeader()
 		frame.Index = DecodePrefixedInteger(buf, 7)
-		log.Println(frame.Index)
 
 		log.Println("Indexed Header Representation")
 		return frame
@@ -75,6 +73,7 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 
 	} else if types&0x60 == 0x60 {
 
+		// unread first byte for parse frame
 		buf.UnreadByte()
 
 		frame := NewIndexedNameWithoutIndexing()
