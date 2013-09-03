@@ -6,6 +6,21 @@ import (
 	"log"
 )
 
+// Decode Wire byte seq to Frame Array
+// it returns slice of Frames
+// TODO: make it return channel
+func Decode(wire []byte) []Frame {
+	buf := bytes.NewBuffer(wire)
+	frames := []Frame{}
+	for buf.Len() > 0 {
+		frames = append(frames, DecodeHeader(buf))
+		log.Println(buf.Len())
+	}
+	log.Println(frames)
+	return frames
+}
+
+// Decode one Frame from buffer and return it
 func DecodeHeader(buf *bytes.Buffer) Frame {
 	var types uint8
 	if err := binary.Read(buf, binary.BigEndian, &types); err != nil {

@@ -23,6 +23,5 @@ func main() {
 
 	log.Println(wire)
 
-	// headerTable := NewRequestHeaderTable()
-	// Search(headers, headerTable)
+	hpac.Decode(wire)
 }
