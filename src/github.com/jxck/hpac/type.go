@@ -60,6 +60,15 @@ func NewNewNameWithoutIndexing() (frame *NewNameWithoutIndexing) {
 	return
 }
 
+func CreateNewNameWithoutIndexing(name, value string) (frame *NewNameWithoutIndexing) {
+	frame = NewNewNameWithoutIndexing()
+	frame.NameLength = uint64(len(name))
+	frame.NameString = name
+	frame.ValueLength = uint64(len(value))
+	frame.ValueString = value
+	return
+}
+
 // Literal Header without Indexing - Indexed Name
 //
 //   0   1   2   3   4   5   6   7
