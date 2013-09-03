@@ -131,6 +131,14 @@ func NewIndexedNameWithIncrementalIndexing() (frame *IndexedNameWithIncrementalI
 	return
 }
 
+func CreateIndexedNameWithIncrementalIndexing(index uint64, value string) (frame *IndexedNameWithIncrementalIndexing) {
+	frame = NewIndexedNameWithIncrementalIndexing()
+	frame.Index = index
+	frame.ValueLength = uint64(len(value))
+	frame.ValueString = value
+	return
+}
+
 // Literal Header with Incremental Indexing - New Name
 //
 // 0   1   2   3   4   5   6   7
