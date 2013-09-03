@@ -15,10 +15,10 @@ func NewContext() *Context {
 	var context = &Context{
 		requestHeaderTable:  NewRequestHeaderTable(),
 		responseHeaderTable: NewResponseHeaderTable(),
-		referenceSet:        ReferenceSet{
+		referenceSet: ReferenceSet{
 			// TODO: test data
 			":scheme": "http",
-			"hoge": "fuga",
+			"hoge":    "fuga",
 		},
 	}
 	return context
@@ -35,7 +35,7 @@ func (c *Context) Encode(header http.Header) []byte {
 	c.CleanHeaderSet(headerSet)
 
 	// Header Table にあるやつを indexed で emit
-	c.EmitIndexedInHeaderTable(headerSet)
+	c.ProcessHeader(headerSet)
 
 	return nil
 }
@@ -65,11 +65,30 @@ func (c *Context) CleanHeaderSet(headerSet HeaderSet) {
 	}
 }
 
-// 3.1. Header Table にあるやつを indexed で emit
-func (c *Context) EmitIndexedInHeaderTable(headerSet HeaderSet) {
-	// Header Table にあるものは、 indexed で送れる
+// 3. 残りの処理
+func (c *Context) ProcessHeader(headerSet HeaderSet) {
 	for name, value := range headerSet {
-		i, h := c.requestHeaderTable.SearchHeader(name, value)
-		log.Println("search header", name, value, i, h)
+		index, h := c.requestHeaderTable.SearchHeader(name, value)
+		if h != nil {
+			frame := NewIndexedHeader()
+			frame.Index = uint64(index)
+			f := EncodeHeader(frame)
+			log.Printf("indexed header [%v:%v] is in HT[%v]=%v  %v", name, value, index, h, f.Bytes())
+		} else if index != -1 {
+			frame := NewIndexedNameWithIncrementalIndexing()
+			frame.Index = uint64(index)
+			frame.ValueLength = uint64(len(value))
+			frame.ValueString = value
+			f := EncodeHeader(frame)
+			log.Printf("literal with index [%v:%v] is in HT[%v] %v", name, value, index, f.Bytes())
+		} else {
+			frame := NewNewNameWithoutIndexing()
+			frame.NameLength = uint64(len(name))
+			frame.NameString = name
+			frame.ValueLength = uint64(len(value))
+			frame.ValueString = value
+			f := EncodeHeader(frame)
+			log.Printf("literal without index [%v:%v] is not in HT %v", name, value, f.Bytes())
+		}
 	}
 }

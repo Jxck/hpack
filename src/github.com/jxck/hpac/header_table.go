@@ -49,35 +49,6 @@ func (ht HeaderTable) SearchHeader(name, value string) (int, *Header) {
 	return -1, nil // literal without index
 }
 
-// func Search(headers http.Header, headerTable HeaderTable) {
-// 	for name, values := range headers {
-// 		for _, value := range values {
-// 			index, h := headerTable.SearchHeader(name, value)
-// 			if h != nil {
-// 				frame := hpac.NewIndexedHeader()
-// 				frame.Index = uint64(index)
-// 				f := hpac.EncodeHeader(frame)
-// 				log.Printf("indexed header [%v:%v] is in HT[%v]=%v  %v", name, value, index, h, f.Bytes())
-// 			} else if index != -1 {
-// 				frame := hpac.NewIndexedNameWithIncrementalIndexing()
-// 				frame.Index = uint64(index)
-// 				frame.ValueLength = uint64(len(value))
-// 				frame.ValueString = value
-// 				f := hpac.EncodeHeader(frame)
-// 				log.Printf("literal with index [%v:%v] is in HT[%v] %v", name, value, index, f.Bytes())
-// 			} else {
-// 				frame := hpac.NewNewNameWithoutIndexing()
-// 				frame.NameLength = uint64(len(name))
-// 				frame.NameString = name
-// 				frame.ValueLength = uint64(len(value))
-// 				frame.ValueString = value
-// 				f := hpac.EncodeHeader(frame)
-// 				log.Printf("literal without index [%v:%v] is not in HT %v", name, value, f.Bytes())
-// 			}
-// 		}
-// 	}
-// }
-
 func NewRequestHeaderTable() HeaderTable {
 	return HeaderTable{
 		{":scheme", "http"},
