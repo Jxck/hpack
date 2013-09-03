@@ -34,6 +34,8 @@ func (c *Context) Encode(header http.Header) []byte {
 	// Header Set の中から送らない値を消す
 	c.CleanHeaderSet(headerSet)
 
+	// Header Table にあるやつを indexed で emit
+	c.EmitIndexedInHeaderTable(headerSet)
 
 	return nil
 }
@@ -60,5 +62,14 @@ func (c *Context) CleanHeaderSet(headerSet HeaderSet) {
 			// TODO: "common-header" としてマーク
 			log.Println("remove from header set", name, value)
 		}
+	}
+}
+
+// 3.1. Header Table にあるやつを indexed で emit
+func (c *Context) EmitIndexedInHeaderTable(headerSet HeaderSet) {
+	// Header Table にあるものは、 indexed で送れる
+	for name, value := range headerSet {
+		i, h := c.requestHeaderTable.SearchHeader(name, value)
+		log.Println("search header", name, value, i, h)
 	}
 }
