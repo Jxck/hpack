@@ -210,6 +210,15 @@ func NewIndexedNameWithSubstitutionIndexing() (frame *IndexedNameWithSubstitutio
 	return
 }
 
+func CreateIndexedNameWithSubstitutionIndexing(index, substitutedIndex uint64, value string) (frame *IndexedNameWithSubstitutionIndexing) {
+	frame = NewIndexedNameWithSubstitutionIndexing()
+	frame.Index = index
+	frame.SubstitutedIndex = substitutedIndex
+	frame.ValueLength = uint64(len(value))
+	frame.ValueString = value
+	return
+}
+
 // Literal Header with Substitution Indexing - New Name
 //
 // 0   1   2   3   4   5   6   7
