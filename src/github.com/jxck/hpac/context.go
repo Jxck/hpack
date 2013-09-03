@@ -40,6 +40,7 @@ func (c *Context) Encode(header http.Header) []byte {
 	// Header Table にあるやつを処理
 	buf.Write(c.ProcessHeader(headerSet))
 
+	log.Println(c.referenceSet)
 	return buf.Bytes()
 }
 
@@ -53,7 +54,12 @@ func (c *Context) CleanReferenceSet(headerSet HeaderSet) []byte {
 	for name, value := range c.referenceSet {
 		if headerSet[name] != value {
 			log.Println("remove from refset", name, value)
+			c.referenceSet.Del(name)
+
+			// Header Table を探して、 index だけ取り出す
 			index, _ := c.requestHeaderTable.SearchHeader(name, value)
+
+			// Indexed Header を生成
 			frame := CreateIndexedHeader(uint64(index))
 			f := EncodeHeader(frame)
 			buf.Write(f.Bytes())
