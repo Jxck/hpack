@@ -20,6 +20,12 @@ func NewIndexedHeader() (frame *IndexedHeader) {
 	return
 }
 
+func CreateIndexedHeader(index uint64) (frame *IndexedHeader) {
+	frame = NewIndexedHeader()
+	frame.Index = index
+	return
+}
+
 // Literal Header without Indexing - New Name
 //
 // 0   1   2   3   4   5   6   7
