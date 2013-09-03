@@ -45,8 +45,7 @@ func (c *Context) Encode(header http.Header) []byte {
 func (c *Context) CleanReferenceSet(headerSet HeaderSet) {
 	// reference set の中にあって、 header set の中に無いものは
 	// 相手の reference set から消さないといけないので、
-	// indexed representation でエンコードして
-	// reference set からは消す
+	// indexed representation でエンコードして // reference set からは消す
 	for name, value := range c.referenceSet {
 		if headerSet[name] != value {
 			// TODO: integer representation でエンコード
