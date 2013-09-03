@@ -85,3 +85,30 @@ func TestCreateIndexedNameWithIncrementalIndexing(t *testing.T) {
 		t.Errorf("actual_len = %v\nexpected = %v", actual_len, expected_len)
 	}
 }
+
+func TestCreateNewNameWithIncrementalIndexing(t *testing.T) {
+	var name string = "foo"
+	var value string = "var"
+	var frame *NewNameWithIncrementalIndexing
+	frame = CreateNewNameWithIncrementalIndexing(name, value)
+
+	actual_len, expected_len := frame.NameLength, uint64(len(name))
+	if actual_len != expected_len {
+		t.Errorf("actual_len = %v\nexpected = %v", actual_len, expected_len)
+	}
+
+	actual, expected := frame.NameString, name
+	if actual != expected {
+		t.Errorf("actual = %v\nexpected = %v", actual, expected)
+	}
+
+	actual_len, expected_len = frame.ValueLength, uint64(len(value))
+	if actual_len != expected_len {
+		t.Errorf("actual_len = %v\nexpected = %v", actual_len, expected_len)
+	}
+
+	actual, expected = frame.ValueString, value
+	if actual != expected {
+		t.Errorf("actual = %v\nexpected = %v", actual, expected)
+	}
+}

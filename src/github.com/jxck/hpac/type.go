@@ -173,6 +173,15 @@ func NewNewNameWithIncrementalIndexing() (frame *NewNameWithIncrementalIndexing)
 	return
 }
 
+func CreateNewNameWithIncrementalIndexing(name, value string) (frame *NewNameWithIncrementalIndexing) {
+	frame = NewNewNameWithIncrementalIndexing()
+	frame.NameLength = uint64(len(name))
+	frame.NameString = name
+	frame.ValueLength = uint64(len(value))
+	frame.ValueString = value
+	return
+}
+
 // Literal Header with Substitution Indexing - Indexed Name
 //
 // 0   1   2   3   4   5   6   7
