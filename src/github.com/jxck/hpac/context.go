@@ -1,6 +1,7 @@
 package hpac
 
 import (
+	"bytes"
 	"log"
 	"net/http"
 )
@@ -34,10 +35,10 @@ func (c *Context) Encode(header http.Header) []byte {
 	// Header Set の中から送らない値を消す
 	c.CleanHeaderSet(headerSet)
 
-	// Header Table にあるやつを indexed で emit
-	c.ProcessHeader(headerSet)
+	// Header Table にあるやつを処理
+	buf := c.ProcessHeader(headerSet)
 
-	return nil
+	return buf.Bytes()
 }
 
 // 1. 不要なエントリを reference set から消す
@@ -66,21 +67,26 @@ func (c *Context) CleanHeaderSet(headerSet HeaderSet) {
 }
 
 // 3 と 4. 残りの処理
-func (c *Context) ProcessHeader(headerSet HeaderSet) {
+func (c *Context) ProcessHeader(headerSet HeaderSet) bytes.Buffer {
+	var buf bytes.Buffer
 	for name, value := range headerSet {
 		index, h := c.requestHeaderTable.SearchHeader(name, value)
 		if h != nil { // 3.1 HT にエントリがある
 			frame := CreateIndexedHeader(uint64(index))
 			f := EncodeHeader(frame)
 			log.Printf("indexed header {%v:%v} is in HT[%v] (%v)", name, value, index, f.Bytes())
+			buf.Write(f.Bytes())
 		} else if index != -1 { // HT に name だけある
 			frame := CreateIndexedNameWithIncrementalIndexing(uint64(index), value)
 			f := EncodeHeader(frame)
-			log.Printf("literal with index [%v:%v] is in HT[%v] %v", name, value, index, f.Bytes())
+			log.Printf("literal with index {%v:%v} is in HT[%v] (%v)", name, value, index, f.Bytes())
+			buf.Write(f.Bytes())
 		} else { // HT に name も value もない
 			frame := CreateNewNameWithoutIndexing(name, value)
 			f := EncodeHeader(frame)
-			log.Printf("literal without index [%v:%v] is not in HT %v", name, value, f.Bytes())
+			log.Printf("literal without index {%v:%v} is not in HT (%v)", name, value, f.Bytes())
+			buf.Write(f.Bytes())
 		}
 	}
+	return buf
 }
