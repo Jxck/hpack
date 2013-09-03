@@ -70,23 +70,15 @@ func (c *Context) ProcessHeader(headerSet HeaderSet) {
 	for name, value := range headerSet {
 		index, h := c.requestHeaderTable.SearchHeader(name, value)
 		if h != nil { // 3.1 HT にエントリがある
-			frame := NewIndexedHeader()
-			frame.Index = uint64(index)
+			frame := CreateIndexedHeader(uint64(index))
 			f := EncodeHeader(frame)
 			log.Printf("indexed header {%v:%v} is in HT[%v] (%v)", name, value, index, f.Bytes())
 		} else if index != -1 { // HT に name だけある
-			frame := NewIndexedNameWithIncrementalIndexing()
-			frame.Index = uint64(index)
-			frame.ValueLength = uint64(len(value))
-			frame.ValueString = value
+			frame := CreateIndexedNameWithIncrementalIndexing(uint64(index), value)
 			f := EncodeHeader(frame)
 			log.Printf("literal with index [%v:%v] is in HT[%v] %v", name, value, index, f.Bytes())
 		} else { // HT に name も value もない
-			frame := NewNewNameWithoutIndexing()
-			frame.NameLength = uint64(len(name))
-			frame.NameString = name
-			frame.ValueLength = uint64(len(value))
-			frame.ValueString = value
+			frame := CreateNewNameWithoutIndexing(name, value)
 			f := EncodeHeader(frame)
 			log.Printf("literal without index [%v:%v] is not in HT %v", name, value, f.Bytes())
 		}
