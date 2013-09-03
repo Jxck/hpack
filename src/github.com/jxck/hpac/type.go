@@ -253,3 +253,13 @@ func NewNewNameWithSubstitutionIndexing() (frame *NewNameWithSubstitutionIndexin
 	frame.Index = 0
 	return
 }
+
+func CreateNewNameWithSubstitutionIndexing(name string, substitutedIndex uint64, value string) (frame *NewNameWithSubstitutionIndexing) {
+	frame = NewNewNameWithSubstitutionIndexing()
+	frame.NameLength = uint64(len(name))
+	frame.NameString = name
+	frame.SubstitutedIndex = substitutedIndex
+	frame.ValueLength = uint64(len(value))
+	frame.ValueString = value
+	return
+}

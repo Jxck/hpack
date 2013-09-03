@@ -140,3 +140,36 @@ func TestCreateIndexedNameWithSubstitutionIndexing(t *testing.T) {
 		t.Errorf("actual_len = %v\nexpected = %v", actual_len, expected_len)
 	}
 }
+
+func TestCreateNewNameWithSubstitutionIndexing(t *testing.T) {
+	var name string = "foo"
+	var substitutedIndex uint64 = 20
+	var value string = "var"
+	var frame *NewNameWithSubstitutionIndexing
+	frame = CreateNewNameWithSubstitutionIndexing(name, substitutedIndex, value)
+
+	actual_len, expected_len := frame.NameLength, uint64(len(name))
+	if actual_len != expected_len {
+		t.Errorf("actual_len = %v\nexpected = %v", actual_len, expected_len)
+	}
+
+	actual, expected := frame.NameString, name
+	if actual != expected {
+		t.Errorf("actual = %v\nexpected = %v", actual, expected)
+	}
+
+	actual_sindex, expected_sindex := frame.SubstitutedIndex, substitutedIndex
+	if actual_sindex != expected_sindex {
+		t.Errorf("actual_sindex = %v\nexpected = %v", actual_sindex, expected_sindex)
+	}
+
+	actual_len, expected_len = frame.ValueLength, uint64(len(value))
+	if actual_len != expected_len {
+		t.Errorf("actual_len = %v\nexpected = %v", actual_len, expected_len)
+	}
+
+	actual, expected = frame.ValueString, value
+	if actual != expected {
+		t.Errorf("actual = %v\nexpected = %v", actual, expected)
+	}
+}
