@@ -31,6 +31,10 @@ func (c *Context) Encode(header http.Header) []byte {
 	// ReferenceSet の中から消すべき値を消す
 	c.CleanReferenceSet(headerSet)
 
+	// Header Set の中から送らない値を消す
+	c.CleanHeaderSet(headerSet)
+
+
 	return nil
 }
 
@@ -44,6 +48,17 @@ func (c *Context) CleanReferenceSet(headerSet HeaderSet) {
 		if headerSet[name] != value {
 			// TODO: integer representation でエンコード
 			log.Println("remove from refset", name, value)
+		}
+	}
+}
+
+// 2. 送る必要の無いものを header set から消す
+func (c *Context) CleanHeaderSet(headerSet HeaderSet) {
+	for name, value := range c.referenceSet {
+		if headerSet[name] == value {
+			delete(headerSet, name)
+			// TODO: "common-header" としてマーク
+			log.Println("remove from header set", name, value)
 		}
 	}
 }
