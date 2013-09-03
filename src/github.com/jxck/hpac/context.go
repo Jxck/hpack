@@ -65,23 +65,23 @@ func (c *Context) CleanHeaderSet(headerSet HeaderSet) {
 	}
 }
 
-// 3. 残りの処理
+// 3 と 4. 残りの処理
 func (c *Context) ProcessHeader(headerSet HeaderSet) {
 	for name, value := range headerSet {
 		index, h := c.requestHeaderTable.SearchHeader(name, value)
-		if h != nil {
+		if h != nil { // 3.1 HT にエントリがある
 			frame := NewIndexedHeader()
 			frame.Index = uint64(index)
 			f := EncodeHeader(frame)
-			log.Printf("indexed header [%v:%v] is in HT[%v]=%v  %v", name, value, index, h, f.Bytes())
-		} else if index != -1 {
+			log.Printf("indexed header {%v:%v} is in HT[%v] (%v)", name, value, index, f.Bytes())
+		} else if index != -1 { // HT に name だけある
 			frame := NewIndexedNameWithIncrementalIndexing()
 			frame.Index = uint64(index)
 			frame.ValueLength = uint64(len(value))
 			frame.ValueString = value
 			f := EncodeHeader(frame)
 			log.Printf("literal with index [%v:%v] is in HT[%v] %v", name, value, index, f.Bytes())
-		} else {
+		} else { // HT に name も value もない
 			frame := NewNewNameWithoutIndexing()
 			frame.NameLength = uint64(len(name))
 			frame.NameString = name
