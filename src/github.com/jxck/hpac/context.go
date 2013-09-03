@@ -32,7 +32,7 @@ func (c *Context) Encode(header http.Header) []byte {
 	headerSet := NewHeaderSet(header)
 
 	// ReferenceSet の中から消すべき値を消す
-	c.CleanReferenceSet(headerSet)
+	buf.Write(c.CleanReferenceSet(headerSet))
 
 	// Header Set の中から送らない値を消す
 	c.CleanHeaderSet(headerSet)
@@ -44,16 +44,22 @@ func (c *Context) Encode(header http.Header) []byte {
 }
 
 // 1. 不要なエントリを reference set から消す
-func (c *Context) CleanReferenceSet(headerSet HeaderSet) {
+func (c *Context) CleanReferenceSet(headerSet HeaderSet) []byte {
+	var buf bytes.Buffer
 	// reference set の中にあって、 header set の中に無いものは
 	// 相手の reference set から消さないといけないので、
-	// indexed representation でエンコードして // reference set からは消す
+	// indexed representation でエンコードして
+	// reference set からは消す
 	for name, value := range c.referenceSet {
 		if headerSet[name] != value {
-			// TODO: integer representation でエンコード
 			log.Println("remove from refset", name, value)
+			index, _ := c.requestHeaderTable.SearchHeader(name, value)
+			frame := CreateIndexedHeader(uint64(index))
+			f := EncodeHeader(frame)
+			buf.Write(f.Bytes())
 		}
 	}
+	return buf.Bytes()
 }
 
 // 2. 送る必要の無いものを header set から消す
@@ -73,16 +79,21 @@ func (c *Context) ProcessHeader(headerSet HeaderSet) []byte {
 	for name, value := range headerSet {
 		index, h := c.requestHeaderTable.SearchHeader(name, value)
 		if h != nil { // 3.1 HT にエントリがある
+			// Indexed Heaer で index だけ送れば良い
 			frame := CreateIndexedHeader(uint64(index))
 			f := EncodeHeader(frame)
 			log.Printf("indexed header {%v:%v} is in HT[%v] (%v)", name, value, index, f.Bytes())
 			buf.Write(f.Bytes())
 		} else if index != -1 { // HT に name だけある
+			// Indexed Name With Incremental Indexing
+			// value だけ送って、 HT にエントリを追加する。
 			frame := CreateIndexedNameWithIncrementalIndexing(uint64(index), value)
 			f := EncodeHeader(frame)
 			log.Printf("literal with index {%v:%v} is in HT[%v] (%v)", name, value, index, f.Bytes())
 			buf.Write(f.Bytes())
 		} else { // HT に name も value もない
+			// New Name Without Indexing
+			// name, value を送って
 			frame := CreateNewNameWithoutIndexing(name, value)
 			f := EncodeHeader(frame)
 			log.Printf("literal without index {%v:%v} is not in HT (%v)", name, value, f.Bytes())
