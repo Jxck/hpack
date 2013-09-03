@@ -26,6 +26,8 @@ func NewContext() *Context {
 }
 
 func (c *Context) Encode(header http.Header) []byte {
+	var buf bytes.Buffer
+
 	// http.Header を HeaderSet に変換
 	headerSet := NewHeaderSet(header)
 
@@ -36,7 +38,7 @@ func (c *Context) Encode(header http.Header) []byte {
 	c.CleanHeaderSet(headerSet)
 
 	// Header Table にあるやつを処理
-	buf := c.ProcessHeader(headerSet)
+	buf.Write(c.ProcessHeader(headerSet))
 
 	return buf.Bytes()
 }
@@ -66,7 +68,7 @@ func (c *Context) CleanHeaderSet(headerSet HeaderSet) {
 }
 
 // 3 と 4. 残りの処理
-func (c *Context) ProcessHeader(headerSet HeaderSet) bytes.Buffer {
+func (c *Context) ProcessHeader(headerSet HeaderSet) []byte {
 	var buf bytes.Buffer
 	for name, value := range headerSet {
 		index, h := c.requestHeaderTable.SearchHeader(name, value)
@@ -87,5 +89,5 @@ func (c *Context) ProcessHeader(headerSet HeaderSet) bytes.Buffer {
 			buf.Write(f.Bytes())
 		}
 	}
-	return buf
+	return buf.Bytes()
 }
