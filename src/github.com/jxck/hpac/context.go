@@ -16,11 +16,7 @@ func NewContext() *Context {
 	var context = &Context{
 		requestHeaderTable:  NewRequestHeaderTable(),
 		responseHeaderTable: NewResponseHeaderTable(),
-		referenceSet: ReferenceSet{
-			// TODO: test data
-			":scheme": "http",
-			"hoge":    "fuga",
-		},
+		referenceSet: ReferenceSet{},
 	}
 	return context
 }
