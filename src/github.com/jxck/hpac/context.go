@@ -26,7 +26,7 @@ func (c *Context) Decode(wire []byte) {
 	for _, frame := range frames {
 		switch f := frame.(type) {
 		case *IndexedHeader:
-			log.Printf("%T %v", f, f.Index)
+			log.Printf("%T index=%v", f, f.Index)
 			header := c.requestHeaderTable[f.Index]
 			log.Printf("HT[%v] = %v", f.Index, header)
 
@@ -46,7 +46,7 @@ func (c *Context) Decode(wire []byte) {
 			c.requestHeaderTable[f.Index].Value = f.ValueString
 			c.referenceSet[header.Name] = header.Value
 		case *NewNameWithoutIndexing:
-			log.Printf("%T name=%v value=%q", f, f.NameString, f.ValueString)
+			log.Printf("%T name=%q value=%q", f, f.NameString, f.ValueString)
 			c.referenceSet[f.NameString] = f.ValueString
 		default:
 			log.Printf("%T", f)
@@ -71,7 +71,6 @@ func (c *Context) Encode(header http.Header) []byte {
 	// Header Table にあるやつを処理
 	buf.Write(c.ProcessHeader(headerSet))
 
-	log.Println(c.referenceSet)
 	return buf.Bytes()
 }
 

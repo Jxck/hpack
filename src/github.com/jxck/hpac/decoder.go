@@ -14,9 +14,7 @@ func Decode(wire []byte) []Frame {
 	frames := []Frame{}
 	for buf.Len() > 0 {
 		frames = append(frames, DecodeHeader(buf))
-		log.Println(buf.Len())
 	}
-	log.Println(frames)
 	return frames
 }
 
