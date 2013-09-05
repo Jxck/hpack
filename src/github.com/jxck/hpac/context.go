@@ -95,7 +95,7 @@ func (c *Context) ProcessHeader(headerSet HeaderSet) []byte {
 			buf.Write(f.Bytes())
 		} else { // HT に name も value もない
 			// New Name Without Indexing
-			// name, value を送って
+			// name, value を送って HT は変えない
 			frame := CreateNewNameWithoutIndexing(name, value)
 			f := EncodeHeader(frame)
 			log.Printf("literal without index {%v:%v} is not in HT (%v)", name, value, f.Bytes())
