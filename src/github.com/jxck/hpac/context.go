@@ -44,7 +44,7 @@ func (c *Context) Decode(wire []byte) {
 			log.Printf("HT[%v] = %v", f.Index, header)
 			log.Println("TODO: emit") // TODO:emit
 			c.requestHeaderTable[f.Index].Value = f.ValueString
-			c.referenceSet[header.Name] = header.Value
+			c.referenceSet[header.Name] = f.ValueString
 		case *NewNameWithoutIndexing:
 			log.Printf("%T name=%q value=%q", f, f.NameString, f.ValueString)
 			c.referenceSet[f.NameString] = f.ValueString
