@@ -1,0 +1,73 @@
+全て With Incremental Indexing で送るパターン
+HT に追記していく。追記の時に RefSet にも載せる。
+
+[1]
+
+HeaderSet
+  :scheme: https
+  :host: jxck.io
+  :path: /
+  :method: GET
+  user-agent: http2cat
+  cookie: xxxxxxx1
+  x-hello: world
+
+Encode
+  indexed header index=1
+  literal header with incremental indexing, name index=2 value="jxck.io"
+  indexed header index=3
+  indexed header index=4
+  literal header with incremental indexing, name index=12 vaelu="http2cat"
+  literal header with incremental indexing, name index=9 vaelu="xxxxxxx1"
+  literal header with incremental indexing, new name="x-hello" value="world"
+
+RefSet
+  :scheme: https
+  :host: jxck.io
+  :path: /
+  :method: GET
+  user-agent: http2cat
+  cookie: xxxxxxx1
+  x-hello: world
+
+HT
+  | 30 | :host        | jxck.io    |
+  | 31 | :user-agent  | http2cat   |
+  | 32 | cookie       | xxxxxxx1   |
+  | 33 | x-hello      | world      |
+  +----+--------------+------------+
+
+[2]
+
+HeaderSet
+  :scheme: https
+  :host: jxck.io
+  :path: /labs/http2cat (changed)
+  :method: GET
+  user-agent: http2cat
+  cookie: xxxxxxx2 (changed)
+  (x-hello: world) (removed)
+
+Encode
+  indexed header index=3 removal from reference set
+  literal header with incremental indexing, name index=3 value="/labs/http2cat"
+  indexed header index=32 removal from reference set
+  literal header with incremental indexing, name index=32 vaelu="xxxxxxx2"
+  indexed header index=33 removal from reference set
+
+RefSet
+  :scheme: https
+  :host: jxck.io
+  :path: /labs/http2cat
+  :method: GET
+  user-agent: http2cat
+  cookie: xxxxxxx2
+
+HT
+  | 30 | :host        | jxck.io    |
+  | 31 | :user-agent  | http2cat   |
+  | 32 | cookie       | xxxxxxx1   |
+  | 33 | x-hello      | world      |
+  | 34 | :path        | /labs/http2cat |
+  | 35 | cookie       | xxxxxx2    |
+  +----+--------------+------------+

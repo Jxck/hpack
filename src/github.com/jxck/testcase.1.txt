@@ -1,0 +1,52 @@
+全て Without Indexing で送るパターン
+HT を更新しない。
+Indexed 以外 Refset には載せる。
+結果的には :scheme, :method くらいしか使いまわせないパターン。
+
+
+[1]
+
+HeaderSet
+  :scheme: https
+  :host: jxck.io
+  :path: /
+  :method: GET
+  user-agent: http2cat
+  cookie: xxxxxxx1
+  x-hello: world
+
+Encode
+  indexed header index=1
+  literal header without indexing, name index=2 value="jxck.io"
+  indexed header index=3
+  indexed header index=4
+  literal header without indexing, name index=12 vaelu="http2cat"
+  literal header without indexing, name index=9 vaelu="xxxxxxx1"
+  literal header without indexing, new name name="x-hello" value="world"
+
+RefSet
+  :scheme: https
+  :method: GET
+  :path: /
+
+[2]
+
+HeaderSet
+  :scheme: https
+  :host: jxck.io
+  :path: /labs/http2cat (changed)
+  :method: GET
+  user-agent: http2cat
+  cookie: xxxxxxx2 (changed)
+  (x-hello: world) (removed)
+
+Encode
+  literal header without indexing, name index=2 value="jxck.io"
+  indexed header index=3 removal from reference set
+  literal header without indexing, name index=3 value="/labs/http2cat"
+  literal header without indexing, name index=12 vaelu="http2cat"
+  literal header without indexing, name index=9 vaelu="xxxxx2"
+
+RefSet
+  :scheme: https
+  :method: GET
