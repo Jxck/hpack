@@ -16,9 +16,44 @@ func NewContext() *Context {
 	var context = &Context{
 		requestHeaderTable:  NewRequestHeaderTable(),
 		responseHeaderTable: NewResponseHeaderTable(),
-		referenceSet: ReferenceSet{},
+		referenceSet:        ReferenceSet{},
 	}
 	return context
+}
+
+func (c *Context) Decode(wire []byte) {
+	frames := Decode(wire)
+	for _, frame := range frames {
+		switch f := frame.(type) {
+		case *IndexedHeader:
+			log.Printf("%T %v", f, f.Index)
+			header := c.requestHeaderTable[f.Index]
+			log.Printf("HT[%v] = %v", f.Index, header)
+
+			if header.Value == c.referenceSet[header.Name] {
+				log.Println("exist in refset")
+				c.referenceSet.Del(header.Name)
+			} else {
+				log.Println("no exist in refet")
+				log.Println("TODO: emit") // TODO:emit
+				c.referenceSet[header.Name] = header.Value
+			}
+		case *IndexedNameWithIncrementalIndexing:
+			log.Printf("%T index=%v value=%q", f, f.Index, f.ValueString)
+			header := c.requestHeaderTable[f.Index]
+			log.Printf("HT[%v] = %v", f.Index, header)
+			log.Println("TODO: emit") // TODO:emit
+			c.requestHeaderTable[f.Index].Value = f.ValueString
+			c.referenceSet[header.Name] = header.Value
+		case *NewNameWithoutIndexing:
+			log.Printf("%T name=%v value=%q", f, f.NameString, f.ValueString)
+			c.referenceSet[f.NameString] = f.ValueString
+		default:
+			log.Printf("%T", f)
+		}
+	}
+	log.Printf("refset: %v", c.referenceSet)
+	log.Printf("HT: %v", c.requestHeaderTable)
 }
 
 func (c *Context) Encode(header http.Header) []byte {
