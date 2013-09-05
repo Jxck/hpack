@@ -38,12 +38,18 @@ func (c *Context) Decode(wire []byte) {
 				log.Println("TODO: emit") // TODO:emit
 				c.referenceSet[header.Name] = header.Value
 			}
-		case *IndexedNameWithIncrementalIndexing:
+		//case *IndexedNameWithIncrementalIndexing:
+		//	log.Printf("%T index=%v value=%q", f, f.Index, f.ValueString)
+		//	header := c.requestHeaderTable[f.Index]
+		//	log.Printf("HT[%v] = %v", f.Index, header)
+		//	log.Println("TODO: emit") // TODO:emit
+		//	c.requestHeaderTable[f.Index].Value = f.ValueString
+		//	c.referenceSet[header.Name] = f.ValueString
+		case *IndexedNameWithoutIndexing:
 			log.Printf("%T index=%v value=%q", f, f.Index, f.ValueString)
 			header := c.requestHeaderTable[f.Index]
 			log.Printf("HT[%v] = %v", f.Index, header)
 			log.Println("TODO: emit") // TODO:emit
-			c.requestHeaderTable[f.Index].Value = f.ValueString
 			c.referenceSet[header.Name] = f.ValueString
 		case *NewNameWithoutIndexing:
 			log.Printf("%T name=%q value=%q", f, f.NameString, f.ValueString)
@@ -53,7 +59,7 @@ func (c *Context) Decode(wire []byte) {
 		}
 	}
 	log.Printf("refset: %v", c.referenceSet)
-	log.Printf("HT: %v", c.requestHeaderTable)
+	//log.Printf("HT: %v", c.requestHeaderTable)
 }
 
 func (c *Context) Encode(header http.Header) []byte {
@@ -121,9 +127,9 @@ func (c *Context) ProcessHeader(headerSet HeaderSet) []byte {
 			log.Printf("indexed header {%v:%v} is in HT[%v] (%v)", name, value, index, f.Bytes())
 			buf.Write(f.Bytes())
 		} else if index != -1 { // HT に name だけある
-			// Indexed Name With Incremental Indexing
+			// Indexed Name Without Indexing
 			// value だけ送って、 HT にエントリを追加する。
-			frame := CreateIndexedNameWithIncrementalIndexing(uint64(index), value)
+			frame := CreateIndexedNameWithoutIndexing(uint64(index), value)
 			f := EncodeHeader(frame)
 			log.Printf("literal with index {%v:%v} is in HT[%v] (%v)", name, value, index, f.Bytes())
 			buf.Write(f.Bytes())
