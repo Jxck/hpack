@@ -28,6 +28,8 @@ func main() {
 	server := hpac.NewContext()
 	server.Decode(wire)
 
+	log.Printf("refset: %v", server.ReferenceSet)
+	log.Printf("emitted: %v", server.EmittedSet)
 	fmt.Println("======================")
 
 	headers = http.Header{
@@ -40,4 +42,6 @@ func main() {
 	}
 	wire = client.Encode(headers)
 	server.Decode(wire)
+	log.Printf("refset: %v", server.ReferenceSet)
+	log.Printf("emitted: %v", server.EmittedSet)
 }

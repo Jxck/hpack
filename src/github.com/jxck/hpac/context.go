@@ -62,7 +62,7 @@ func (c *Context) Decode(wire []byte) {
 			log.Printf("emit (%q, %q)", f.NameString, f.ValueString)
 			c.EmittedSet.Add(f.NameString, f.ValueString)
 		default:
-			log.Printf("%T", f)
+			log.Fatal("%T", f)
 		}
 	}
 	// reference set の emitt されてないものを emit する
@@ -71,8 +71,6 @@ func (c *Context) Decode(wire []byte) {
 			c.EmittedSet.Add(name, value)
 		}
 	}
-	log.Printf("refset: %v", c.ReferenceSet)
-	log.Printf("emitted: %v", c.EmittedSet)
 }
 
 func (c *Context) Encode(header http.Header) []byte {
