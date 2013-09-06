@@ -9,7 +9,7 @@ func TestIndexedHeaderEncode(t *testing.T) {
 	frame := NewIndexedHeader()
 	frame.Index = 38
 
-	actual := EncodeHeader(frame).Bytes()
+	actual := frame.Encode().Bytes()
 	expected := []byte{0xA6}
 	if !bytes.Equal(actual, expected) {
 		t.Errorf("got %v\nwant %v", actual, expected)
@@ -23,7 +23,7 @@ func TestNewNameWithoutIndexingEncode(t *testing.T) {
 	frame.ValueLength = 5
 	frame.ValueString = "first"
 
-	actual := EncodeHeader(frame).Bytes()
+	actual := frame.Encode().Bytes()
 	buf := bytes.NewBuffer([]byte{0x60, 0x0B})
 	buf.WriteString("mynewheader")
 	buf.WriteByte(0x05)
@@ -40,7 +40,7 @@ func TestIndexedNameWithoutIndexingEncode(t *testing.T) {
 	frame.ValueLength = 5
 	frame.ValueString = "first"
 
-	actual := EncodeHeader(frame).Bytes()
+	actual := frame.Encode().Bytes()
 	buf := bytes.NewBuffer([]byte{0x64, 0x05})
 	buf.WriteString("first")
 	expected := buf.Bytes()
@@ -55,7 +55,7 @@ func TestIndexedNameWithIncrementalIndexingEncode(t *testing.T) {
 	frame.ValueLength = 22
 	frame.ValueString = "/my-example/index.html"
 
-	actual := EncodeHeader(frame).Bytes()
+	actual := frame.Encode().Bytes()
 	buf := bytes.NewBuffer([]byte{0x44, 0x16})
 	buf.WriteString("/my-example/index.html")
 	expected := buf.Bytes()
@@ -71,7 +71,7 @@ func TestNewNameWithIncrementalIndexingEncode(t *testing.T) {
 	frame.ValueLength = 5
 	frame.ValueString = "first"
 
-	actual := EncodeHeader(frame).Bytes()
+	actual := frame.Encode().Bytes()
 	buf := bytes.NewBuffer([]byte{0x40, 0x0B})
 	buf.WriteString("mynewheader")
 	buf.WriteByte(0x05)
@@ -89,7 +89,7 @@ func TestIndexedNameWithSubstitutionIndexingEncode(t *testing.T) {
 	frame.ValueLength = 31
 	frame.ValueString = "/my-example/resources/script.js"
 
-	actual := EncodeHeader(frame).Bytes()
+	actual := frame.Encode().Bytes()
 	buf := bytes.NewBuffer([]byte{0x04, 0x26, 0x1f}) // 00000100 00100110 00011111
 	buf.WriteString("/my-example/resources/script.js")
 	expected := buf.Bytes()
@@ -106,7 +106,7 @@ func TestNewNameWithSubstitutionIndexingEncode(t *testing.T) {
 	frame.ValueLength = 5
 	frame.ValueString = "first"
 
-	actual := EncodeHeader(frame).Bytes()
+	actual := frame.Encode().Bytes()
 	buf := bytes.NewBuffer([]byte{0x0, 0x0B}) // 00000000 00001011
 	buf.WriteString("mynewheader")
 	buf.WriteByte(0x26)

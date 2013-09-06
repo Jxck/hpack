@@ -110,7 +110,7 @@ func (c *Context) CleanReferenceSet(headerSet HeaderSet) []byte {
 
 			// Indexed Header を生成
 			frame := CreateIndexedHeader(uint64(index))
-			f := EncodeHeader(frame)
+			f := frame.Encode()
 			buf.Write(f.Bytes())
 
 			log.Printf("indexed header index=%v removal from reference set", index)
@@ -139,7 +139,7 @@ func (c *Context) ProcessHeader(headerSet HeaderSet) []byte {
 		if h != nil { // 3.1 HT にエントリがある
 			// Indexed Heaer で index だけ送れば良い
 			frame := CreateIndexedHeader(uint64(index))
-			f := EncodeHeader(frame)
+			f := frame.Encode()
 			log.Printf("indexed header index=%v", index)
 			log.Printf("add to refset (%q, %q)", name, value)
 			c.referenceSet.Add(name, value)
@@ -148,14 +148,14 @@ func (c *Context) ProcessHeader(headerSet HeaderSet) []byte {
 			// Indexed Name Without Indexing
 			// value だけ送る。 HT は更新しない。
 			frame := CreateIndexedNameWithoutIndexing(uint64(index), value)
-			f := EncodeHeader(frame)
+			f := frame.Encode()
 			log.Printf("literal header without indexing, name index=%v value=%q", index, value)
 			buf.Write(f.Bytes())
 		} else { // HT に name も value もない
 			// New Name Without Indexing
 			// name, value を送って HT は更新しない。
 			frame := CreateNewNameWithoutIndexing(name, value)
-			f := EncodeHeader(frame)
+			f := frame.Encode()
 			log.Printf("literal header without indexing, new name name=%q value=%q", name, value)
 			buf.Write(f.Bytes())
 		}

@@ -2,37 +2,7 @@ package hpac
 
 import (
 	"bytes"
-	"log"
 )
-
-func EncodeHeader(frame Frame) *bytes.Buffer {
-	switch frame.(type) {
-	case *IndexedHeader:
-		f := frame.(*IndexedHeader)
-		return f.Encode()
-	case *NewNameWithoutIndexing:
-		f := frame.(*NewNameWithoutIndexing)
-		return f.Encode()
-	case *IndexedNameWithoutIndexing:
-		f := frame.(*IndexedNameWithoutIndexing)
-		return f.Encode()
-	case *IndexedNameWithIncrementalIndexing:
-		f := frame.(*IndexedNameWithIncrementalIndexing)
-		return f.Encode()
-	case *NewNameWithIncrementalIndexing:
-		f := frame.(*NewNameWithIncrementalIndexing)
-		return f.Encode()
-	case *IndexedNameWithSubstitutionIndexing:
-		f := frame.(*IndexedNameWithSubstitutionIndexing)
-		return f.Encode()
-	case *NewNameWithSubstitutionIndexing:
-		f := frame.(*NewNameWithSubstitutionIndexing)
-		return f.Encode()
-	default:
-		log.Println("unmatch")
-		return nil
-	}
-}
 
 func (frame *IndexedHeader) Encode() *bytes.Buffer {
 	index := EncodeInteger(frame.Index, 7).Bytes()
