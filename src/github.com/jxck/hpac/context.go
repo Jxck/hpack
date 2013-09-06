@@ -65,10 +65,12 @@ func (c *Context) Decode(wire []byte) {
 			log.Printf("%T", f)
 		}
 	}
-	//// reference set の中身を emit する
-	//for name, value := range c.referenceSet {
-	//	c.emittedSet.Add(name, value)
-	//}
+	// reference set の emitt されてないものを emit する
+	for name, value := range c.referenceSet {
+		if c.emittedSet.Get(name) != value {
+			c.emittedSet.Add(name, value)
+		}
+	}
 	log.Printf("refset: %v", c.referenceSet)
 	log.Printf("emitted: %v", c.emittedSet)
 }
