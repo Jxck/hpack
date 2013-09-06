@@ -32,7 +32,7 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		frame := NewIndexedHeader()
 		frame.Index = DecodePrefixedInteger(buf, 7)
 
-		log.Println("Indexed Header Representation")
+		// log.Println("Indexed Header Representation")
 		return frame
 
 	}
@@ -45,7 +45,7 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		frame.ValueLength = DecodePrefixedInteger(buf, 8)
 		frame.ValueString = DecodeString(buf, frame.ValueLength)
 
-		log.Println("Literal Header with Substitution Indexing - New Name")
+		// log.Println("Literal Header with Substitution Indexing - New Name")
 		return frame
 
 	}
@@ -57,7 +57,7 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		frame.ValueLength = DecodePrefixedInteger(buf, 8)
 		frame.ValueString = DecodeString(buf, frame.ValueLength)
 
-		log.Println("Literal Header with Incremental Indexing - New Name")
+		// log.Println("Literal Header with Incremental Indexing - New Name")
 		return frame
 
 	}
@@ -69,7 +69,7 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		frame.ValueLength = DecodePrefixedInteger(buf, 8)
 		frame.ValueString = DecodeString(buf, frame.ValueLength)
 
-		log.Println("Literal Header without Indexing - New Name")
+		// log.Println("Literal Header without Indexing - New Name")
 		return frame
 
 	}
@@ -85,7 +85,7 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		frame.ValueLength = DecodePrefixedInteger(buf, 8)
 		frame.ValueString = DecodeString(buf, frame.ValueLength)
 
-		log.Println("Literal Header with Incremental Indexing - Indexed Name")
+		// log.Println("Literal Header with Incremental Indexing - Indexed Name")
 		return frame
 
 	}
@@ -99,7 +99,7 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		frame.ValueLength = DecodePrefixedInteger(buf, 8)
 		frame.ValueString = DecodeString(buf, frame.ValueLength)
 
-		log.Println("Literal Header without Indexing - Indexed Name")
+		// log.Println("Literal Header without Indexing - Indexed Name")
 		return frame
 
 	}
@@ -114,7 +114,7 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		frame.ValueLength = DecodePrefixedInteger(buf, 8)
 		frame.ValueString = DecodeString(buf, frame.ValueLength)
 
-		log.Println("Literal Header with Substitution Indexing - Indexed Name")
+		// log.Println("Literal Header with Substitution Indexing - Indexed Name")
 		return frame
 
 	}
