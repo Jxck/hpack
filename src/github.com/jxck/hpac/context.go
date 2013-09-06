@@ -45,7 +45,7 @@ func (c *Context) Decode(wire []byte) {
 				// refset にない場合は加える
 				log.Printf("emit and add to refset (%q, %q)", header.Name, header.Value)
 				c.emittedSet.Add(header.Name, header.Value)
-				c.referenceSet[header.Name] = header.Value
+				c.referenceSet.Add(header.Name, header.Value)
 			}
 		case *IndexedNameWithoutIndexing:
 			// HT にある名前だけ使う
