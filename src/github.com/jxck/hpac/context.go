@@ -2,6 +2,7 @@ package hpac
 
 import (
 	"bytes"
+	"fmt"
 	"log"
 	"net/http"
 )
@@ -10,6 +11,7 @@ type Context struct {
 	requestHeaderTable  HeaderTable
 	responseHeaderTable HeaderTable
 	referenceSet        ReferenceSet
+	emittedSet          http.Header
 }
 
 func NewContext() *Context {
@@ -17,52 +19,62 @@ func NewContext() *Context {
 		requestHeaderTable:  NewRequestHeaderTable(),
 		responseHeaderTable: NewResponseHeaderTable(),
 		referenceSet:        ReferenceSet{},
+		emittedSet:          http.Header{},
 	}
 	return context
 }
 
 func (c *Context) Decode(wire []byte) {
+	fmt.Println("Decode")
+	// emittedSet を clean
+	c.emittedSet = http.Header{}
+
 	frames := Decode(wire)
 	for _, frame := range frames {
 		switch f := frame.(type) {
 		case *IndexedHeader:
-			log.Printf("%T index=%v", f, f.Index)
+			// HT にあるエントリをそのまま使う
 			header := c.requestHeaderTable[f.Index]
-			log.Printf("HT[%v] = %v", f.Index, header)
+			log.Printf("%T HT[%v] = %v", f, f.Index, header)
 
 			if header.Value == c.referenceSet[header.Name] {
-				log.Println("exist in refset")
+				// refset にある場合は消す
+				log.Printf("delete from refset (%q, %q)", header.Name, header.Value)
 				c.referenceSet.Del(header.Name)
 			} else {
-				log.Println("no exist in refet")
-				log.Println("TODO: emit") // TODO:emit
+				// refset にない場合は加える
+				log.Printf("emit and add to refset (%q, %q)", header.Name, header.Value)
+				c.emittedSet.Add(header.Name, header.Value)
 				c.referenceSet[header.Name] = header.Value
 			}
-		//case *IndexedNameWithIncrementalIndexing:
-		//	log.Printf("%T index=%v value=%q", f, f.Index, f.ValueString)
-		//	header := c.requestHeaderTable[f.Index]
-		//	log.Printf("HT[%v] = %v", f.Index, header)
-		//	log.Println("TODO: emit") // TODO:emit
-		//	c.requestHeaderTable[f.Index].Value = f.ValueString
-		//	c.referenceSet[header.Name] = f.ValueString
 		case *IndexedNameWithoutIndexing:
-			log.Printf("%T index=%v value=%q", f, f.Index, f.ValueString)
+			// HT にある名前だけ使う
 			header := c.requestHeaderTable[f.Index]
-			log.Printf("HT[%v] = %v", f.Index, header)
-			log.Println("TODO: emit") // TODO:emit
-			c.referenceSet[header.Name] = f.ValueString
+			log.Printf("%T HT[%v] = %v value=%q", f, f.Index, header.Name, f.ValueString)
+
+			// without indexing なので refset には入れない
+			log.Printf("emit (%q, %q)", header.Name, f.ValueString)
+			c.emittedSet.Add(header.Name, f.ValueString)
 		case *NewNameWithoutIndexing:
+			// Name/Value ペアを送る
+			// HT も refset も更新しない
 			log.Printf("%T name=%q value=%q", f, f.NameString, f.ValueString)
-			c.referenceSet[f.NameString] = f.ValueString
+			log.Printf("emit (%q, %q)", f.NameString, f.ValueString)
+			c.emittedSet.Add(f.NameString, f.ValueString)
 		default:
 			log.Printf("%T", f)
 		}
 	}
+	//// reference set の中身を emit する
+	//for name, value := range c.referenceSet {
+	//	c.emittedSet.Add(name, value)
+	//}
 	log.Printf("refset: %v", c.referenceSet)
-	//log.Printf("HT: %v", c.requestHeaderTable)
+	log.Printf("emitted: %v", c.emittedSet)
 }
 
 func (c *Context) Encode(header http.Header) []byte {
+	fmt.Println("Encode")
 	var buf bytes.Buffer
 
 	// http.Header を HeaderSet に変換
@@ -89,7 +101,6 @@ func (c *Context) CleanReferenceSet(headerSet HeaderSet) []byte {
 	// reference set からは消す
 	for name, value := range c.referenceSet {
 		if headerSet[name] != value {
-			log.Println("remove from refset", name, value)
 			c.referenceSet.Del(name)
 
 			// Header Table を探して、 index だけ取り出す
@@ -99,6 +110,9 @@ func (c *Context) CleanReferenceSet(headerSet HeaderSet) []byte {
 			frame := CreateIndexedHeader(uint64(index))
 			f := EncodeHeader(frame)
 			buf.Write(f.Bytes())
+
+			log.Printf("indexed header index=%v removal from reference set", index)
+
 		}
 	}
 	return buf.Bytes()
@@ -124,21 +138,23 @@ func (c *Context) ProcessHeader(headerSet HeaderSet) []byte {
 			// Indexed Heaer で index だけ送れば良い
 			frame := CreateIndexedHeader(uint64(index))
 			f := EncodeHeader(frame)
-			log.Printf("indexed header {%v:%v} is in HT[%v] (%v)", name, value, index, f.Bytes())
+			log.Printf("indexed header index=%v", index)
+			log.Printf("add to refset (%q, %q)", name, value)
+			c.referenceSet.Add(name, value)
 			buf.Write(f.Bytes())
 		} else if index != -1 { // HT に name だけある
 			// Indexed Name Without Indexing
-			// value だけ送って、 HT にエントリを追加する。
+			// value だけ送る。 HT は更新しない。
 			frame := CreateIndexedNameWithoutIndexing(uint64(index), value)
 			f := EncodeHeader(frame)
-			log.Printf("literal with index {%v:%v} is in HT[%v] (%v)", name, value, index, f.Bytes())
+			log.Printf("literal header without indexing, name index=%v value=%q", index, value)
 			buf.Write(f.Bytes())
 		} else { // HT に name も value もない
 			// New Name Without Indexing
-			// name, value を送って HT は変えない
+			// name, value を送って HT は更新しない。
 			frame := CreateNewNameWithoutIndexing(name, value)
 			f := EncodeHeader(frame)
-			log.Printf("literal without index {%v:%v} is not in HT (%v)", name, value, f.Bytes())
+			log.Printf("literal header without indexing, new name name=%q value=%q", name, value)
 			buf.Write(f.Bytes())
 		}
 	}
