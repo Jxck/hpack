@@ -14,8 +14,8 @@ func TestIndexedHeaderDecode(t *testing.T) {
 	if !ok {
 		t.Fatal("Parsed incorrect frame type:", frame)
 	}
-	if f.Flag1 != 1 {
-		t.Errorf("got %v\nwant %v", f.Flag1, 1)
+	if f.flag1 != 1 {
+		t.Errorf("got %v\nwant %v", f.flag1, 1)
 	}
 	if f.Index != 38 {
 		t.Errorf("got %v\nwant %v", f.Index, 38)
@@ -38,14 +38,14 @@ func TestNewNameWithoutIndexingDecode(t *testing.T) {
 	if !ok {
 		t.Fatal("Parsed incorrect frame type:", frame)
 	}
-	if f.Flag1 != 0 {
-		t.Errorf("got %v\nwant %v", f.Flag1, 0)
+	if f.flag1 != 0 {
+		t.Errorf("got %v\nwant %v", f.flag1, 0)
 	}
-	if f.Flag2 != 1 {
-		t.Errorf("got %v\nwant %v", f.Flag2, 1)
+	if f.flag2 != 1 {
+		t.Errorf("got %v\nwant %v", f.flag2, 1)
 	}
-	if f.Flag3 != 1 {
-		t.Errorf("got %v\nwant %v", f.Flag3, 1)
+	if f.flag3 != 1 {
+		t.Errorf("got %v\nwant %v", f.flag3, 1)
 	}
 	if f.Index != 0 {
 		t.Errorf("got %v\nwant %v", f.Index, 0)
@@ -76,14 +76,14 @@ func TestIndexedNameWithoutIndexingEncode(t *testing.T) {
 	if !ok {
 		t.Fatal("Parsed incorrect frame type:", frame)
 	}
-	if f.Flag1 != 0 {
-		t.Errorf("got %v\nwant %v", f.Flag1, 0)
+	if f.flag1 != 0 {
+		t.Errorf("got %v\nwant %v", f.flag1, 0)
 	}
-	if f.Flag2 != 1 {
-		t.Errorf("got %v\nwant %v", f.Flag2, 1)
+	if f.flag2 != 1 {
+		t.Errorf("got %v\nwant %v", f.flag2, 1)
 	}
-	if f.Flag3 != 1 {
-		t.Errorf("got %v\nwant %v", f.Flag3, 1)
+	if f.flag3 != 1 {
+		t.Errorf("got %v\nwant %v", f.flag3, 1)
 	}
 	if f.Index != 3 {
 		t.Errorf("got %v\nwant %v", f.Index, 3)
@@ -108,14 +108,14 @@ func TestIndexedNameWithIncrementalIndexingDecode(t *testing.T) {
 	if !ok {
 		t.Fatal("Parsed incorrect frame type:", frame)
 	}
-	if f.Flag1 != 0 {
-		t.Errorf("got %v\nwant %v", f.Flag1, 0)
+	if f.flag1 != 0 {
+		t.Errorf("got %v\nwant %v", f.flag1, 0)
 	}
-	if f.Flag2 != 1 {
-		t.Errorf("got %v\nwant %v", f.Flag2, 1)
+	if f.flag2 != 1 {
+		t.Errorf("got %v\nwant %v", f.flag2, 1)
 	}
-	if f.Flag3 != 0 {
-		t.Errorf("got %v\nwant %v", f.Flag3, 0)
+	if f.flag3 != 0 {
+		t.Errorf("got %v\nwant %v", f.flag3, 0)
 	}
 	if f.Index != 3 {
 		t.Errorf("got %v\nwant %v", f.Index, 3)
@@ -144,14 +144,14 @@ func TestNewNameWithIncrementalIndexingDecode(t *testing.T) {
 	if !ok {
 		t.Fatal("Parsed incorrect frame type:", frame)
 	}
-	if f.Flag1 != 0 {
-		t.Errorf("got %v\nwant %v", f.Flag1, 0)
+	if f.flag1 != 0 {
+		t.Errorf("got %v\nwant %v", f.flag1, 0)
 	}
-	if f.Flag2 != 1 {
-		t.Errorf("got %v\nwant %v", f.Flag2, 1)
+	if f.flag2 != 1 {
+		t.Errorf("got %v\nwant %v", f.flag2, 1)
 	}
-	if f.Flag3 != 0 {
-		t.Errorf("got %v\nwant %v", f.Flag3, 0)
+	if f.flag3 != 0 {
+		t.Errorf("got %v\nwant %v", f.flag3, 0)
 	}
 	if f.Index != 0 {
 		t.Errorf("got %v\nwant %v", f.Index, 0)
@@ -183,11 +183,11 @@ func TestIndexedNameWithSubstitutionIndexingDecode(t *testing.T) {
 	if !ok {
 		t.Fatal("Parsed incorrect frame type:", frame)
 	}
-	if f.Flag1 != 0 {
-		t.Errorf("got %v\nwant %v", f.Flag1, 0)
+	if f.flag1 != 0 {
+		t.Errorf("got %v\nwant %v", f.flag1, 0)
 	}
-	if f.Flag2 != 0 {
-		t.Errorf("got %v\nwant %v", f.Flag2, 0)
+	if f.flag2 != 0 {
+		t.Errorf("got %v\nwant %v", f.flag2, 0)
 	}
 	if f.Index != 3 {
 		t.Errorf("got %v\nwant %v", f.Index, 3)
@@ -219,14 +219,14 @@ func TestIndexedNameWithIncrementalIndexing3(t *testing.T) {
 	if !ok {
 		t.Fatal("Parsed incorrect frame type:", frame)
 	}
-	if f.Flag1 != 0 {
-		t.Errorf("got %v\nwant %v", f.Flag1, 0)
+	if f.flag1 != 0 {
+		t.Errorf("got %v\nwant %v", f.flag1, 0)
 	}
-	if f.Flag2 != 1 {
-		t.Errorf("got %v\nwant %v", f.Flag2, 1)
+	if f.flag2 != 1 {
+		t.Errorf("got %v\nwant %v", f.flag2, 1)
 	}
-	if f.Flag3 != 0 {
-		t.Errorf("got %v\nwant %v", f.Flag3, 0)
+	if f.flag3 != 0 {
+		t.Errorf("got %v\nwant %v", f.flag3, 0)
 	}
 	if f.Index != 40 {
 		t.Errorf("got %v\nwant %v", f.Index, 40)
@@ -259,11 +259,11 @@ func TestNewNameWithSubstitutionIndexing(t *testing.T) {
 	if !ok {
 		t.Fatal("Parsed incorrect frame type:", frame)
 	}
-	if f.Flag1 != 0 {
-		t.Errorf("got %v\nwant %v", f.Flag1, 0)
+	if f.flag1 != 0 {
+		t.Errorf("got %v\nwant %v", f.flag1, 0)
 	}
-	if f.Flag2 != 0 {
-		t.Errorf("got %v\nwant %v", f.Flag2, 0)
+	if f.flag2 != 0 {
+		t.Errorf("got %v\nwant %v", f.flag2, 0)
 	}
 	if f.Index != 0 {
 		t.Errorf("got %v\nwant %v", f.Index, 0)

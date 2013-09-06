@@ -10,13 +10,13 @@ type Frame interface {
 // | 1 |        Index (7+)         |
 // +---+---------------------------+
 type IndexedHeader struct {
-	Flag1 uint8
+	flag1 uint8
 	Index uint64
 }
 
 func NewIndexedHeader() (frame *IndexedHeader) {
 	frame = &IndexedHeader{}
-	frame.Flag1 = 1
+	frame.flag1 = 1
 	return
 }
 
@@ -41,9 +41,9 @@ func CreateIndexedHeader(index uint64) (frame *IndexedHeader) {
 // | Value String (Length octets)  |
 // +-------------------------------+
 type NewNameWithoutIndexing struct {
-	Flag1       uint8
-	Flag2       uint8
-	Flag3       uint8
+	flag1       uint8
+	flag2       uint8
+	flag3       uint8
 	Index       uint64
 	NameLength  uint64
 	NameString  string
@@ -53,9 +53,9 @@ type NewNameWithoutIndexing struct {
 
 func NewNewNameWithoutIndexing() (frame *NewNameWithoutIndexing) {
 	frame = &NewNameWithoutIndexing{}
-	frame.Flag1 = 0
-	frame.Flag2 = 1
-	frame.Flag3 = 1
+	frame.flag1 = 0
+	frame.flag2 = 1
+	frame.flag3 = 1
 	frame.Index = 0
 	return
 }
@@ -80,9 +80,9 @@ func CreateNewNameWithoutIndexing(name, value string) (frame *NewNameWithoutInde
 // | Value String (Length octets)  |
 // +-------------------------------+
 type IndexedNameWithoutIndexing struct {
-	Flag1       uint8
-	Flag2       uint8
-	Flag3       uint8
+	flag1       uint8
+	flag2       uint8
+	flag3       uint8
 	Index       uint64
 	ValueLength uint64
 	ValueString string
@@ -90,9 +90,9 @@ type IndexedNameWithoutIndexing struct {
 
 func NewIndexedNameWithoutIndexing() (frame *IndexedNameWithoutIndexing) {
 	frame = &IndexedNameWithoutIndexing{}
-	frame.Flag1 = 0
-	frame.Flag2 = 1
-	frame.Flag3 = 1
+	frame.flag1 = 0
+	frame.flag2 = 1
+	frame.flag3 = 1
 	return
 }
 
@@ -115,9 +115,9 @@ func CreateIndexedNameWithoutIndexing(index uint64, value string) (frame *Indexe
 // | Value String (Length octets)  |
 // +-------------------------------+
 type IndexedNameWithIncrementalIndexing struct {
-	Flag1       uint8
-	Flag2       uint8
-	Flag3       uint8
+	flag1       uint8
+	flag2       uint8
+	flag3       uint8
 	Index       uint64
 	ValueLength uint64
 	ValueString string
@@ -125,9 +125,9 @@ type IndexedNameWithIncrementalIndexing struct {
 
 func NewIndexedNameWithIncrementalIndexing() (frame *IndexedNameWithIncrementalIndexing) {
 	frame = &IndexedNameWithIncrementalIndexing{}
-	frame.Flag1 = 0
-	frame.Flag2 = 1
-	frame.Flag3 = 0
+	frame.flag1 = 0
+	frame.flag2 = 1
+	frame.flag3 = 0
 	return
 }
 
@@ -154,9 +154,9 @@ func CreateIndexedNameWithIncrementalIndexing(index uint64, value string) (frame
 // | Value String (Length octets)  |
 // +-------------------------------+
 type NewNameWithIncrementalIndexing struct {
-	Flag1       uint8
-	Flag2       uint8
-	Flag3       uint8
+	flag1       uint8
+	flag2       uint8
+	flag3       uint8
 	Index       uint8
 	NameLength  uint64
 	NameString  string
@@ -166,9 +166,9 @@ type NewNameWithIncrementalIndexing struct {
 
 func NewNewNameWithIncrementalIndexing() (frame *NewNameWithIncrementalIndexing) {
 	frame = &NewNameWithIncrementalIndexing{}
-	frame.Flag1 = 0
-	frame.Flag2 = 1
-	frame.Flag3 = 0
+	frame.flag1 = 0
+	frame.flag2 = 1
+	frame.flag3 = 0
 	frame.Index = 0
 	return
 }
@@ -195,8 +195,8 @@ func CreateNewNameWithIncrementalIndexing(name, value string) (frame *NewNameWit
 // | Value String (Length octets)  |
 // +-------------------------------+
 type IndexedNameWithSubstitutionIndexing struct {
-	Flag1            uint8
-	Flag2            uint8
+	flag1            uint8
+	flag2            uint8
 	Index            uint64
 	SubstitutedIndex uint64
 	ValueLength      uint64
@@ -205,8 +205,8 @@ type IndexedNameWithSubstitutionIndexing struct {
 
 func NewIndexedNameWithSubstitutionIndexing() (frame *IndexedNameWithSubstitutionIndexing) {
 	frame = &IndexedNameWithSubstitutionIndexing{}
-	frame.Flag1 = 0
-	frame.Flag2 = 0
+	frame.flag1 = 0
+	frame.flag2 = 0
 	return
 }
 
@@ -236,8 +236,8 @@ func CreateIndexedNameWithSubstitutionIndexing(index, substitutedIndex uint64, v
 // | Value String (Length octets)  |
 // +-------------------------------+
 type NewNameWithSubstitutionIndexing struct {
-	Flag1            uint8
-	Flag2            uint8
+	flag1            uint8
+	flag2            uint8
 	Index            uint8
 	NameLength       uint64
 	NameString       string
@@ -248,8 +248,8 @@ type NewNameWithSubstitutionIndexing struct {
 
 func NewNewNameWithSubstitutionIndexing() (frame *NewNameWithSubstitutionIndexing) {
 	frame = &NewNameWithSubstitutionIndexing{}
-	frame.Flag1 = 0
-	frame.Flag2 = 0
+	frame.flag1 = 0
+	frame.flag2 = 0
 	frame.Index = 0
 	return
 }
