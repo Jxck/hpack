@@ -25,18 +25,17 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		log.Println("binary.Read failed:", err)
 	}
 	if types >= 0x80 {
+		// Indexed Header Representation
 
 		// unread first byte for parse frame
 		buf.UnreadByte()
 
 		frame := NewIndexedHeader()
 		frame.Index = DecodePrefixedInteger(buf, 7)
-
-		// log.Println("Indexed Header Representation")
 		return frame
-
 	}
 	if types == 0 {
+		// Literal Header with Substitution Indexing - New Name
 
 		frame := NewNewNameWithSubstitutionIndexing()
 		frame.NameLength = DecodePrefixedInteger(buf, 8)
@@ -44,36 +43,30 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		frame.SubstitutedIndex = DecodePrefixedInteger(buf, 8)
 		frame.ValueLength = DecodePrefixedInteger(buf, 8)
 		frame.ValueString = DecodeString(buf, frame.ValueLength)
-
-		// log.Println("Literal Header with Substitution Indexing - New Name")
 		return frame
-
 	}
 	if types == 0x40 {
+		// Literal Header with Incremental Indexing - New Name
 
 		frame := NewNewNameWithIncrementalIndexing()
 		frame.NameLength = DecodePrefixedInteger(buf, 8)
 		frame.NameString = DecodeString(buf, frame.NameLength)
 		frame.ValueLength = DecodePrefixedInteger(buf, 8)
 		frame.ValueString = DecodeString(buf, frame.ValueLength)
-
-		// log.Println("Literal Header with Incremental Indexing - New Name")
 		return frame
-
 	}
 	if types == 0x60 {
+		// Literal Header without Indexing - New Name
 
 		frame := NewNewNameWithoutIndexing()
 		frame.NameLength = DecodePrefixedInteger(buf, 8)
 		frame.NameString = DecodeString(buf, frame.NameLength)
 		frame.ValueLength = DecodePrefixedInteger(buf, 8)
 		frame.ValueString = DecodeString(buf, frame.ValueLength)
-
-		// log.Println("Literal Header without Indexing - New Name")
 		return frame
-
 	}
 	if types>>5 == 0x2 {
+		// iteral Header with Incremental Indexing - Indexed Name
 
 		// unread first byte for parse frame
 		buf.UnreadByte()
@@ -84,12 +77,10 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		frame.Index = DecodePrefixedInteger(buf, 5) - 1
 		frame.ValueLength = DecodePrefixedInteger(buf, 8)
 		frame.ValueString = DecodeString(buf, frame.ValueLength)
-
-		// log.Println("Literal Header with Incremental Indexing - Indexed Name")
 		return frame
-
 	}
 	if types&0x60 == 0x60 {
+		// Literal Header without Indexing - Indexed Name
 
 		// unread first byte for parse frame
 		buf.UnreadByte()
@@ -98,12 +89,10 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		frame.Index = DecodePrefixedInteger(buf, 5) - 1
 		frame.ValueLength = DecodePrefixedInteger(buf, 8)
 		frame.ValueString = DecodeString(buf, frame.ValueLength)
-
-		// log.Println("Literal Header without Indexing - Indexed Name")
 		return frame
-
 	}
 	if types>>6 == 0 {
+		// Literal Header with Substitution Indexing - Indexed Name
 
 		// unread first byte for parse frame
 		buf.UnreadByte()
@@ -113,14 +102,12 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		frame.SubstitutedIndex = DecodePrefixedInteger(buf, 8)
 		frame.ValueLength = DecodePrefixedInteger(buf, 8)
 		frame.ValueString = DecodeString(buf, frame.ValueLength)
-
-		// log.Println("Literal Header with Substitution Indexing - Indexed Name")
 		return frame
-
 	}
 	return nil
 }
 
+// read n byte from buffer as string
 func DecodeString(buf *bytes.Buffer, n uint64) string {
 	valueBytes := make([]byte, n)
 	binary.Read(buf, binary.BigEndian, &valueBytes) // err
