@@ -9,32 +9,32 @@ func EncodeHeader(frame Frame) *bytes.Buffer {
 	switch frame.(type) {
 	case *IndexedHeader:
 		f := frame.(*IndexedHeader)
-		return encodeIndexedHeader(f)
+		return f.Encode()
 	case *NewNameWithoutIndexing:
 		f := frame.(*NewNameWithoutIndexing)
-		return encodeNewNameWithoutIndexing(f)
+		return f.Encode()
 	case *IndexedNameWithoutIndexing:
 		f := frame.(*IndexedNameWithoutIndexing)
-		return encodeIndexedNameWithoutIndexing(f)
+		return f.Encode()
 	case *IndexedNameWithIncrementalIndexing:
 		f := frame.(*IndexedNameWithIncrementalIndexing)
-		return encodeIndexedNameWithIncrementalIndexing(f)
+		return f.Encode()
 	case *NewNameWithIncrementalIndexing:
 		f := frame.(*NewNameWithIncrementalIndexing)
-		return encodeNewNameWithIncrementalIndexing(f)
+		return f.Encode()
 	case *IndexedNameWithSubstitutionIndexing:
 		f := frame.(*IndexedNameWithSubstitutionIndexing)
-		return encodeIndexedNameWithSubstitutionIndexing(f)
+		return f.Encode()
 	case *NewNameWithSubstitutionIndexing:
 		f := frame.(*NewNameWithSubstitutionIndexing)
-		return encodeNewNameWithSubstitutionIndexing(f)
+		return f.Encode()
 	default:
 		log.Println("unmatch")
 		return nil
 	}
 }
 
-func encodeIndexedHeader(frame *IndexedHeader) *bytes.Buffer {
+func (frame *IndexedHeader) Encode() *bytes.Buffer {
 	index := EncodeInteger(frame.Index, 7).Bytes()
 	buf := bytes.NewBuffer([]byte{0x80 + index[0]})
 	index = index[1:]
@@ -44,7 +44,7 @@ func encodeIndexedHeader(frame *IndexedHeader) *bytes.Buffer {
 	return buf
 }
 
-func encodeNewNameWithoutIndexing(frame *NewNameWithoutIndexing) *bytes.Buffer {
+func (frame *NewNameWithoutIndexing) Encode() *bytes.Buffer {
 	buf := bytes.NewBuffer([]byte{0x60})
 	buf.Write(EncodeInteger(frame.NameLength, 8).Bytes())
 	buf.WriteString(frame.NameString)
@@ -53,7 +53,7 @@ func encodeNewNameWithoutIndexing(frame *NewNameWithoutIndexing) *bytes.Buffer {
 	return buf
 }
 
-func encodeIndexedNameWithoutIndexing(frame *IndexedNameWithoutIndexing) *bytes.Buffer {
+func (frame *IndexedNameWithoutIndexing) Encode() *bytes.Buffer {
 	index := EncodeInteger(frame.Index+1, 5).Bytes()
 	buf := bytes.NewBuffer([]byte{0x60 + index[0]})
 	index = index[1:]
@@ -65,7 +65,7 @@ func encodeIndexedNameWithoutIndexing(frame *IndexedNameWithoutIndexing) *bytes.
 	return buf
 }
 
-func encodeIndexedNameWithIncrementalIndexing(frame *IndexedNameWithIncrementalIndexing) *bytes.Buffer {
+func (frame *IndexedNameWithIncrementalIndexing) Encode() *bytes.Buffer {
 	index := EncodeInteger(frame.Index+1, 5).Bytes()
 	buf := bytes.NewBuffer([]byte{0x40 + index[0]})
 	index = index[1:]
@@ -77,7 +77,7 @@ func encodeIndexedNameWithIncrementalIndexing(frame *IndexedNameWithIncrementalI
 	return buf
 }
 
-func encodeNewNameWithIncrementalIndexing(frame *NewNameWithIncrementalIndexing) *bytes.Buffer {
+func (frame *NewNameWithIncrementalIndexing) Encode() *bytes.Buffer {
 	buf := bytes.NewBuffer([]byte{0x40})
 	buf.Write(EncodeInteger(frame.NameLength, 8).Bytes())
 	buf.WriteString(frame.NameString)
@@ -86,7 +86,7 @@ func encodeNewNameWithIncrementalIndexing(frame *NewNameWithIncrementalIndexing)
 	return buf
 }
 
-func encodeIndexedNameWithSubstitutionIndexing(frame *IndexedNameWithSubstitutionIndexing) *bytes.Buffer {
+func (frame *IndexedNameWithSubstitutionIndexing) Encode() *bytes.Buffer {
 	buf := bytes.NewBuffer([]byte{})
 	buf.Write(EncodeInteger(frame.Index+1, 6).Bytes())
 	buf.Write(EncodeInteger(frame.SubstitutedIndex, 8).Bytes())
@@ -95,7 +95,7 @@ func encodeIndexedNameWithSubstitutionIndexing(frame *IndexedNameWithSubstitutio
 	return buf
 }
 
-func encodeNewNameWithSubstitutionIndexing(frame *NewNameWithSubstitutionIndexing) *bytes.Buffer {
+func (frame *NewNameWithSubstitutionIndexing) Encode() *bytes.Buffer {
 	buf := bytes.NewBuffer([]byte{0})
 	buf.Write(EncodeInteger(frame.NameLength, 8).Bytes())
 	buf.WriteString(frame.NameString)

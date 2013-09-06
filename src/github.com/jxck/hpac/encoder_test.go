@@ -34,7 +34,7 @@ func TestNewNameWithoutIndexingEncode(t *testing.T) {
 	}
 }
 
-func TestIndexedNameWithoutIndexingDecode(t *testing.T) {
+func TestIndexedNameWithoutIndexingEncode(t *testing.T) {
 	frame := NewIndexedNameWithoutIndexing()
 	frame.Index = 3
 	frame.ValueLength = 5

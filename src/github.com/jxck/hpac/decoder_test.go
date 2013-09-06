@@ -64,7 +64,7 @@ func TestNewNameWithoutIndexingDecode(t *testing.T) {
 	}
 }
 
-func TestIndexedNameWithoutIndexingEncode(t *testing.T) {
+func TestIndexedNameWithoutIndexingDecode(t *testing.T) {
 	// 0x64      (literal header without indexing, name index = 3)
 	// 0x05      (header value string length = 5)
 	// first
