@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/jxck/hpac"
 	"log"
 	"net/http"
@@ -27,7 +28,7 @@ func main() {
 	server := hpac.NewContext()
 	server.Decode(wire)
 
-	log.Println("======================")
+	fmt.Println("======================")
 
 	headers = http.Header{
 		":scheme":    []string{"https"},
