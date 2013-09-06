@@ -1,6 +1,11 @@
 package hpac
 
+import (
+	"bytes"
+)
+
 type Frame interface {
+	Encode() *bytes.Buffer
 }
 
 // Indexed Header Representation
