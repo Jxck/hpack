@@ -49,7 +49,7 @@ func TestHeaderTableReplace(t *testing.T) {
 	}
 }
 
-func TestHeaderTableRemoveTop(t *testing.T) {
+func TestHeaderTableRemove(t *testing.T) {
 	reqHT := NewRequestHeaderTable()
 	reqHT.Remove(3)
 
