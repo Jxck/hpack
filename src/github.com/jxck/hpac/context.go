@@ -36,7 +36,6 @@ func (c *Context) Decode(wire []byte) {
 			// HT にあるエントリをそのまま使う
 			header := c.RequestHeaderTable[f.Index]
 			log.Printf("%T HT[%v] = %v", f, f.Index, header)
-
 			if header.Value == c.ReferenceSet[header.Name] {
 				// refset にある場合は消す
 				log.Printf("delete from refset (%q, %q)", header.Name, header.Value)
@@ -49,10 +48,9 @@ func (c *Context) Decode(wire []byte) {
 			}
 		case *IndexedNameWithoutIndexing:
 			// HT にある名前だけ使う
+			// HT も refset も更新しない
 			header := c.RequestHeaderTable[f.Index]
 			log.Printf("%T HT[%v] = %v value=%q", f, f.Index, header.Name, f.ValueString)
-
-			// without indexing なので refset には入れない
 			log.Printf("emit (%q, %q)", header.Name, f.ValueString)
 			c.EmittedSet.Add(header.Name, f.ValueString)
 		case *NewNameWithoutIndexing:
@@ -125,7 +123,6 @@ func (c *Context) Encode(header http.Header) []byte {
 
 	// Header Table にあるやつを処理
 	buf.Write(c.ProcessHeader(headerSet))
-
 	return buf.Bytes()
 }
 
@@ -147,9 +144,7 @@ func (c *Context) CleanReferenceSet(headerSet HeaderSet) []byte {
 			frame := CreateIndexedHeader(uint64(index))
 			f := frame.Encode()
 			buf.Write(f.Bytes())
-
 			log.Printf("indexed header index=%v removal from reference set", index)
-
 		}
 	}
 	return buf.Bytes()
