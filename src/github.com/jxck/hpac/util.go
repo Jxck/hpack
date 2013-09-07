@@ -1,5 +1,6 @@
 package hpac
 
+// compare both slice has same value
 func CompareSlice(a, b []string) bool {
 	if len(a) != len(b) {
 		return false
