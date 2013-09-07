@@ -17,9 +17,9 @@ func main() {
 		":host":      []string{"jxck.io"},
 		":path":      []string{"/"},
 		":method":    []string{"GET"},
-		"user-agent": []string{"http2cat"},
-		"cookie":     []string{"xxxxxxx1"},
-		"x-hello":    []string{"world"},
+		"User-Agent": []string{"http2cat"},
+		"Cookie":     []string{"xxxxxxx1"},
+		"X-Hello":    []string{"world"},
 	}
 
 	client := hpac.NewContext()
@@ -37,8 +37,8 @@ func main() {
 		":host":      []string{"jxck.io"},
 		":path":      []string{"/labs/http2cat"},
 		":method":    []string{"GET"},
-		"user-agent": []string{"http2cat"},
-		"cookie":     []string{"xxxxxxx2"},
+		"User-Agent": []string{"http2cat"},
+		"Cookie":     []string{"xxxxxxx2"},
 	}
 	wire = client.Encode(headers)
 	server.Decode(wire)
