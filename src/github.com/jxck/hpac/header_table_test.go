@@ -15,17 +15,17 @@ func TestHeaderTableSize(t *testing.T) {
 	ht := HeaderTable{
 		DEFAULT_HEADER_TABLE_SIZE,
 		Headers{
-			{"12345", "12345"},
-			{"12345", "12345"},
-			{"12345", "12345"},
-			{"12345", "12345"},
-			{"12345", "12345"},
+			{"1234", "1234"},
+			{"1234", "1234"},
+			{"1234", "1234"},
+			{"1234", "1234"},
+			{"1234", "1234"},
 		},
 	}
 	size := ht.Size()
 
-	if size != 210 {
-		t.Errorf("got %v\nwant %v", size, 210)
+	if size != 200 {
+		t.Errorf("got %v\nwant %v", size, 200)
 	}
 }
 
@@ -64,6 +64,26 @@ func TestHeaderTableRemove(t *testing.T) {
 	h = reqHT.Headers[0]
 	if h.Name != ":scheme" || h.Value != "https" {
 		t.Errorf("got %v\nwant %v", h, Header{":scheme", "https"})
+	}
+}
+
+func TestHeaderTableAllocSpace(t *testing.T) {
+	ht := HeaderTable{
+		200,
+		Headers{
+			{"1234", "1234"},
+			{"1234", "1234"},
+			{"1234", "1234"},
+			{"1234", "1234"},
+			{"1234", "1234"},
+		},
+	}
+	ht.AllocSpace(20)
+	t.Log(ht)
+
+	size := ht.Size()
+	if size != 210 {
+		t.Errorf("got %v\nwant %v", size, 210)
 	}
 }
 
