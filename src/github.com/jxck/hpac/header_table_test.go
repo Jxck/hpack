@@ -49,6 +49,24 @@ func TestHeaderTableReplace(t *testing.T) {
 	}
 }
 
+func TestHeaderTableRemoveTop(t *testing.T) {
+	reqHT := NewRequestHeaderTable()
+	reqHT.Remove(3)
+
+	h := reqHT.Headers[3]
+	if h.Name != ":method" || h.Value != "GET" {
+		t.Errorf("got %v\nwant %v", h, Header{":method", "GET"})
+	}
+
+	reqHT = NewRequestHeaderTable()
+	reqHT.Remove(0)
+
+	h = reqHT.Headers[0]
+	if h.Name != ":scheme" || h.Value != "https" {
+		t.Errorf("got %v\nwant %v", h, Header{":scheme", "https"})
+	}
+}
+
 func TestHeaderTableSearch(t *testing.T) {
 	reqHT := NewRequestHeaderTable()
 	i, h := reqHT.SearchHeader("Hello", "World")

@@ -37,6 +37,14 @@ func (ht HeaderTable) Replace(name, value string, index uint64) {
 	ht.Headers[index] = header
 }
 
+func (ht HeaderTable) Remove(index int) {
+	// https://code.google.com/p/go-wiki/wiki/SliceTricks
+	copy(ht.Headers[index:], ht.Headers[index+1:])
+	// avoid memory leak
+	ht.Headers[len(ht.Headers)-1] = Header{}
+	ht.Headers = ht.Headers[:len(ht.Headers)-1]
+}
+
 // name と value が HeaderTable にあるかを探す
 // name, value とも一致 => index, *Header
 // name はある          => index, nil
