@@ -11,7 +11,7 @@ type Context struct {
 	RequestHeaderTable  HeaderTable
 	ResponseHeaderTable HeaderTable
 	ReferenceSet        ReferenceSet
-	EmittedSet          http.Header
+	EmittedSet          EmittedSet
 }
 
 func NewContext() *Context {
@@ -19,7 +19,7 @@ func NewContext() *Context {
 		RequestHeaderTable:  NewRequestHeaderTable(),
 		ResponseHeaderTable: NewResponseHeaderTable(),
 		ReferenceSet:        ReferenceSet{},
-		EmittedSet:          http.Header{},
+		EmittedSet:          NewEmittedSet(),
 	}
 	return context
 }
@@ -27,7 +27,7 @@ func NewContext() *Context {
 func (c *Context) Decode(wire []byte) {
 	fmt.Println("Decode")
 	// EmittedSet を clean
-	c.EmittedSet = http.Header{}
+	c.EmittedSet = NewEmittedSet()
 
 	frames := Decode(wire)
 	for _, frame := range frames {
@@ -43,7 +43,7 @@ func (c *Context) Decode(wire []byte) {
 			} else {
 				// refset にない場合は加える
 				log.Printf("emit and add to refset (%q, %q)", header.Name, header.Value)
-				c.EmittedSet.Add(header.Name, header.Value)
+				c.EmittedSet.Emit(header.Name, header.Value)
 				c.ReferenceSet.Add(header.Name, header.Value)
 			}
 		case *IndexedNameWithoutIndexing:
@@ -52,13 +52,13 @@ func (c *Context) Decode(wire []byte) {
 			header := c.RequestHeaderTable[f.Index]
 			log.Printf("%T HT[%v] = %v value=%q", f, f.Index, header.Name, f.ValueString)
 			log.Printf("emit (%q, %q)", header.Name, f.ValueString)
-			c.EmittedSet.Add(header.Name, f.ValueString)
+			c.EmittedSet.Emit(header.Name, f.ValueString)
 		case *NewNameWithoutIndexing:
 			// Name/Value ペアを送る
 			// HT も refset も更新しない
 			log.Printf("%T name=%q value=%q", f, f.NameString, f.ValueString)
 			log.Printf("emit (%q, %q)", f.NameString, f.ValueString)
-			c.EmittedSet.Add(f.NameString, f.ValueString)
+			c.EmittedSet.Emit(f.NameString, f.ValueString)
 		case *IndexedNameWithIncrementalIndexing:
 			// HT にある名前だけ使い
 			// HT に新しく追記する
@@ -66,7 +66,7 @@ func (c *Context) Decode(wire []byte) {
 			name := c.RequestHeaderTable[f.Index].Name
 			value := f.ValueString
 			log.Printf("emit and add refeset, HT (%q, %q)", name, value)
-			c.EmittedSet.Add(name, value)
+			c.EmittedSet.Emit(name, value)
 			c.RequestHeaderTable.Add(name, value)
 			c.ReferenceSet.Add(name, value)
 		case *NewNameWithIncrementalIndexing:
@@ -74,7 +74,7 @@ func (c *Context) Decode(wire []byte) {
 			// HT と refset にも追記
 			name, value := f.NameString, f.ValueString
 			log.Printf("emit and add refeset, HT (%q, %q)", name, value)
-			c.EmittedSet.Add(name, value)
+			c.EmittedSet.Emit(name, value)
 			c.RequestHeaderTable.Add(name, value)
 			c.ReferenceSet.Add(name, value)
 		case *IndexedNameWithSubstitutionIndexing:
@@ -84,7 +84,7 @@ func (c *Context) Decode(wire []byte) {
 			name := c.RequestHeaderTable[f.Index].Name
 			value := f.ValueString
 			log.Printf("emit and add refeset, replace HT (%q, %q)", name, value)
-			c.EmittedSet.Add(name, value)
+			c.EmittedSet.Emit(name, value)
 			c.RequestHeaderTable.Replace(name, value, f.SubstitutedIndex)
 			c.ReferenceSet.Add(name, value)
 		case *NewNameWithSubstitutionIndexing:
@@ -93,7 +93,7 @@ func (c *Context) Decode(wire []byte) {
 			// refset も更新する
 			name, value := f.NameString, f.ValueString
 			log.Printf("emit and add refeset, replace HT (%q, %q)", name, value)
-			c.EmittedSet.Add(name, value)
+			c.EmittedSet.Emit(name, value)
 			c.RequestHeaderTable.Replace(name, value, f.SubstitutedIndex)
 			c.ReferenceSet.Add(name, value)
 		default:
@@ -103,7 +103,7 @@ func (c *Context) Decode(wire []byte) {
 	// reference set の emitt されてないものを emit する
 	for name, value := range c.ReferenceSet {
 		if c.EmittedSet.Get(name) != value {
-			c.EmittedSet.Add(name, value)
+			c.EmittedSet.Emit(name, value)
 		}
 	}
 }

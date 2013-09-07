@@ -52,10 +52,10 @@ func TestSubstitutionIndexingWithNewName(t *testing.T) {
 
 func TestContextEncodeDecode(t *testing.T) {
 	var headers = http.Header{
-		":scheme":    []string{"https"},
-		":host":      []string{"jxck.io"},
-		":path":      []string{"/"},
-		":method":    []string{"GET"},
+		"Scheme":     []string{"https"},
+		"Host":       []string{"jxck.io"},
+		"Path":       []string{"/"},
+		"Method":     []string{"GET"},
 		"User-Agent": []string{"http2cat"},
 		"Cookie":     []string{"xxxxxxx1"},
 		"X-Hello":    []string{"world"},
@@ -68,10 +68,10 @@ func TestContextEncodeDecode(t *testing.T) {
 	server.Decode(wire)
 
 	headers = http.Header{
-		":scheme":    []string{"https"},
-		":host":      []string{"jxck.io"},
-		":path":      []string{"/labs/http2cat"},
-		":method":    []string{"GET"},
+		"Scheme":     []string{"https"},
+		"Host":       []string{"jxck.io"},
+		"Path":       []string{"/"},
+		"Method":     []string{"GET"},
 		"User-Agent": []string{"http2cat"},
 		"Cookie":     []string{"xxxxxxx2"},
 	}
@@ -79,7 +79,7 @@ func TestContextEncodeDecode(t *testing.T) {
 	wire = client.Encode(headers)
 	server.Decode(wire)
 
-	for name, values := range server.EmittedSet {
+	for name, values := range server.EmittedSet.Header {
 		if !CompareSlice(headers[name], values) {
 			t.Errorf("got %v\nwant %v", values, headers[name])
 		}
