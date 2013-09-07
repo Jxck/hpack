@@ -10,12 +10,12 @@ func (h Header) Size() int {
 }
 
 type Headers []Header
-type SETTINGS_HEADER_TABLE_SIZE int
+type HEADER_TABLE_SIZE int
 
-var DEFAULT_SETTINGS_HEADER_TABLE_SIZE SETTINGS_HEADER_TABLE_SIZE = 4096
+var DEFAULT_HEADER_TABLE_SIZE HEADER_TABLE_SIZE = 4096
 
 type HeaderTable struct {
-	SETTINGS_HEADER_TABLE_SIZE
+	HEADER_TABLE_SIZE
 	Headers
 }
 
@@ -85,7 +85,7 @@ func (ht HeaderTable) SearchHeader(name, value string) (int, *Header) {
 
 func NewRequestHeaderTable() HeaderTable {
 	return HeaderTable{
-		DEFAULT_SETTINGS_HEADER_TABLE_SIZE,
+		DEFAULT_HEADER_TABLE_SIZE,
 		Headers{
 			{":scheme", "http"},
 			{":scheme", "https"},
@@ -123,7 +123,7 @@ func NewRequestHeaderTable() HeaderTable {
 
 func NewResponseHeaderTable() HeaderTable {
 	return HeaderTable{
-		DEFAULT_SETTINGS_HEADER_TABLE_SIZE,
+		DEFAULT_HEADER_TABLE_SIZE,
 		Headers{
 			{":status", "200"},
 			{"age", ""},
