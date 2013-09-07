@@ -10,12 +10,11 @@ func (h Header) Size() int {
 }
 
 type Headers []Header
-type HEADER_TABLE_SIZE int
 
-var DEFAULT_HEADER_TABLE_SIZE HEADER_TABLE_SIZE = 4096
+var DEFAULT_HEADER_TABLE_SIZE int = 4096
 
 type HeaderTable struct {
-	HEADER_TABLE_SIZE
+	HEADER_TABLE_SIZE int
 	Headers
 }
 
