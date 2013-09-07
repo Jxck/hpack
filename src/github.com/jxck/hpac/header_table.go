@@ -12,6 +12,11 @@ func (ht *HeaderTable) Add(name, value string) {
 	*ht = append(*ht, header)
 }
 
+func (ht HeaderTable) Replace(name, value string, index uint64) {
+	header := Header{name, value}
+	ht[index] = header
+}
+
 // name と value が HeaderTable にあるかを探す
 // name, value とも一致 => index, *Header
 // name はある          => index, nil

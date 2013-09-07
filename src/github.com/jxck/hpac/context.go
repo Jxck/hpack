@@ -65,15 +65,39 @@ func (c *Context) Decode(wire []byte) {
 			// HT にある名前だけ使い
 			// HT に新しく追記する
 			// refset も更新する
-			header := c.RequestHeaderTable[f.Index]
-			name, value := header.Name, f.ValueString
+			name := c.RequestHeaderTable[f.Index].Name
+			value := f.ValueString
 			log.Printf("emit and add refeset, HT (%q, %q)", name, value)
 			c.EmittedSet.Add(name, value)
 			c.RequestHeaderTable.Add(name, value)
 			c.ReferenceSet.Add(name, value)
 		case *NewNameWithIncrementalIndexing:
+			// Name/Value ペアを送る
+			// HT と refset にも追記
+			name, value := f.NameString, f.ValueString
+			log.Printf("emit and add refeset, HT (%q, %q)", name, value)
+			c.EmittedSet.Add(name, value)
+			c.RequestHeaderTable.Add(name, value)
+			c.ReferenceSet.Add(name, value)
 		case *IndexedNameWithSubstitutionIndexing:
+			// HT[substituted index]  の 中身を
+			// HT[index] と value で置き換える
+			// refset も更新する
+			name := c.RequestHeaderTable[f.Index].Name
+			value := f.ValueString
+			log.Printf("emit and add refeset, replace HT (%q, %q)", name, value)
+			c.EmittedSet.Add(name, value)
+			c.RequestHeaderTable.Replace(name, value, f.SubstitutedIndex)
+			c.ReferenceSet.Add(name, value)
 		case *NewNameWithSubstitutionIndexing:
+			// HT[substituted index]  の 中身を
+			// name と value で置き換える
+			// refset も更新する
+			name, value := f.NameString, f.ValueString
+			log.Printf("emit and add refeset, replace HT (%q, %q)", name, value)
+			c.EmittedSet.Add(name, value)
+			c.RequestHeaderTable.Replace(name, value, f.SubstitutedIndex)
+			c.ReferenceSet.Add(name, value)
 		default:
 			log.Fatal("%T", f)
 		}
