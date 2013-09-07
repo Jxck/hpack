@@ -4,6 +4,28 @@ import (
 	"testing"
 )
 
+func TestHeaderSize(t *testing.T) {
+	h := Header{"hello", "world"}
+	if h.Size() != 42 {
+		t.Errorf("got %v\nwant %v", h.Size(), 42)
+	}
+}
+
+func TestHeaderTableSize(t *testing.T) {
+	ht := HeaderTable{
+		{"12345", "12345"},
+		{"12345", "12345"},
+		{"12345", "12345"},
+		{"12345", "12345"},
+		{"12345", "12345"},
+	}
+	size := ht.Size()
+
+	if size != 210 {
+		t.Errorf("got %v\nwant %v", size, 210)
+	}
+}
+
 func TestHeaderTableAdd(t *testing.T) {
 	reqHT := NewRequestHeaderTable()
 	reqHT.Add("Hello", "World")

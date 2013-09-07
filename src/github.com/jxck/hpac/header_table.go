@@ -5,7 +5,19 @@ type Header struct {
 	Value string
 }
 
+func (h Header) Size() int {
+	return len(h.Name) + len(h.Value) + 32
+}
+
 type HeaderTable []Header
+
+func (ht *HeaderTable) Size() int {
+	var sum int
+	for _, h := range *ht {
+		sum += h.Size()
+	}
+	return sum
+}
 
 func (ht *HeaderTable) Add(name, value string) {
 	header := Header{name, value}
