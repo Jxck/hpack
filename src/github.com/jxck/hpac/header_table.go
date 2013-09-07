@@ -9,11 +9,15 @@ func (h Header) Size() int {
 	return len(h.Name) + len(h.Value) + 32
 }
 
-type HeaderTable []Header
+type Headers []Header
+
+type HeaderTable struct {
+	Headers
+}
 
 func (ht *HeaderTable) Size() int {
 	var sum int
-	for _, h := range *ht {
+	for _, h := range ht.Headers {
 		sum += h.Size()
 	}
 	return sum
@@ -21,12 +25,12 @@ func (ht *HeaderTable) Size() int {
 
 func (ht *HeaderTable) Add(name, value string) {
 	header := Header{name, value}
-	*ht = append(*ht, header)
+	ht.Headers = append(ht.Headers, header)
 }
 
 func (ht HeaderTable) Replace(name, value string, index uint64) {
 	header := Header{name, value}
-	ht[index] = header
+	ht.Headers[index] = header
 }
 
 // name と value が HeaderTable にあるかを探す
@@ -41,7 +45,7 @@ func (ht HeaderTable) SearchHeader(name, value string) (int, *Header) {
 	var matching_name_indexes = []int{}
 
 	// ヘッダテーブルの頭から探す
-	for i, h := range ht {
+	for i, h := range ht.Headers {
 
 		// Name がヘッダテーブルにあった場合
 		if h.Name == name {
@@ -69,70 +73,74 @@ func (ht HeaderTable) SearchHeader(name, value string) (int, *Header) {
 
 func NewRequestHeaderTable() HeaderTable {
 	return HeaderTable{
-		{":scheme", "http"},
-		{":scheme", "https"},
-		{":host", ""},
-		{":path", "/"},
-		{":method", "GET"},
-		{"accept", ""},
-		{"accept-charset", ""},
-		{"accept-encoding", ""},
-		{"accept-language", ""},
-		{"cookie", ""},
-		{"if-modified-since", ""},
-		{"user-agent", ""},
-		{"referer", ""},
-		{"authorization", ""},
-		{"allow", ""},
-		{"cache-control", ""},
-		{"connection", ""},
-		{"content-length", ""},
-		{"content-type", ""},
-		{"date", ""},
-		{"expect", ""},
-		{"from", ""},
-		{"if-match", ""},
-		{"if-none-match", ""},
-		{"if-range", ""},
-		{"if-unmodified-since", ""},
-		{"max-forwards", ""},
-		{"proxy-authorization", ""},
-		{"range", ""},
-		{"via", ""},
+		Headers{
+			{":scheme", "http"},
+			{":scheme", "https"},
+			{":host", ""},
+			{":path", "/"},
+			{":method", "GET"},
+			{"accept", ""},
+			{"accept-charset", ""},
+			{"accept-encoding", ""},
+			{"accept-language", ""},
+			{"cookie", ""},
+			{"if-modified-since", ""},
+			{"user-agent", ""},
+			{"referer", ""},
+			{"authorization", ""},
+			{"allow", ""},
+			{"cache-control", ""},
+			{"connection", ""},
+			{"content-length", ""},
+			{"content-type", ""},
+			{"date", ""},
+			{"expect", ""},
+			{"from", ""},
+			{"if-match", ""},
+			{"if-none-match", ""},
+			{"if-range", ""},
+			{"if-unmodified-since", ""},
+			{"max-forwards", ""},
+			{"proxy-authorization", ""},
+			{"range", ""},
+			{"via", ""},
+		},
 	}
 }
 
 func NewResponseHeaderTable() HeaderTable {
 	return HeaderTable{
-		{":status", "200"},
-		{"age", ""},
-		{"cache-control", ""},
-		{"content-length", ""},
-		{"content-type", ""},
-		{"date", ""},
-		{"etag", ""},
-		{"expires", ""},
-		{"last-modified", ""},
-		{"server", ""},
-		{"set-cookie", ""},
-		{"vary", ""},
-		{"via", ""},
-		{"access-control-allow-origin", ""},
-		{"accept-ranges", ""},
-		{"allow", ""},
-		{"connection", ""},
-		{"content-disposition", ""},
-		{"content-encoding", ""},
-		{"content-language", ""},
-		{"content-location", ""},
-		{"content-range", ""},
-		{"link", ""},
-		{"location", ""},
-		{"proxy-authenticate", ""},
-		{"refresh", ""},
-		{"retry-after", ""},
-		{"strict-transport-security", ""},
-		{"transfer-encoding", ""},
-		{"www-authenticate", ""},
+		Headers{
+			{":status", "200"},
+			{"age", ""},
+			{"cache-control", ""},
+			{"content-length", ""},
+			{"content-type", ""},
+			{"date", ""},
+			{"etag", ""},
+			{"expires", ""},
+			{"last-modified", ""},
+			{"server", ""},
+			{"set-cookie", ""},
+			{"vary", ""},
+			{"via", ""},
+			{"access-control-allow-origin", ""},
+			{"accept-ranges", ""},
+			{"allow", ""},
+			{"connection", ""},
+			{"content-disposition", ""},
+			{"content-encoding", ""},
+			{"content-language", ""},
+			{"content-location", ""},
+			{"content-range", ""},
+			{"link", ""},
+			{"location", ""},
+			{"proxy-authenticate", ""},
+			{"refresh", ""},
+			{"retry-after", ""},
+			{"strict-transport-security", ""},
+			{"transfer-encoding", ""},
+			{"www-authenticate", ""},
+		},
 	}
 }

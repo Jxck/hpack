@@ -11,9 +11,9 @@ func TestIncrementalIndexingWithIndexedName(t *testing.T) {
 
 	server := NewContext()
 	server.Decode(frame.Encode().Bytes())
-	last := len(server.RequestHeaderTable) - 1
-	if server.RequestHeaderTable[last].Value != "ftp" {
-		t.Errorf("got %v\nwant %v", server.RequestHeaderTable[last].Name, "ftp")
+	last := len(server.RequestHeaderTable.Headers) - 1
+	if server.RequestHeaderTable.Headers[last].Value != "ftp" {
+		t.Errorf("got %v\nwant %v", server.RequestHeaderTable.Headers[last].Name, "ftp")
 	}
 }
 
@@ -22,7 +22,7 @@ func TestIncrementalIndexingWithNewName(t *testing.T) {
 
 	server := NewContext()
 	server.Decode(frame.Encode().Bytes())
-	last := server.RequestHeaderTable[len(server.RequestHeaderTable)-1]
+	last := server.RequestHeaderTable.Headers[len(server.RequestHeaderTable.Headers)-1]
 	if last.Name != "x-hello" || last.Value != "world" {
 		t.Errorf("got (%v, %v)\nwant (%v %v)", last.Name, last.Value, "x-hello", "world")
 	}
@@ -33,7 +33,7 @@ func TestSubstitutionIndexingWithIndexedName(t *testing.T) {
 
 	server := NewContext()
 	server.Decode(frame.Encode().Bytes())
-	target := server.RequestHeaderTable[10]
+	target := server.RequestHeaderTable.Headers[10]
 	if target.Name != ":scheme" || target.Value != "ftp" {
 		t.Errorf("got (%v, %v)\nwant (%v %v)", target.Name, target.Value, "x-hello", "world")
 	}
@@ -44,7 +44,7 @@ func TestSubstitutionIndexingWithNewName(t *testing.T) {
 
 	server := NewContext()
 	server.Decode(frame.Encode().Bytes())
-	target := server.RequestHeaderTable[10]
+	target := server.RequestHeaderTable.Headers[10]
 	if target.Name != "x-hello" || target.Value != "world" {
 		t.Errorf("got (%v, %v)\nwant (%v %v)", target.Name, target.Value, "x-hello", "world")
 	}

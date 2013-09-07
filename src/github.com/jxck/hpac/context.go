@@ -34,7 +34,7 @@ func (c *Context) Decode(wire []byte) {
 		switch f := frame.(type) {
 		case *IndexedHeader:
 			// HT にあるエントリをそのまま使う
-			header := c.RequestHeaderTable[f.Index]
+			header := c.RequestHeaderTable.Headers[f.Index]
 			log.Printf("%T HT[%v] = %v", f, f.Index, header)
 			if header.Value == c.ReferenceSet[header.Name] {
 				// refset にある場合は消す
@@ -49,7 +49,7 @@ func (c *Context) Decode(wire []byte) {
 		case *IndexedNameWithoutIndexing:
 			// HT にある名前だけ使う
 			// HT も refset も更新しない
-			header := c.RequestHeaderTable[f.Index]
+			header := c.RequestHeaderTable.Headers[f.Index]
 			log.Printf("%T HT[%v] = %v value=%q", f, f.Index, header.Name, f.ValueString)
 			log.Printf("emit (%q, %q)", header.Name, f.ValueString)
 			c.EmittedSet.Emit(header.Name, f.ValueString)
@@ -63,7 +63,7 @@ func (c *Context) Decode(wire []byte) {
 			// HT にある名前だけ使い
 			// HT に新しく追記する
 			// refset も更新する
-			name := c.RequestHeaderTable[f.Index].Name
+			name := c.RequestHeaderTable.Headers[f.Index].Name
 			value := f.ValueString
 			log.Printf("emit and add refeset, HT (%q, %q)", name, value)
 			c.EmittedSet.Emit(name, value)
@@ -81,7 +81,7 @@ func (c *Context) Decode(wire []byte) {
 			// HT[substituted index]  の 中身を
 			// HT[index] と value で置き換える
 			// refset も更新する
-			name := c.RequestHeaderTable[f.Index].Name
+			name := c.RequestHeaderTable.Headers[f.Index].Name
 			value := f.ValueString
 			log.Printf("emit and add refeset, replace HT (%q, %q)", name, value)
 			c.EmittedSet.Emit(name, value)

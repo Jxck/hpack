@@ -13,11 +13,13 @@ func TestHeaderSize(t *testing.T) {
 
 func TestHeaderTableSize(t *testing.T) {
 	ht := HeaderTable{
-		{"12345", "12345"},
-		{"12345", "12345"},
-		{"12345", "12345"},
-		{"12345", "12345"},
-		{"12345", "12345"},
+		Headers{
+			{"12345", "12345"},
+			{"12345", "12345"},
+			{"12345", "12345"},
+			{"12345", "12345"},
+			{"12345", "12345"},
+		},
 	}
 	size := ht.Size()
 
@@ -30,7 +32,7 @@ func TestHeaderTableAdd(t *testing.T) {
 	reqHT := NewRequestHeaderTable()
 	reqHT.Add("Hello", "World")
 
-	h := reqHT[len(reqHT)-1]
+	h := reqHT.Headers[len(reqHT.Headers)-1]
 	if h.Name != "Hello" || h.Value != "World" {
 		t.Errorf("got %v\nwant %v", h, Header{"Hello", "World"})
 	}
@@ -40,7 +42,7 @@ func TestHeaderTableReplace(t *testing.T) {
 	reqHT := NewRequestHeaderTable()
 	reqHT.Replace("Hello", "World", 10)
 
-	h := reqHT[10]
+	h := reqHT.Headers[10]
 	if h.Name != "Hello" || h.Value != "World" {
 		t.Errorf("got %v\nwant %v", h, Header{"Hello", "World"})
 	}
