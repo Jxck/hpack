@@ -16,31 +16,6 @@ func TestAdd(t *testing.T) {
 	}
 }
 
-func TestSet(t *testing.T) {
-	ref := ReferenceSet{"hoge": "fuga"}
-
-	ok := ref.Set("hoge", "piyo")
-	if ok != true {
-		t.Errorf("got %v\nwant %v", ok, true)
-	}
-	if len(ref) != 1 {
-		t.Errorf("got %v\nwant %v", len(ref), 1)
-	}
-	if ref["hoge"] != "piyo" {
-		t.Errorf("got %v\nwant %v", ref["hoge"], "piyo")
-	}
-
-	ref = ReferenceSet{}
-
-	ok = ref.Set("hoge", "piyo")
-	if ok != false {
-		t.Errorf("got %v\nwant %v", ok, false)
-	}
-	if len(ref) != 0 {
-		t.Errorf("got %v\nwant %v", len(ref), 0)
-	}
-}
-
 func TestDel(t *testing.T) {
 	ref := ReferenceSet{"hoge": "fuga"}
 
