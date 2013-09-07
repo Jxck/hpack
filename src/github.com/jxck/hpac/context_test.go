@@ -5,6 +5,18 @@ import (
 	"testing"
 )
 
+// TODO: check refset, emmitedset in test
+func TestIncrementalIndexing(t *testing.T) {
+	frame := CreateIndexedNameWithIncrementalIndexing(0, "ftp")
+
+	server := NewContext()
+	server.Decode(frame.Encode().Bytes())
+	last := len(server.RequestHeaderTable) - 1
+	if server.RequestHeaderTable[last].Value != "ftp" {
+		t.Errorf("got %v\nwant %v", server.RequestHeaderTable[last].Name, "ftp")
+	}
+}
+
 func TestContextEncodeDecode(t *testing.T) {
 	var headers = http.Header{
 		":scheme":    []string{"https"},

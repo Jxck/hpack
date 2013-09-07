@@ -61,6 +61,19 @@ func (c *Context) Decode(wire []byte) {
 			log.Printf("%T name=%q value=%q", f, f.NameString, f.ValueString)
 			log.Printf("emit (%q, %q)", f.NameString, f.ValueString)
 			c.EmittedSet.Add(f.NameString, f.ValueString)
+		case *IndexedNameWithIncrementalIndexing:
+			// HT にある名前だけ使い
+			// HT に新しく追記する
+			// refset も更新する
+			header := c.RequestHeaderTable[f.Index]
+			name, value := header.Name, f.ValueString
+			log.Printf("emit and add refeset, HT (%q, %q)", name, value)
+			c.EmittedSet.Add(name, value)
+			c.RequestHeaderTable.Add(name, value)
+			c.ReferenceSet.Add(name, value)
+		case *NewNameWithIncrementalIndexing:
+		case *IndexedNameWithSubstitutionIndexing:
+		case *NewNameWithSubstitutionIndexing:
 		default:
 			log.Fatal("%T", f)
 		}

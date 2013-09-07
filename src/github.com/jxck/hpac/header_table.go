@@ -7,7 +7,8 @@ type Header struct {
 
 type HeaderTable []Header
 
-func (ht *HeaderTable) Add(header Header) {
+func (ht *HeaderTable) Add(name, value string) {
+	header := Header{name, value}
 	*ht = append(*ht, header)
 }
 
