@@ -18,7 +18,7 @@ func NewContext() *Context {
 	var context = &Context{
 		RequestHeaderTable:  NewRequestHeaderTable(),
 		ResponseHeaderTable: NewResponseHeaderTable(),
-		ReferenceSet:        ReferenceSet{},
+		ReferenceSet:        NewReferenceSet(),
 		EmittedSet:          NewEmittedSet(),
 	}
 	return context

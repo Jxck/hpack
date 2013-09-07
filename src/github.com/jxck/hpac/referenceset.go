@@ -2,6 +2,10 @@ package hpac
 
 type ReferenceSet map[string]string
 
+func NewReferenceSet() ReferenceSet {
+	return ReferenceSet{}
+}
+
 func (r ReferenceSet) Add(key, value string) {
 	r[key] = value
 }
