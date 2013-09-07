@@ -7,6 +7,8 @@ import (
 
 type HeaderSet map[string]string
 
+// method, scheme, host, path, status
+// are must and needs ":" prefix
 var MustHeader = map[string]string{
 	"Scheme": ":scheme",
 	"Method": ":method",
@@ -16,7 +18,6 @@ var MustHeader = map[string]string{
 }
 
 func NewHeaderSet(header http.Header) HeaderSet {
-	// method, scheme, host, path, status
 	headerSet := make(HeaderSet, len(header))
 	for name, value := range header {
 		mustname, ok := MustHeader[name]
