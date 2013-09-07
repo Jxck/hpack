@@ -13,11 +13,12 @@ func TestEmit(t *testing.T) {
 	}
 }
 
-/*
+func TestInheriHttpHeader(t *testing.T) {
+	es := NewEmittedSet()
 	es.Add("foo", "bar")
 	es.Set("foo", "buz")
 	es.Del("foo")
-	for name, value := range es.Header {
-		log.Println(name, value)
+	if len(es.Header) != 0 {
+		t.Errorf("got %v\nwant %v", len(es.Header), 0)
 	}
-*/
+}
