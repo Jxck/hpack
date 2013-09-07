@@ -13,6 +13,7 @@ func TestHeaderSize(t *testing.T) {
 
 func TestHeaderTableSize(t *testing.T) {
 	ht := HeaderTable{
+		DEFAULT_SETTINGS_HEADER_TABLE_SIZE,
 		Headers{
 			{"12345", "12345"},
 			{"12345", "12345"},
