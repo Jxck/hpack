@@ -53,6 +53,11 @@ func (ht *HeaderTable) AllocSpace(size int) {
 	}
 }
 
+// remove all entry from HeaderTable
+func (ht *HeaderTable) DeleteAll() {
+	ht.Headers = Headers{}
+}
+
 // name と value が HeaderTable にあるかを探す
 // name, value とも一致 => index, *Header
 // name はある          => index, nil

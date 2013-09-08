@@ -78,12 +78,30 @@ func TestHeaderTableAllocSpace(t *testing.T) {
 			{"1234", "1234"},
 		},
 	}
-	ht.AllocSpace(20)
-	t.Log(ht)
+	ht.AllocSpace(20) // remove 1 entry (40byte)
 
 	size := ht.Size()
-	if size != 210 {
-		t.Errorf("got %v\nwant %v", size, 210)
+	if size != 160 {
+		t.Errorf("got %v\nwant %v", size, 160)
+	}
+}
+
+func TestHeaderTableDeleteAll(t *testing.T) {
+	ht := HeaderTable{
+		200,
+		Headers{
+			{"1234", "1234"},
+			{"1234", "1234"},
+			{"1234", "1234"},
+			{"1234", "1234"},
+			{"1234", "1234"},
+		},
+	}
+	ht.DeleteAll()
+
+	size := ht.Size()
+	if size != 0 {
+		t.Errorf("got %v\nwant %v", size, 0)
 	}
 }
 
