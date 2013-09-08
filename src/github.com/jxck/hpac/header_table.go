@@ -36,11 +36,28 @@ func (ht *HeaderTable) Add(name, value string) {
 	}
 }
 
-func (ht *HeaderTable) Replace(name, value string, index uint64) {
+func (ht *HeaderTable) Replace(name, value string, i uint64) {
+	index := int(i)
 	header := Header{name, value}
 	if header.Size() > ht.HEADER_TABLE_SIZE {
 		ht.DeleteAll()
 	} else {
+		existHeader := ht.Headers[index]
+		needSpace := header.Size() - existHeader.Size()
+
+		// if new replaced header is bigger than existing header
+		// allocate space for replace
+		if needSpace > 0 {
+			removed := ht.AllocSpace(needSpace)
+			// if Allocate removes entry
+			// need to shift replace index
+			index -= removed
+			if index < 0 {
+				// if replace entry removed
+				// insert at first
+				index = 0
+			}
+		}
 		ht.Headers[index] = header
 	}
 }

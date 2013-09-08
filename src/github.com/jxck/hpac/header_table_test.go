@@ -88,6 +88,42 @@ func TestHeaderTableReplace(t *testing.T) {
 	}
 }
 
+func TestHeaderTableReplaceWithAlloc(t *testing.T) {
+	ht := HeaderTable{
+		200,
+		Headers{ // 200byte
+			{"0000", "0000"},
+			{"1111", "1111"},
+			{"2222", "2222"},
+			{"3333", "3333"},
+			{"4444", "4444"}, // 40byte
+		},
+	}
+	ht.Replace("xxxxx", "yyyyy", 3)
+
+	h := ht.Headers[2]
+	if h.Name != "xxxxx" || h.Value != "yyyyy" {
+		t.Errorf("got %v\nwant %v", h, Header{"xxxxx", "yyyyy"})
+	}
+
+	ht = HeaderTable{
+		200,
+		Headers{ // 200byte
+			{"0000", "0000"},
+			{"1111", "1111"},
+			{"2222", "2222"},
+			{"3333", "3333"},
+			{"4444", "4444"}, // 40byte
+		},
+	}
+	ht.Replace("xxxxx", "yyyyy", 0)
+
+	h = ht.Headers[0]
+	if h.Name != "xxxxx" || h.Value != "yyyyy" {
+		t.Errorf("got %v\nwant %v", h, Header{"xxxxx", "yyyyy"})
+	}
+}
+
 func TestHeaderTableReplaceBigEntry(t *testing.T) {
 	ht := HeaderTable{
 		40,
