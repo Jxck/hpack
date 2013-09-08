@@ -55,11 +55,13 @@ func (ht *HeaderTable) Remove(index int) {
 
 // removing entry from top
 // until make space of size in Header Table
-func (ht *HeaderTable) AllocSpace(size int) {
+func (ht *HeaderTable) AllocSpace(size int) (removed int) {
 	adjustSize := ht.HEADER_TABLE_SIZE - size
 	for ht.Size() > adjustSize {
 		ht.Remove(0)
+		removed++
 	}
+	return
 }
 
 // remove all entry from HeaderTable

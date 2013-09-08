@@ -122,7 +122,10 @@ func TestHeaderTableAllocSpace(t *testing.T) {
 			{"1234", "1234"},
 		},
 	}
-	ht.AllocSpace(20) // remove 1 entry (40byte)
+	removed := ht.AllocSpace(20) // remove 1 entry (40byte)
+	if removed != 1 {
+		t.Errorf("got %v\nwant %v", removed, 1)
+	}
 
 	size := ht.Size()
 	if size != 160 {
