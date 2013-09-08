@@ -70,12 +70,21 @@ func TestHeaderTableAddBigEntry(t *testing.T) {
 }
 
 func TestHeaderTableReplace(t *testing.T) {
-	reqHT := NewRequestHeaderTable()
-	reqHT.Replace("Hello", "World", 10)
+	ht := HeaderTable{
+		200,
+		Headers{ // 200byte
+			{"0000", "0000"},
+			{"1111", "1111"},
+			{"2222", "2222"},
+			{"3333", "3333"},
+			{"4444", "4444"}, // 40byte
+		},
+	}
+	ht.Replace("xxxx", "yyyy", 4)
 
-	h := reqHT.Headers[10]
-	if h.Name != "Hello" || h.Value != "World" {
-		t.Errorf("got %v\nwant %v", h, Header{"Hello", "World"})
+	h := ht.Headers[4]
+	if h.Name != "xxxx" || h.Value != "yyyy" {
+		t.Errorf("got %v\nwant %v", h, Header{"xxxx", "yyyy"})
 	}
 }
 
