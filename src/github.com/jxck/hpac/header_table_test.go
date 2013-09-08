@@ -30,10 +30,26 @@ func TestHeaderTableSize(t *testing.T) {
 }
 
 func TestHeaderTableAdd(t *testing.T) {
-	reqHT := NewRequestHeaderTable()
-	reqHT.Add("Hello", "World")
+	ht := HeaderTable{
+		200,
+		Headers{ // 200byte
+			{"1234", "1234"},
+			{"1234", "1234"},
+			{"1234", "1234"},
+			{"1234", "1234"},
+			{"1234", "1234"}, // 40byte
+		},
+	}
 
-	h := reqHT.Headers[len(reqHT.Headers)-1]
+	// should remove 2 entry before add
+	ht.Add("Hello", "World") // 42byte
+	size := ht.Size()
+	expected := 200 - 40 - 40 + 42
+	if size != expected {
+		t.Errorf("got %v\nwant %v", size, expected)
+	}
+
+	h := ht.Headers[len(ht.Headers)-1]
 	if h.Name != "Hello" || h.Value != "World" {
 		t.Errorf("got %v\nwant %v", h, Header{"Hello", "World"})
 	}
@@ -63,6 +79,20 @@ func TestHeaderTableReplace(t *testing.T) {
 	}
 }
 
+func TestHeaderTableReplaceBigEntry(t *testing.T) {
+	ht := HeaderTable{
+		40,
+		Headers{
+			{"1234", "1234"}, // 40
+		},
+	}
+	ht.Replace("12345", "12345", 0) // over 40
+	size := ht.Size()
+	if size != 0 {
+		t.Errorf("got %v\nwant %v", size, 0)
+	}
+}
+
 func TestHeaderTableRemove(t *testing.T) {
 	reqHT := NewRequestHeaderTable()
 	reqHT.Remove(3)
@@ -84,7 +114,7 @@ func TestHeaderTableRemove(t *testing.T) {
 func TestHeaderTableAllocSpace(t *testing.T) {
 	ht := HeaderTable{
 		200,
-		Headers{
+		Headers{ // 200byte
 			{"1234", "1234"},
 			{"1234", "1234"},
 			{"1234", "1234"},

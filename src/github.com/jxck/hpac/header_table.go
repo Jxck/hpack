@@ -31,13 +31,18 @@ func (ht *HeaderTable) Add(name, value string) {
 	if header.Size() > ht.HEADER_TABLE_SIZE {
 		ht.DeleteAll()
 	} else {
+		ht.AllocSpace(header.Size())
 		ht.Headers = append(ht.Headers, header)
 	}
 }
 
-func (ht HeaderTable) Replace(name, value string, index uint64) {
+func (ht *HeaderTable) Replace(name, value string, index uint64) {
 	header := Header{name, value}
-	ht.Headers[index] = header
+	if header.Size() > ht.HEADER_TABLE_SIZE {
+		ht.DeleteAll()
+	} else {
+		ht.Headers[index] = header
+	}
 }
 
 func (ht *HeaderTable) Remove(index int) {
