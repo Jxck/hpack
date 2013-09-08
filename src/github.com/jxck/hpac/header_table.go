@@ -28,7 +28,11 @@ func (ht *HeaderTable) Size() int {
 
 func (ht *HeaderTable) Add(name, value string) {
 	header := Header{name, value}
-	ht.Headers = append(ht.Headers, header)
+	if header.Size() > ht.HEADER_TABLE_SIZE {
+		ht.DeleteAll()
+	} else {
+		ht.Headers = append(ht.Headers, header)
+	}
 }
 
 func (ht HeaderTable) Replace(name, value string, index uint64) {

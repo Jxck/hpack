@@ -39,6 +39,20 @@ func TestHeaderTableAdd(t *testing.T) {
 	}
 }
 
+func TestHeaderTableAddBigEntry(t *testing.T) {
+	ht := HeaderTable{
+		40,
+		Headers{
+			{"1234", "1234"}, // 40
+		},
+	}
+	ht.Add("12345", "12345") // over 40
+	size := ht.Size()
+	if size != 0 {
+		t.Errorf("got %v\nwant %v", size, 0)
+	}
+}
+
 func TestHeaderTableReplace(t *testing.T) {
 	reqHT := NewRequestHeaderTable()
 	reqHT.Replace("Hello", "World", 10)
