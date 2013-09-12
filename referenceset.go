@@ -1,4 +1,4 @@
-package hpac
+package hpack
 
 type ReferenceSet map[string]string
 

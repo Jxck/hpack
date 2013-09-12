@@ -1,4 +1,4 @@
-package hpac
+package hpack
 
 // compare both slice has same value
 func CompareSlice(a, b []string) bool {

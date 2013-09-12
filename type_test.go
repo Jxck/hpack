@@ -1,4 +1,4 @@
-package hpac
+package hpack
 
 import (
 	"testing"

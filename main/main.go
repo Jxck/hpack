@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/jxck/hpac"
+	"github.com/jxck/hpack"
 	"log"
 	"net/http"
 )
@@ -22,10 +22,10 @@ func main() {
 		"X-Hello":    []string{"world"},
 	}
 
-	client := hpac.NewContext()
+	client := hpack.NewContext()
 	wire := client.Encode(headers)
 
-	server := hpac.NewContext()
+	server := hpack.NewContext()
 	server.Decode(wire)
 
 	log.Printf("refset: %v", server.ReferenceSet)

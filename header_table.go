@@ -1,4 +1,4 @@
-package hpac
+package hpack
 
 type Header struct {
 	Name  string
