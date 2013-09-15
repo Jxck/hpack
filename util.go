@@ -2,6 +2,7 @@ package hpack
 
 import (
 	"fmt"
+	"os"
 	"runtime"
 	"strings"
 )
@@ -21,9 +22,11 @@ func CompareSlice(a, b []string) bool {
 }
 
 func Debug(str string) {
-	_, file, line, _ := runtime.Caller(1)
-	f := strings.Split(file, "/")
-	filename := f[len(f)-1]
-
-	fmt.Printf("%v:%v %v\n", filename, line, str)
+	env := os.Getenv("DEBUG")
+	if strings.Contains(env, "hpack") {
+		_, file, line, _ := runtime.Caller(1)
+		f := strings.Split(file, "/")
+		filename := f[len(f)-1]
+		fmt.Printf("%v:%v %v\n", filename, line, str)
+	}
 }
