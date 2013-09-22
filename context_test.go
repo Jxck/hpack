@@ -9,20 +9,20 @@ import (
 func TestIncrementalIndexingWithIndexedName(t *testing.T) {
 	frame := CreateIndexedNameWithIncrementalIndexing(0, "ftp")
 
-	server := NewContext()
+	server := NewRequestContext()
 	server.Decode(frame.Encode().Bytes())
-	last := len(server.RequestHeaderTable.Headers) - 1
-	if server.RequestHeaderTable.Headers[last].Value != "ftp" {
-		t.Errorf("got %v\nwant %v", server.RequestHeaderTable.Headers[last].Name, "ftp")
+	last := len(server.HeaderTable.Headers) - 1
+	if server.HeaderTable.Headers[last].Value != "ftp" {
+		t.Errorf("got %v\nwant %v", server.HeaderTable.Headers[last].Name, "ftp")
 	}
 }
 
 func TestIncrementalIndexingWithNewName(t *testing.T) {
 	frame := CreateNewNameWithIncrementalIndexing("x-hello", "world")
 
-	server := NewContext()
+	server := NewRequestContext()
 	server.Decode(frame.Encode().Bytes())
-	last := server.RequestHeaderTable.Headers[len(server.RequestHeaderTable.Headers)-1]
+	last := server.HeaderTable.Headers[len(server.HeaderTable.Headers)-1]
 	if last.Name != "x-hello" || last.Value != "world" {
 		t.Errorf("got (%v, %v)\nwant (%v %v)", last.Name, last.Value, "x-hello", "world")
 	}
@@ -31,20 +31,20 @@ func TestIncrementalIndexingWithNewName(t *testing.T) {
 func TestSubstitutionIndexingWithIndexedName(t *testing.T) {
 	frame := CreateIndexedNameWithSubstitutionIndexing(0, 10, "ftp")
 
-	server := NewContext()
+	server := NewRequestContext()
 	server.Decode(frame.Encode().Bytes())
-	target := server.RequestHeaderTable.Headers[10]
+	target := server.HeaderTable.Headers[10]
 	if target.Name != ":scheme" || target.Value != "ftp" {
-		t.Errorf("got (%v, %v)\nwant (%v %v)", target.Name, target.Value, "x-hello", "world")
+		t.Errorf("got (%v, %v)\nwant (%v %v)", target.Name, target.Value, ":scheme", "ftp")
 	}
 }
 
 func TestSubstitutionIndexingWithNewName(t *testing.T) {
 	frame := CreateNewNameWithSubstitutionIndexing("x-hello", 10, "world")
 
-	server := NewContext()
+	server := NewRequestContext()
 	server.Decode(frame.Encode().Bytes())
-	target := server.RequestHeaderTable.Headers[10]
+	target := server.HeaderTable.Headers[10]
 	if target.Name != "x-hello" || target.Value != "world" {
 		t.Errorf("got (%v, %v)\nwant (%v %v)", target.Name, target.Value, "x-hello", "world")
 	}
@@ -61,10 +61,10 @@ func TestContextEncodeDecode(t *testing.T) {
 		"X-Hello":    []string{"world"},
 	}
 
-	client := NewContext()
+	client := NewRequestContext()
 	wire := client.Encode(headers)
 
-	server := NewContext()
+	server := NewRequestContext()
 	server.Decode(wire)
 
 	headers = http.Header{

@@ -8,18 +8,16 @@ import (
 )
 
 type Context struct {
-	RequestHeaderTable  HeaderTable
-	ResponseHeaderTable HeaderTable
-	ReferenceSet        ReferenceSet
-	EmittedSet          EmittedSet
+	HeaderTable  HeaderTable
+	ReferenceSet ReferenceSet
+	EmittedSet   EmittedSet
 }
 
-func NewContext() *Context {
+func NewRequestContext() *Context {
 	var context = &Context{
-		RequestHeaderTable:  NewRequestHeaderTable(),
-		ResponseHeaderTable: NewResponseHeaderTable(),
-		ReferenceSet:        NewReferenceSet(),
-		EmittedSet:          NewEmittedSet(),
+		HeaderTable:  NewRequestHeaderTable(),
+		ReferenceSet: NewReferenceSet(),
+		EmittedSet:   NewEmittedSet(),
 	}
 	return context
 }
@@ -33,7 +31,7 @@ func (c *Context) Decode(wire []byte) {
 		switch f := frame.(type) {
 		case *IndexedHeader:
 			// HT にあるエントリをそのまま使う
-			header := c.RequestHeaderTable.Headers[f.Index]
+			header := c.HeaderTable.Headers[f.Index]
 			Debug(fmt.Sprintf("%T HT[%v] = %v", f, f.Index, header))
 			if header.Value == c.ReferenceSet[header.Name] {
 				// refset にある場合は消す
@@ -48,7 +46,7 @@ func (c *Context) Decode(wire []byte) {
 		case *IndexedNameWithoutIndexing:
 			// HT にある名前だけ使う
 			// HT も refset も更新しない
-			header := c.RequestHeaderTable.Headers[f.Index]
+			header := c.HeaderTable.Headers[f.Index]
 			Debug(fmt.Sprintf("%T HT[%v] = %v value=%q", f, f.Index, header.Name, f.ValueString))
 			Debug(fmt.Sprintf("emit (%q, %q)", header.Name, f.ValueString))
 			c.EmittedSet.Emit(header.Name, f.ValueString)
@@ -62,11 +60,11 @@ func (c *Context) Decode(wire []byte) {
 			// HT にある名前だけ使い
 			// HT に新しく追記する
 			// refset も更新する
-			name := c.RequestHeaderTable.Headers[f.Index].Name
+			name := c.HeaderTable.Headers[f.Index].Name
 			value := f.ValueString
 			Debug(fmt.Sprintf("emit and add refeset, HT (%q, %q)", name, value))
 			c.EmittedSet.Emit(name, value)
-			c.RequestHeaderTable.Add(name, value)
+			c.HeaderTable.Add(name, value)
 			c.ReferenceSet.Add(name, value)
 		case *NewNameWithIncrementalIndexing:
 			// Name/Value ペアを送る
@@ -74,17 +72,17 @@ func (c *Context) Decode(wire []byte) {
 			name, value := f.NameString, f.ValueString
 			Debug(fmt.Sprintf("emit and add refeset, HT (%q, %q)", name, value))
 			c.EmittedSet.Emit(name, value)
-			c.RequestHeaderTable.Add(name, value)
+			c.HeaderTable.Add(name, value)
 			c.ReferenceSet.Add(name, value)
 		case *IndexedNameWithSubstitutionIndexing:
 			// HT[substituted index]  の 中身を
 			// HT[index] と value で置き換える
 			// refset も更新する
-			name := c.RequestHeaderTable.Headers[f.Index].Name
+			name := c.HeaderTable.Headers[f.Index].Name
 			value := f.ValueString
 			Debug(fmt.Sprintf("emit and add refeset, replace HT (%q, %q)", name, value))
 			c.EmittedSet.Emit(name, value)
-			c.RequestHeaderTable.Replace(name, value, f.SubstitutedIndex)
+			c.HeaderTable.Replace(name, value, f.SubstitutedIndex)
 			c.ReferenceSet.Add(name, value)
 		case *NewNameWithSubstitutionIndexing:
 			// HT[substituted index]  の 中身を
@@ -93,7 +91,7 @@ func (c *Context) Decode(wire []byte) {
 			name, value := f.NameString, f.ValueString
 			Debug(fmt.Sprintf("emit and add refeset, replace HT (%q, %q)", name, value))
 			c.EmittedSet.Emit(name, value)
-			c.RequestHeaderTable.Replace(name, value, f.SubstitutedIndex)
+			c.HeaderTable.Replace(name, value, f.SubstitutedIndex)
 			c.ReferenceSet.Add(name, value)
 		default:
 			log.Fatal("%T", f)
@@ -136,7 +134,7 @@ func (c *Context) CleanReferenceSet(headerSet HeaderSet) []byte {
 			c.ReferenceSet.Del(name)
 
 			// Header Table を探して、 index だけ取り出す
-			index, _ := c.RequestHeaderTable.SearchHeader(name, value)
+			index, _ := c.HeaderTable.SearchHeader(name, value)
 
 			// Indexed Header を生成
 			frame := CreateIndexedHeader(uint64(index))
@@ -163,7 +161,7 @@ func (c *Context) CleanHeaderSet(headerSet HeaderSet) {
 func (c *Context) ProcessHeader(headerSet HeaderSet) []byte {
 	var buf bytes.Buffer
 	for name, value := range headerSet {
-		index, h := c.RequestHeaderTable.SearchHeader(name, value)
+		index, h := c.HeaderTable.SearchHeader(name, value)
 		if h != nil { // 3.1 HT にエントリがある
 			// Indexed Heaer で index だけ送れば良い
 			frame := CreateIndexedHeader(uint64(index))
