@@ -5,7 +5,7 @@ type Header struct {
 	Value string
 }
 
-func (h Header) Size() int {
+func (h *Header) Size() int {
 	return len(h.Name) + len(h.Value) + 32
 }
 
