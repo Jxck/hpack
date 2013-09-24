@@ -22,6 +22,15 @@ func NewRequestContext() *Context {
 	return context
 }
 
+func NewResponseContext() *Context {
+	var context = &Context{
+		HeaderTable:  NewResponseHeaderTable(),
+		ReferenceSet: NewReferenceSet(),
+		EmittedSet:   NewEmittedSet(),
+	}
+	return context
+}
+
 func (c *Context) Decode(wire []byte) {
 	// EmittedSet を clean
 	c.EmittedSet = NewEmittedSet()
