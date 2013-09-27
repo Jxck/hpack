@@ -24,6 +24,16 @@ func TestInheriHttpHeader(t *testing.T) {
 	}
 }
 
+func TestCheck(t *testing.T) {
+	for _, name := range []string{"Scheme", ":scheme", "scheme"} {
+		es := NewEmittedSet()
+		es.Emit(name, "http")
+		if !es.Check("Scheme", "http") {
+			t.Errorf("got %v should have (%q, %q)", es, "Scheme", "http")
+		}
+	}
+}
+
 func TestRemovePrefix(t *testing.T) {
 	fixture := []string{":foo", ":foo:", "::foo", ":foo:foo", "bar"}
 	expected := []string{"foo", "foo:", "foo", "foo:foo", "bar"}
