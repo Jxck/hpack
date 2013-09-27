@@ -108,7 +108,7 @@ func (c *Context) Decode(wire []byte) {
 	}
 	// reference set の emitt されてないものを emit する
 	for name, value := range c.ReferenceSet {
-		if c.EmittedSet.Get(name) != value {
+		if !c.EmittedSet.Check(name, value) {
 			c.EmittedSet.Emit(name, value)
 		}
 	}
