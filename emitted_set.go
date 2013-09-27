@@ -21,10 +21,20 @@ func NewEmittedSet() EmittedSet {
 	return EmittedSet{http.Header{}}
 }
 
-// remove ":" prefix and call http.Header.Add()
 func (e EmittedSet) Emit(name, value string) {
+	name = RemovePrefix(name)
+	e.Add(name, value)
+}
+
+func (e EmittedSet) Check(name, value string) bool {
+	name = RemovePrefix(name)
+	return e.Get(name) == value
+}
+
+// remove ":" prefix
+func RemovePrefix(name string) string {
 	if strings.HasPrefix(name, ":") {
 		name = strings.TrimLeft(name, ":")
 	}
-	e.Add(name, value)
+	return name
 }
