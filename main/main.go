@@ -22,10 +22,10 @@ func main() {
 		"X-Hello":    []string{"world"},
 	}
 
-	client := hpack.NewContext()
+	client := hpack.NewRequestContext()
 	wire := client.Encode(headers)
 
-	server := hpack.NewContext()
+	server := hpack.NewRequestContext()
 	server.Decode(wire)
 
 	log.Printf("refset: %v", server.ReferenceSet)
