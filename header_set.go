@@ -10,16 +10,17 @@ type HeaderSet map[string]string
 // method, scheme, host, path, status
 // are must and needs ":" prefix
 var MustHeader = map[string]string{
-	"Scheme": ":scheme",
-	"Method": ":method",
-	"Path":   ":path",
-	"Host":   ":host",
-	"Status": ":status",
+	"scheme": ":scheme",
+	"method": ":method",
+	"path":   ":path",
+	"host":   ":host",
+	"status": ":status",
 }
 
 func NewHeaderSet(header http.Header) HeaderSet {
 	headerSet := make(HeaderSet, len(header))
 	for name, value := range header {
+		name = strings.ToLower(name)
 		mustname, ok := MustHeader[name]
 		if ok {
 			name = mustname

@@ -7,15 +7,21 @@ import (
 
 func TestNewHeaderSet(t *testing.T) {
 	var headers = http.Header{
-		":scheme":     []string{"http"},
-		":path":       []string{"/index.html"},
-		"mynewheader": []string{"first", "second"},
+		"Method":      []string{"GET"},
+		"Scheme":      []string{"http"},
+		"Host":        []string{"example.com"},
+		"Path":        []string{"/index.html"},
+		"Accept":      []string{"*/*"},
+		"Mynewheader": []string{"first,second"},
 	}
 	actual := NewHeaderSet(headers)
 
 	var expected = HeaderSet{
+		":method":     "GET",
 		":scheme":     "http",
+		":host":       "example.com",
 		":path":       "/index.html",
+		"accept":      "*/*",
 		"mynewheader": "first,second",
 	}
 
