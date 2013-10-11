@@ -3,7 +3,7 @@ package hpack
 import (
 	"bytes"
 	"fmt"
-	. "github.com/jxck/debug"
+	. "github.com/jxck/logger"
 	"log"
 	"net/http"
 )
