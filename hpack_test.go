@@ -3,12 +3,12 @@ package hpack
 import (
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
 	"testing"
-	"fmt"
 )
 
 func init() {
