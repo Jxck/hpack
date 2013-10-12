@@ -3,12 +3,15 @@ package main
 import (
 	"fmt"
 	"github.com/jxck/hpack"
+	. "github.com/jxck/logger"
 	"log"
 	"net/http"
 )
 
 func init() {
 	log.SetFlags(log.Lshortfile)
+	LogLevel(4)
+	Verbose(true)
 }
 
 func main() {
