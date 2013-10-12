@@ -1,11 +1,13 @@
 package main
 
 import (
+	"encoding/base64"
 	"fmt"
 	"github.com/jxck/hpack"
 	. "github.com/jxck/logger"
 	"log"
 	"net/http"
+	"os"
 )
 
 func init() {
@@ -17,10 +19,10 @@ func init() {
 func main() {
 	var headers = http.Header{
 		":scheme":    []string{"https"},
-		":host":      []string{"jxck.io"},
+		":host":      []string{"example.com"},
 		":path":      []string{"/"},
 		":method":    []string{"GET"},
-		"User-Agent": []string{"http2cat"},
+		"User-Agent": []string{"hpack-test-case"},
 		"Cookie":     []string{"xxxxxxx1"},
 		"X-Hello":    []string{"world"},
 	}
@@ -28,12 +30,16 @@ func main() {
 	client := hpack.NewRequestContext()
 	wire := client.Encode(headers)
 
+	str := base64.StdEncoding.EncodeToString(wire)
+	fmt.Println(str)
+	headers.Write(os.Stdout)
+
 	server := hpack.NewRequestContext()
 	server.Decode(wire)
 
 	log.Printf("refset: %v", server.ReferenceSet)
 	log.Printf("emitted: %v", server.EmittedSet)
-	fmt.Println("======================")
+	log.Println("======================")
 
 	headers = http.Header{
 		":scheme":    []string{"https"},
