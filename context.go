@@ -97,8 +97,7 @@ func (c *Context) Decode(wire []byte) {
 			// refset も更新する
 			name := c.HeaderTable.Headers[f.Index].Name
 			value := f.ValueString
-			Debug(fmt.Sprintf("%T change HT[%v]=%v to %v(HT[%v]) and value=%q",
-				f, f.SubstitutedIndex, c.HeaderTable.Headers[f.SubstitutedIndex], name, f.Index, value))
+			Debug(fmt.Sprintf("%T name=%q value=%q", f, name, value))
 			Debug(fmt.Sprintf("emit and add refeset, replace HT (%q, %q)", name, value))
 			c.EmittedSet.Emit(name, value)
 			c.HeaderTable.Replace(name, value, f.SubstitutedIndex)
