@@ -77,6 +77,7 @@ func (c *Context) Decode(wire []byte) {
 			// refset も更新する
 			name := c.HeaderTable.Headers[f.Index].Name
 			value := f.ValueString
+			Debug(fmt.Sprintf("%T name=%q value=%q", f, name, value))
 			Debug(fmt.Sprintf("emit and add refeset, HT (%q, %q)", name, value))
 			c.EmittedSet.Emit(name, value)
 			c.HeaderTable.Add(name, value)
@@ -85,6 +86,7 @@ func (c *Context) Decode(wire []byte) {
 			// Name/Value ペアを送る
 			// HT と refset にも追記
 			name, value := f.NameString, f.ValueString
+			Debug(fmt.Sprintf("%T name=%q value=%q", f, name, value))
 			Debug(fmt.Sprintf("emit and add refeset, HT (%q, %q)", name, value))
 			c.EmittedSet.Emit(name, value)
 			c.HeaderTable.Add(name, value)
@@ -95,6 +97,7 @@ func (c *Context) Decode(wire []byte) {
 			// refset も更新する
 			name := c.HeaderTable.Headers[f.Index].Name
 			value := f.ValueString
+			Debug(fmt.Sprintf("%T name=%q value=%q", f, name, value))
 			Debug(fmt.Sprintf("emit and add refeset, replace HT (%q, %q)", name, value))
 			c.EmittedSet.Emit(name, value)
 			c.HeaderTable.Replace(name, value, f.SubstitutedIndex)
@@ -104,6 +107,7 @@ func (c *Context) Decode(wire []byte) {
 			// name と value で置き換える
 			// refset も更新する
 			name, value := f.NameString, f.ValueString
+			Debug(fmt.Sprintf("%T name=%q value=%q", f, name, value))
 			Debug(fmt.Sprintf("emit and add refeset, replace HT (%q, %q)", name, value))
 			c.EmittedSet.Emit(name, value)
 			c.HeaderTable.Replace(name, value, f.SubstitutedIndex)
