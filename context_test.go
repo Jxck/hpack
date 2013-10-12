@@ -54,10 +54,10 @@ func TestSubstitutionIndexingWithNewName(t *testing.T) {
 func TestContextEncodeDecode(t *testing.T) {
 	var headers = http.Header{
 		"Scheme":     []string{"https"},
-		"Host":       []string{"jxck.io"},
+		"Host":       []string{"example.com"},
 		"Path":       []string{"/"},
 		"Method":     []string{"GET"},
-		"User-Agent": []string{"http2cat"},
+		"User-Agent": []string{"hpack-test"},
 		"Cookie":     []string{"xxxxxxx1"},
 		"X-Hello":    []string{"world"},
 	}
@@ -70,10 +70,10 @@ func TestContextEncodeDecode(t *testing.T) {
 
 	headers = http.Header{
 		"Scheme":     []string{"https"},
-		"Host":       []string{"jxck.io"},
+		"Host":       []string{"example.com"},
 		"Path":       []string{"/"},
 		"Method":     []string{"GET"},
-		"User-Agent": []string{"http2cat"},
+		"User-Agent": []string{"hpack-test"},
 		"Cookie":     []string{"xxxxxxx2"},
 	}
 
