@@ -14,8 +14,10 @@ func init() {
 	log.SetFlags(log.Lshortfile)
 }
 
-func TestHpack(t *testing.T) {
-	data, err := ioutil.ReadFile("./hpack-test-case/case_0.json")
+const TestCaseDir string = "./hpack-test-case"
+
+func RunCase(filename string, t *testing.T) {
+	data, err := ioutil.ReadFile(TestCaseDir + "/" + filename)
 	if err != nil {
 		t.Fatal()
 	}
@@ -57,6 +59,17 @@ func TestHpack(t *testing.T) {
 				log.Println(values, header[name])
 				t.Errorf("got %v\nwant %v", values, header[name])
 			}
+		}
+	}
+}
+func TestHpack(t *testing.T) {
+	files, err := ioutil.ReadDir(TestCaseDir)
+	if err != nil {
+		t.Fatal()
+	}
+	for _, file := range files {
+		if strings.HasPrefix(file.Name(), "case") {
+			RunCase(file.Name(), t)
 		}
 	}
 }
