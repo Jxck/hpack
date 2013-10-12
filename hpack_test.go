@@ -22,8 +22,9 @@ func TestHpack(t *testing.T) {
 	jsoncase := string(data)
 
 	type TestCase struct {
-		Wire   string
-		Header map[string]string
+		Context string
+		Wire    string
+		Header  map[string]string
 	}
 
 	var testcases []TestCase
@@ -33,23 +34,29 @@ func TestHpack(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	testcase := testcases[0]
-	header := http.Header{}
-	for k, v := range testcase.Header {
-		header.Add(k, v)
-	}
+	for _, testcase := range testcases {
+		header := http.Header{}
+		for k, v := range testcase.Header {
+			header.Add(k, v)
+		}
 
-	wire, err := base64.StdEncoding.DecodeString(testcase.Wire)
-	if err != nil {
-		log.Fatal(err)
-	}
-	context := NewRequestContext()
-	context.Decode(wire)
+		wire, err := base64.StdEncoding.DecodeString(testcase.Wire)
+		if err != nil {
+			log.Fatal(err)
+		}
+		var context *Context
+		if testcase.Context == "request" {
+			context = NewRequestContext()
+		} else if testcase.Context == "response" {
+			context = NewResponseContext()
+		}
+		context.Decode(wire)
 
-	for name, values := range context.EmittedSet.Header {
-		if !CompareSlice(header[name], values) {
-			log.Println(values, header[name])
-			t.Errorf("got %v\nwant %v", values, header[name])
+		for name, values := range context.EmittedSet.Header {
+			if !CompareSlice(header[name], values) {
+				log.Println(values, header[name])
+				t.Errorf("got %v\nwant %v", values, header[name])
+			}
 		}
 	}
 }
