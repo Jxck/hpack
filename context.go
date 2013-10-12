@@ -47,7 +47,7 @@ func (c *Context) Decode(wire []byte) {
 		case *IndexedHeader:
 			// HT にあるエントリをそのまま使う
 			header := c.HeaderTable.Headers[f.Index]
-			Debug(fmt.Sprintf("%T HT[%v] = %v", f, f.Index, header))
+			Debug(fmt.Sprintf("%T: use %v(HT[%v])", f, header, f.Index))
 			if header.Value == c.ReferenceSet[header.Name] {
 				// refset にある場合は消す
 				Debug(fmt.Sprintf("delete from refset (%q, %q)", header.Name, header.Value))
@@ -62,13 +62,13 @@ func (c *Context) Decode(wire []byte) {
 			// HT にある名前だけ使う
 			// HT も refset も更新しない
 			header := c.HeaderTable.Headers[f.Index]
-			Debug(fmt.Sprintf("%T HT[%v] = %v value=%q", f, f.Index, header.Name, f.ValueString))
+			Debug(fmt.Sprintf("%T use name %v(HT[%v]) and value=%q", f, header.Name, f.Index, f.ValueString))
 			Debug(fmt.Sprintf("emit (%q, %q)", header.Name, f.ValueString))
 			c.EmittedSet.Emit(header.Name, f.ValueString)
 		case *NewNameWithoutIndexing:
 			// Name/Value ペアを送る
 			// HT も refset も更新しない
-			Debug(fmt.Sprintf("%T name=%q value=%q", f, f.NameString, f.ValueString))
+			Debug(fmt.Sprintf("%T use name=%q and value=%q", f, f.NameString, f.ValueString))
 			Debug(fmt.Sprintf("emit (%q, %q)", f.NameString, f.ValueString))
 			c.EmittedSet.Emit(f.NameString, f.ValueString)
 		case *IndexedNameWithIncrementalIndexing:
@@ -77,7 +77,7 @@ func (c *Context) Decode(wire []byte) {
 			// refset も更新する
 			name := c.HeaderTable.Headers[f.Index].Name
 			value := f.ValueString
-			Debug(fmt.Sprintf("%T name=%q value=%q", f, name, value))
+			Debug(fmt.Sprintf("%T %v(HT[%v]) value=%q", f, name, f.Index, value))
 			Debug(fmt.Sprintf("emit and add refeset, HT (%q, %q)", name, value))
 			c.EmittedSet.Emit(name, value)
 			c.HeaderTable.Add(name, value)
@@ -86,7 +86,7 @@ func (c *Context) Decode(wire []byte) {
 			// Name/Value ペアを送る
 			// HT と refset にも追記
 			name, value := f.NameString, f.ValueString
-			Debug(fmt.Sprintf("%T name=%q value=%q", f, name, value))
+			Debug(fmt.Sprintf("%T use name=%q and value=%q", f, name, value))
 			Debug(fmt.Sprintf("emit and add refeset, HT (%q, %q)", name, value))
 			c.EmittedSet.Emit(name, value)
 			c.HeaderTable.Add(name, value)
@@ -97,7 +97,8 @@ func (c *Context) Decode(wire []byte) {
 			// refset も更新する
 			name := c.HeaderTable.Headers[f.Index].Name
 			value := f.ValueString
-			Debug(fmt.Sprintf("%T name=%q value=%q", f, name, value))
+			Debug(fmt.Sprintf("%T change HT[%v]=%v to %v(HT[%v]) and value=%q",
+				f, f.SubstitutedIndex, c.HeaderTable.Headers[f.SubstitutedIndex], name, f.Index, value))
 			Debug(fmt.Sprintf("emit and add refeset, replace HT (%q, %q)", name, value))
 			c.EmittedSet.Emit(name, value)
 			c.HeaderTable.Replace(name, value, f.SubstitutedIndex)
@@ -107,7 +108,7 @@ func (c *Context) Decode(wire []byte) {
 			// name と value で置き換える
 			// refset も更新する
 			name, value := f.NameString, f.ValueString
-			Debug(fmt.Sprintf("%T name=%q value=%q", f, name, value))
+			Debug(fmt.Sprintf("%T HT[%v]=%v value=%q", f, f.Index, name, value))
 			Debug(fmt.Sprintf("emit and add refeset, replace HT (%q, %q)", name, value))
 			c.EmittedSet.Emit(name, value)
 			c.HeaderTable.Replace(name, value, f.SubstitutedIndex)
