@@ -8,6 +8,11 @@ import (
 	"net/http"
 )
 
+func init() {
+	LogLevel(4)
+	Verbose(true)
+}
+
 type Context struct {
 	HeaderTable  HeaderTable
 	ReferenceSet ReferenceSet
