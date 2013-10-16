@@ -6,6 +6,39 @@ import (
 	"testing"
 )
 
+func TestIndexedHeader(t *testing.T) {
+	frame := CreateIndexedHeader(0)
+
+	server := NewRequestContext()
+	server.Decode(frame.Encode().Bytes())
+	actual := server.EmittedSet.Get("Scheme")
+	if actual != "http" {
+		t.Errorf("got %v\nwant %v", actual, "http")
+	}
+}
+
+func TestIndexedNameWithoutIndexing(t *testing.T) {
+	frame := CreateIndexedNameWithoutIndexing(0, "ftp")
+
+	server := NewRequestContext()
+	server.Decode(frame.Encode().Bytes())
+	actual := server.EmittedSet.Get("Scheme")
+	if actual != "ftp" {
+		t.Errorf("got %v\nwant %v", actual, "ftp")
+	}
+}
+
+func TestNewNameWithoutIndexing(t *testing.T) {
+	frame := CreateNewNameWithoutIndexing("x-hello", "world")
+
+	server := NewRequestContext()
+	server.Decode(frame.Encode().Bytes())
+	actual := server.EmittedSet.Get("X-Hello")
+	if actual != "world" {
+		t.Errorf("got %v\nwant %v", actual, "ftp")
+	}
+}
+
 // TODO: check refset, emmitedset in test
 func TestIncrementalIndexingWithIndexedName(t *testing.T) {
 	frame := CreateIndexedNameWithIncrementalIndexing(0, "ftp")
