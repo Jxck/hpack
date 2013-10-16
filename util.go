@@ -3,6 +3,7 @@ package hpack
 import (
 	"fmt"
 	"net/http"
+	"strings"
 )
 
 // compare both slice has same value
@@ -19,10 +20,15 @@ func CompareSlice(a, b []string) bool {
 	return true
 }
 
+func padding(str string) string {
+	l := 20 - len(str)
+	return str + strings.Repeat(" ", l)
+}
+
 func MapString(m http.Header) string {
 	str := "\n====\n"
 	for name, value := range m {
-		str += fmt.Sprintf("%s:\t %s\n", name, value)
+		str += fmt.Sprintf("%s:\t%s\n", padding(name), value)
 	}
 	str += "====\n"
 	return str

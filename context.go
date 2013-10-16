@@ -2,11 +2,11 @@ package hpack
 
 import (
 	"bytes"
+	"flag"
 	"fmt"
 	. "github.com/jxck/logger"
 	"log"
 	"net/http"
-	"flag"
 )
 
 var verbose bool
