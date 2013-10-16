@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"log"
+	"reflect"
 	"strings"
 	"testing"
 )
@@ -56,7 +57,7 @@ func RunStory(testcases []TestCase, t *testing.T) {
 		// log.Println(MapString(expected.Header))
 		// log.Println(MapString(actual))
 		for name, values := range expected.Header {
-			if !CompareSlice(actual[name], values) {
+			if !reflect.DeepEqual(actual[name], values) {
 				log.Println(values, actual[name])
 				t.Errorf("got %v\nwant %v", values, actual[name])
 			}

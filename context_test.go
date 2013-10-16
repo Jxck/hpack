@@ -81,7 +81,7 @@ func TestContextEncodeDecode(t *testing.T) {
 	server.Decode(wire)
 
 	for name, values := range server.EmittedSet.Header {
-		if !CompareSlice(headers[name], values) {
+		if !reflect.DeepEqual(headers[name], values) {
 			t.Errorf("got %v\nwant %v", values, headers[name])
 		}
 	}
