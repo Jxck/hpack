@@ -64,7 +64,7 @@ func RunStory(testcases []TestCase, t *testing.T) {
 	}
 }
 
-func TestStory(t *testing.T) {
+func TestSingleCase(t *testing.T) {
 	jsoncase := `
 [
   {
