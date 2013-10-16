@@ -20,8 +20,6 @@ import (
 //     encode (I) on 8 bits
 func EncodeInteger(I uint64, N uint8) *bytes.Buffer {
 	buf := new(bytes.Buffer)
-
-	// 2^N -1
 	boundary := uint64(1<<N - 1) // 2^N-1
 
 	if I < boundary {
@@ -74,17 +72,19 @@ func EncodeInteger(I uint64, N uint8) *bytes.Buffer {
 //         i++
 func DecodeInteger(buf []byte, N uint8) uint64 {
 	boundary := uint64(1<<N - 1) // 2^N-1
-	I := uint64(buf[0])          // 最初の N バイトで表現された値が
-	if I < boundary {            // 2^N-1 より小さかったら
-		return I // そのまま
+	I := uint64(buf[0])          // Read N bit from first 1 byte as I
+	if I < boundary {            // less than 2^N-1
+		return I // as is
 	}
-	for i, b := range buf[1:] { // 大きければ続きがある
+	for i, b := range buf[1:] { // continue flow bites if bigger than
 		shift := uint8(7 * i)
-		if b > 128 { // 最初の 1 bit が 1 なら
-			// 128 引いて 7*i bit shift し、加える
+		if b > 128 { // if first bit is 1
+			// to 0 at first bit (- 128) and shift 7*i bit
+			// and add
 			I += uint64(b-128) << shift
-		} else { // 最初の 1 bit が 0 なら
-			// 7*i bit shift して加えて終わり
+		} else { // if first bit is 0
+			// shit 7*i shift
+			// and add
 			I += uint64(b) << shift
 			break
 		}
