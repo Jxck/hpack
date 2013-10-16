@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"flag"
 	"fmt"
+	. "github.com/jxck/color"
 	. "github.com/jxck/logger"
 	"log"
 	"net/http"
@@ -54,7 +55,8 @@ func (c *Context) Decode(wire []byte) {
 		case *IndexedHeader:
 			// HT にあるエントリをそのまま使う
 			header := c.HeaderTable.Headers[f.Index]
-			Debug(fmt.Sprintf("%T: use %v(HT[%v])", f, header, f.Index))
+			Debug(Red(">>> Indexed Header"))
+			Debug(fmt.Sprintf("use %v at HT[%v]", header, f.Index))
 			if header.Value == c.ReferenceSet[header.Name] {
 				// refset にある場合は消す
 				Debug(fmt.Sprintf("delete from refset (%q, %q)", header.Name, header.Value))
@@ -65,18 +67,25 @@ func (c *Context) Decode(wire []byte) {
 				c.EmittedSet.Emit(header.Name, header.Value)
 				c.ReferenceSet.Add(header.Name, header.Value)
 			}
+			Debug(Red("<<<"))
 		case *IndexedNameWithoutIndexing:
 			// HT にある名前だけ使う
 			// HT も refset も更新しない
 			header := c.HeaderTable.Headers[f.Index]
-			Debug(fmt.Sprintf("%T use name %v(HT[%v]) and value=%q", f, header.Name, f.Index, f.ValueString))
-			Debug(fmt.Sprintf("emit (%q, %q)", header.Name, f.ValueString))
+			name, value := header.Name, f.ValueString
+			Debug(Red(">>> Literal Header Field without Indexing - Indexed Name"))
+			Debug(fmt.Sprintf("name=%q at HT[%d], value=%q without indexing", name, f.Index, value))
+			Debug(fmt.Sprintf("emit (%q, %q)", name, value))
+			Debug(Red("<<<"))
 			c.EmittedSet.Emit(header.Name, f.ValueString)
 		case *NewNameWithoutIndexing:
 			// Name/Value ペアを送る
 			// HT も refset も更新しない
-			Debug(fmt.Sprintf("%T use name=%q and value=%q", f, f.NameString, f.ValueString))
+			name, value := f.NameString, f.ValueString
+			Debug(Red(">>>  Literal Header Field without Indexing - New Name"))
+			Debug(fmt.Sprintf("name=%q, value=%q without indexing", name, value))
 			Debug(fmt.Sprintf("emit (%q, %q)", f.NameString, f.ValueString))
+			Debug(Red("<<<"))
 			c.EmittedSet.Emit(f.NameString, f.ValueString)
 		case *IndexedNameWithIncrementalIndexing:
 			// HT にある名前だけ使い
@@ -84,8 +93,10 @@ func (c *Context) Decode(wire []byte) {
 			// refset も更新する
 			name := c.HeaderTable.Headers[f.Index].Name
 			value := f.ValueString
-			Debug(fmt.Sprintf("%T %v(HT[%v]) value=%q", f, name, f.Index, value))
+			Debug(Red(">>> Literal Header Field with Incremental Indexing - Indexed Name"))
+			Debug(fmt.Sprintf("name=%q at HT[%d], value=%q add incremental", name, f.Index, value))
 			Debug(fmt.Sprintf("emit and add refeset, HT (%q, %q)", name, value))
+			Debug(Red("<<<"))
 			c.EmittedSet.Emit(name, value)
 			c.HeaderTable.Add(name, value)
 			c.ReferenceSet.Add(name, value)
@@ -93,8 +104,10 @@ func (c *Context) Decode(wire []byte) {
 			// Name/Value ペアを送る
 			// HT と refset にも追記
 			name, value := f.NameString, f.ValueString
-			Debug(fmt.Sprintf("%T use name=%q and value=%q", f, name, value))
+			Debug(Red(">>> Literal Header Field with Incremental Indexing - New Name"))
+			Debug(fmt.Sprintf("name=%q and value=%q", name, value))
 			Debug(fmt.Sprintf("emit and add refeset, HT (%q, %q)", name, value))
+			Debug(Red("<<<"))
 			c.EmittedSet.Emit(name, value)
 			c.HeaderTable.Add(name, value)
 			c.ReferenceSet.Add(name, value)
@@ -104,8 +117,10 @@ func (c *Context) Decode(wire []byte) {
 			// refset も更新する
 			name := c.HeaderTable.Headers[f.Index].Name
 			value := f.ValueString
-			Debug(fmt.Sprintf("%T name=%q value=%q", f, name, value))
+			Debug(Red(">>> Literal Header with Substitution Indexing - Indexed Name"))
+			Debug(fmt.Sprintf("replace HT[%d]=%q to name=%q at HT[%d] and value=%q", f.SubstitutedIndex, c.HeaderTable.Headers[f.SubstitutedIndex], name, f.Index, value))
 			Debug(fmt.Sprintf("emit and add refeset, replace HT (%q, %q)", name, value))
+			Debug(Red("<<<"))
 			c.EmittedSet.Emit(name, value)
 			c.HeaderTable.Replace(name, value, f.SubstitutedIndex)
 			c.ReferenceSet.Add(name, value)
@@ -114,8 +129,10 @@ func (c *Context) Decode(wire []byte) {
 			// name と value で置き換える
 			// refset も更新する
 			name, value := f.NameString, f.ValueString
-			Debug(fmt.Sprintf("%T HT[%v]=%v value=%q", f, f.Index, name, value))
+			Debug(Red(">>> Literal Header with Substitution Indexing - New Name"))
+			Debug(fmt.Sprintf("replace HT[%d]=%q to name=%q and value=%q", f.SubstitutedIndex, c.HeaderTable.Headers[f.SubstitutedIndex], name, value))
 			Debug(fmt.Sprintf("emit and add refeset, replace HT (%q, %q)", name, value))
+			Debug(Red("<<<"))
 			c.EmittedSet.Emit(name, value)
 			c.HeaderTable.Replace(name, value, f.SubstitutedIndex)
 			c.ReferenceSet.Add(name, value)
