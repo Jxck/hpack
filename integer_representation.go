@@ -98,7 +98,7 @@ func ReadPrefixedInteger(buf *bytes.Buffer, N uint8) *bytes.Buffer {
 	boundary := byte(1<<N - 1)               // 2^N-1
 	binary.Read(buf, binary.BigEndian, &tmp) // err
 
-	tmp = tmp & boundary
+	tmp = tmp & boundary // mask N bit
 	prefix := bytes.NewBuffer([]byte{tmp})
 
 	// if first byte is smaller than boundary
