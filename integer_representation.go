@@ -74,19 +74,19 @@ func EncodeInteger(I uint64, N uint8) *bytes.Buffer {
 //         I += (b - 128) * 128^(i-1)
 //         i++
 func DecodeInteger(buf []byte, N uint8) uint64 {
-	boundary := uint64(math.Pow(2, float64(N)) - 1)
-	I := uint64(buf[0])
-	if I < boundary {
-		return I
+	boundary := uint64(1<<N - 1) // 2^N-1
+	I := uint64(buf[0])          // 最初の N バイトで表現された値が
+	if I < boundary {            // 2^N-1 より小さかったら
+		return I // そのまま
 	}
-	for i, b := range buf[1:] {
-		i++
-		if b > 128 {
-			shift := uint64(math.Pow(128, float64(i-1)))
-			I += ((uint64(b) - 128) * shift)
-		} else {
-			shift := uint64(math.Pow(128, float64(i-1)))
-			I += (uint64(b) * shift)
+	for i, b := range buf[1:] { // 大きければ続きがある
+		shift := uint8(7 * i)
+		if b > 128 { // 最初の 1 bit が 1 なら
+			// 128 引いて 7*i bit shift し、加える
+			I += uint64(b-128) << shift
+		} else { // 最初の 1 bit が 0 なら
+			// 7*i bit shift して加えて終わり
+			I += uint64(b) << shift
 			break
 		}
 	}
