@@ -6,11 +6,18 @@ import (
 	. "github.com/jxck/logger"
 	"log"
 	"net/http"
+	"flag"
 )
 
+var verbose bool
+var loglevel int
+
 func init() {
-	LogLevel(4)
-	Verbose(true)
+	flag.BoolVar(&verbose, "v", false, "verbose out")
+	flag.IntVar(&loglevel, "l", 0, "log level (1 ERR, 2 WARNING, 3 INFO, 4 DEBUG)")
+	flag.Parse()
+	LogLevel(loglevel)
+	Verbose(verbose)
 }
 
 type Context struct {
