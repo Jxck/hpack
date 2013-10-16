@@ -57,6 +57,7 @@ func (c *Context) Decode(wire []byte) {
 			header := c.HeaderTable.Headers[f.Index]
 			Debug(Red(">>> Indexed Header"))
 			Debug(fmt.Sprintf("use %v at HT[%v]", header, f.Index))
+			log.Println(header.Value, c.ReferenceSet[header.Name], c.EmittedSet)
 			if header.Value == c.ReferenceSet[header.Name] {
 				// refset にある場合は消す
 				Debug(fmt.Sprintf("delete from refset (%q, %q)", header.Name, header.Value))

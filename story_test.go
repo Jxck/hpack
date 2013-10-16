@@ -50,6 +50,8 @@ func TestTmp(t *testing.T) {
 		actual_ht := context.HeaderTable.Headers
 		expected_ht := v.Request.HeaderTable
 		if !reflect.DeepEqual(actual_ht, expected_ht) {
+			t.Log(HeadersString(actual_ht))
+			t.Log(HeadersString(expected_ht))
 			t.Errorf("got %v\nwant %v", actual_ht, expected_ht)
 		}
 
@@ -60,7 +62,11 @@ func TestTmp(t *testing.T) {
 			expected_es.Emit(hs.Name, hs.Value)
 		}
 		if !reflect.DeepEqual(actual_es, expected_es) {
+			t.Log(HeaderString(actual_es.Header))
+			t.Log(HeaderString(expected_es.Header))
+			t.Log(RefSetString(context.ReferenceSet))
 			t.Errorf("got %v\nwant %v", actual_es, expected_es)
+			t.FailNow()
 		}
 	}
 }
