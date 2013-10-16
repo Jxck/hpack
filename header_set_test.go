@@ -14,7 +14,6 @@ func TestNewHeaderSet(t *testing.T) {
 		"Accept":      []string{"*/*"},
 		"Mynewheader": []string{"first,second"},
 	}
-	actual := NewHeaderSet(headers)
 
 	var expected = HeaderSet{
 		":method":     "GET",
@@ -25,7 +24,7 @@ func TestNewHeaderSet(t *testing.T) {
 		"mynewheader": "first,second",
 	}
 
-	for name, value := range actual {
+	for name, value := range NewHeaderSet(headers) {
 		if value != expected[name] {
 			t.Errorf("got %v\nwant %v", value, expected[name])
 		}

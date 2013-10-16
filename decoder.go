@@ -23,7 +23,7 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 	if err := binary.Read(buf, binary.BigEndian, &types); err != nil {
 		log.Println("binary.Read failed:", err)
 	}
-	if types >= 0x80 {
+	if types >= 0x80 { // >= 128
 		// Indexed Header Representation
 
 		// unread first byte for parse frame
