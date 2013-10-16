@@ -25,35 +25,21 @@ func TestEncodeInteger(t *testing.T) {
 }
 
 func TestDecodeInteger(t *testing.T) {
-	var actual, expected uint64
-	var buf []uint8
-
-	buf = []uint8{10}
-	expected = 10
-	actual = DecodeInteger(buf, 5)
-	if actual != expected {
-		t.Errorf("got %v\nwant %v", actual, expected)
+	testcases := []struct {
+		expected, actual uint64
+	}{
+		{10, DecodeInteger([]uint8{10}, 5)},
+		{40, DecodeInteger([]uint8{31, 9}, 5)},
+		{1337, DecodeInteger([]uint8{31, 154, 10}, 5)},
+		{3000000, DecodeInteger([]uint8{31, 161, 141, 183, 1}, 5)},
 	}
 
-	buf = []uint8{31, 9}
-	expected = 40
-	actual = DecodeInteger(buf, 5)
-	if actual != expected {
-		t.Errorf("got %v\nwant %v", actual, expected)
-	}
-
-	buf = []uint8{31, 154, 10}
-	expected = 1337
-	actual = DecodeInteger(buf, 5)
-	if actual != expected {
-		t.Errorf("got %v\nwant %v", actual, expected)
-	}
-
-	buf = []uint8{31, 161, 141, 183, 1}
-	expected = 3000000
-	actual = DecodeInteger(buf, 5)
-	if actual != expected {
-		t.Errorf("got %v\nwant %v", actual, expected)
+	for _, testcase := range testcases {
+		actual := testcase.actual
+		expected := testcase.expected
+		if expected != actual {
+			t.Errorf("got %v\nwant %v", actual, expected)
+		}
 	}
 }
 
