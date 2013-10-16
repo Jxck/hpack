@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"log"
-	"math"
 )
 
 // Encode Integer to N bit prefix
@@ -23,7 +22,7 @@ func EncodeInteger(I uint64, N uint8) *bytes.Buffer {
 	buf := new(bytes.Buffer)
 
 	// 2^N -1
-	boundary := uint64(math.Pow(2, float64(N))) - 1
+	boundary := uint64(1<<N - 1) // 2^N-1
 
 	if I < boundary {
 		// If I < 2^N - 1, encode I on N bits
@@ -96,7 +95,7 @@ func DecodeInteger(buf []byte, N uint8) uint64 {
 // read prefixed bytes from buffer
 func ReadPrefixedInteger(buf *bytes.Buffer, N uint8) *bytes.Buffer {
 	var tmp uint8
-	boundary := byte(math.Pow(2, float64(N)) - 1)
+	boundary := byte(1<<N - 1)               // 2^N-1
 	binary.Read(buf, binary.BigEndian, &tmp) // err
 
 	tmp = tmp & boundary
