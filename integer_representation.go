@@ -64,51 +64,33 @@ func EncodeInteger(I uint64, N uint8) *bytes.Buffer {
 // Decode N bit prefixed Representation
 // to Integer
 //
-// [sample]
-// 40 [31, 9]
-// b xxx1 1111    40>31 : e(31), I=40-31=9
-// a xxxx 1001    9 <128: e(9)
-//
-// b) 9 + 31 = 40
-//
-//
-// 1337 [31, 154, 10]
-// a xxx1 1111    1337>31 : e(31), I=1337-31=1306
-// b 1001 1010    1306>128: e(1306%128+128), I=1306/128=10
-// c 0000 1010    10  <128: 3(10)
-//
-// b) (10*128) + (154-128) = 1306
-// a) 1306 + 31 = 1337
-//
-//
-// 3000000 [31 161 141 183 1]
-// a xxx1 1111    3000000>31  : e(31), I=3000000-31=2999969
-// b 1010 0001    2999969>128 : e(2999969%128+128), I=2999969/128=23437
-// c 1000 1101      23437>128 : e(23437%128+128), I=23437/128=183
-// d 1011 0111        183>128 : e(183%128+128), I=183/128=1
-// e 0000 0001          1<128 : e(1)
-//
-// d) (1*128) + (183-128) = 183
-// c) (183*128) + (141-128) = 23473
-// b) (23437*128) + (161-128) = 2999969
-// a) 2999969 + 31 = 3000000
-//
+// Read N bit from first 1 byte as I
+// If I < 2^N-1
+//     decode I
+// Else
+//     i = 0
+//     read next 1 byte as b
+//     While b > 128
+//         I += (b - 128) * 128^(i-1)
+//         i++
 func DecodeInteger(buf []byte, N uint8) uint64 {
-	boundary := byte(math.Pow(2, float64(N)) - 1)
-	if buf[0] == boundary {
-		var I uint64
-		i := len(buf) - 1
-		I += uint64(buf[i])
-		for i > 1 {
-			I *= 128
-			i--
-			I += uint64(buf[i]) - 128
-		}
-		I += 31
-
+	boundary := uint64(math.Pow(2, float64(N)) - 1)
+	I := uint64(buf[0])
+	if I < boundary {
 		return I
 	}
-	return uint64(buf[0])
+	for i, b := range buf[1:] {
+		i++
+		if b > 128 {
+			shift := uint64(math.Pow(128, float64(i-1)))
+			I += ((uint64(b) - 128) * shift)
+		} else {
+			shift := uint64(math.Pow(128, float64(i-1)))
+			I += (uint64(b) * shift)
+			break
+		}
+	}
+	return I
 }
 
 // read prefixed bytes from buffer
