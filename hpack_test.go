@@ -3,7 +3,6 @@ package hpack
 import (
 	"encoding/base64"
 	"encoding/json"
-	"io/ioutil"
 	"log"
 	"strings"
 	"testing"
@@ -86,28 +85,5 @@ func TestStory(t *testing.T) {
 	testcases := toJSON(jsoncase)
 	for _, testcase := range testcases {
 		RunStory([]TestCase{testcase}, t)
-	}
-}
-
-func TestHpack(t *testing.T) {
-	files, err := ioutil.ReadDir(TestCaseDir)
-	if err != nil {
-		t.Fatal()
-	}
-	for _, file := range files {
-		if strings.HasPrefix(file.Name(), "case") {
-			data, err := ioutil.ReadFile(TestCaseDir + "/" + file.Name())
-			if err != nil {
-				t.Fatal()
-			}
-			testcases := toJSON(string(data))
-			for _, testcase := range testcases {
-				log.Println("run file", file.Name())
-				RunStory([]TestCase{testcase}, t)
-			}
-		}
-		if strings.HasPrefix(file.Name(), "story") {
-			// RunStory(file.Name(), t)
-		}
 	}
 }
