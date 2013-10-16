@@ -14,6 +14,7 @@ import (
 // If I < 2^N - 1, encode I on N bits
 // Else
 //     encode 2^N - 1 on N bits
+//     I = I - (2^N - 1)
 //     While I >= 128
 //          Encode (I % 128 + 128) on 8 bits
 //          I = I / 128
