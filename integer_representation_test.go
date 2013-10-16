@@ -6,35 +6,21 @@ import (
 )
 
 func TestEncodeInteger(t *testing.T) {
-	var I uint64
-	var actual, expected []uint8
-
-	I = 10
-	expected = []uint8{10}
-	actual = EncodeInteger(I, 5).Bytes()
-	if !bytes.Equal(expected, actual) {
-		t.Errorf("got %v\nwant %v", actual, expected)
+	testcases := []struct {
+		expected, actual []uint8
+	}{
+		{[]uint8{10}, EncodeInteger(10, 5).Bytes()},
+		{[]uint8{31, 9}, EncodeInteger(40, 5).Bytes()},
+		{[]uint8{31, 154, 10}, EncodeInteger(1337, 5).Bytes()},
+		{[]uint8{31, 161, 141, 183, 1}, EncodeInteger(3000000, 5).Bytes()},
 	}
 
-	I = 40
-	expected = []uint8{31, 9}
-	actual = EncodeInteger(I, 5).Bytes()
-	if !bytes.Equal(expected, actual) {
-		t.Errorf("got %v\nwant %v", actual, expected)
-	}
-
-	I = 1337
-	expected = []uint8{31, 154, 10}
-	actual = EncodeInteger(I, 5).Bytes()
-	if !bytes.Equal(expected, actual) {
-		t.Errorf("got %v\nwant %v", actual, expected)
-	}
-
-	I = 3000000
-	expected = []uint8{31, 161, 141, 183, 1}
-	actual = EncodeInteger(I, 5).Bytes()
-	if !bytes.Equal(expected, actual) {
-		t.Errorf("got %v\nwant %v", actual, expected)
+	for _, testcase := range testcases {
+		actual := testcase.actual
+		expected := testcase.expected
+		if !bytes.Equal(expected, actual) {
+			t.Errorf("got %v\nwant %v", actual, expected)
+		}
 	}
 }
 
