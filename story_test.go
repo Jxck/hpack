@@ -31,6 +31,7 @@ func toJsonCase(samplecase string) []JsonCase {
 }
 
 func TestTmp(t *testing.T) {
+	t.Skip()
 	file, err := ioutil.ReadFile("./main/yahoo.co.jp_hpack_encoded.json")
 	if err != nil {
 		t.Fatal(err)
