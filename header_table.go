@@ -9,6 +9,7 @@ type HeaderTable struct {
 	Headers
 }
 
+// get total size of Header Table
 func (ht *HeaderTable) Size() int {
 	var sum int
 	for _, h := range ht.Headers {
@@ -17,6 +18,8 @@ func (ht *HeaderTable) Size() int {
 	return sum
 }
 
+// add name value pair to the end of HeaderTable
+// with eviction :TODO (check & test eviction more)
 func (ht *HeaderTable) Add(name, value string) {
 	header := Header{name, value}
 	if header.Size() > ht.HEADER_TABLE_SIZE {
@@ -27,6 +30,8 @@ func (ht *HeaderTable) Add(name, value string) {
 	}
 }
 
+// replace Header at index i with name, value pair
+// with eviction :TODO (check & test eviction more)
 func (ht *HeaderTable) Replace(name, value string, i uint64) {
 	index := int(i)
 	header := Header{name, value}
@@ -53,6 +58,7 @@ func (ht *HeaderTable) Replace(name, value string, i uint64) {
 	}
 }
 
+// remove Header at index i
 func (ht *HeaderTable) Remove(index int) {
 	// https://code.google.com/p/go-wiki/wiki/SliceTricks
 	copy(ht.Headers[index:], ht.Headers[index+1:])
@@ -77,10 +83,10 @@ func (ht *HeaderTable) DeleteAll() {
 	ht.Headers = Headers{}
 }
 
-// name と value が HeaderTable にあるかを探す
-// name, value とも一致 => index, *Header
-// name はある          => index, nil
-// ない                 => -1, nil
+// search name & value is exists in HeaderTable
+// name, value   exists => index, *Header
+// name          exists => index, nil
+// none                 =>    -1, nil
 func (ht HeaderTable) SearchHeader(name, value string) (int, *Header) {
 	// name が複数一致した時のために格納しておく
 	// MEMO: スライスで持たず単一で最初だけもってもいいかもしれないが
@@ -88,30 +94,30 @@ func (ht HeaderTable) SearchHeader(name, value string) (int, *Header) {
 	// slice でもって、長さで判断できるようにした
 	var matching_name_indexes = []int{}
 
-	// ヘッダテーブルの頭から探す
+	// search from header
 	for i, h := range ht.Headers {
 
-		// Name がヘッダテーブルにあった場合
+		// name exists
 		if h.Name == name {
 
-			// Value も一致したら
+			// value exists
 			if h.Value == value {
-				// 一致した index とそこにある値を返す
-				return i, &h // index header
+				return i, &h // index, *header
 			}
 
-			// name は一致したのでそのインデックスを加えておく
+			// only name exists
+			// add the index of entry for multi hit
 			matching_name_indexes = append(matching_name_indexes, i)
 		}
 	}
 
-	// Name があっても value までは一致しなかった場合
-	// 一番最初のヘッダを返す
+	// only name exists
+	// return first muched index
 	if len(matching_name_indexes) > 0 {
 		return matching_name_indexes[0], nil // literal with index
 	}
 
-	// Name も一致しなかったら -1, nil
+	// dosen't exists
 	return -1, nil // literal without index
 }
 
