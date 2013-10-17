@@ -1,14 +1,5 @@
 package hpack
 
-type Header struct {
-	Name  string
-	Value string
-}
-
-func (h *Header) Size() int {
-	return len(h.Name) + len(h.Value) + 32
-}
-
 type Headers []Header
 
 var DEFAULT_HEADER_TABLE_SIZE int = 4096
