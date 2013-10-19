@@ -17,7 +17,7 @@ var MustHeader = map[string]string{
 	"status": ":status",
 }
 
-func NewHeaderSet(header http.Header) HeaderSet {
+func HeaderToHeaderSet(header http.Header) HeaderSet {
 	headerSet := make(HeaderSet, len(header))
 	for name, value := range header {
 		name = strings.ToLower(name)

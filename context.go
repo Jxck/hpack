@@ -153,7 +153,7 @@ func (c *Context) Encode(header http.Header) []byte {
 	var buf bytes.Buffer
 
 	// http.Header を HeaderSet に変換
-	headerSet := NewHeaderSet(header)
+	headerSet := HeaderToHeaderSet(header)
 
 	// ReferenceSet の中から消すべき値を消す
 	buf.Write(c.CleanReferenceSet(headerSet))

@@ -24,7 +24,7 @@ func TestNewHeaderSet(t *testing.T) {
 		"mynewheader": "first,second",
 	}
 
-	for name, value := range NewHeaderSet(headers) {
+	for name, value := range HeaderToHeaderSet(headers) {
 		if value != expected[name] {
 			t.Errorf("got %v\nwant %v", value, expected[name])
 		}
