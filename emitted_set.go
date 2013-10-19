@@ -2,7 +2,6 @@ package hpack
 
 import (
 	"net/http"
-	"strings"
 )
 
 // Wrapper Type of http.Header
@@ -29,12 +28,4 @@ func (e EmittedSet) Emit(name, value string) {
 func (e EmittedSet) Check(name, value string) bool {
 	name = RemovePrefix(name)
 	return e.Get(name) == value
-}
-
-// remove ":" prefix
-func RemovePrefix(name string) string {
-	if strings.HasPrefix(name, ":") {
-		name = strings.TrimLeft(name, ":")
-	}
-	return name
 }

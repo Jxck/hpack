@@ -17,6 +17,15 @@ var MustHeader = map[string]string{
 	"status": ":status",
 }
 
+// remove ":" prefix
+func RemovePrefix(name string) string {
+	if strings.HasPrefix(name, ":") {
+		name = strings.TrimLeft(name, ":")
+	}
+	return name
+}
+
+// http.Header => HeaderSet
 func HeaderToHeaderSet(header http.Header) HeaderSet {
 	headerSet := make(HeaderSet, len(header))
 	for name, value := range header {
@@ -28,4 +37,14 @@ func HeaderToHeaderSet(header http.Header) HeaderSet {
 		headerSet[name] = strings.Join(value, ",")
 	}
 	return headerSet
+}
+
+// HeaderSet => http.Header
+func HeaderSetToHeader(headerset HeaderSet) http.Header {
+	headers := make(http.Header, len(headerset))
+	for name, value := range headerset {
+		name = RemovePrefix(name)
+		headers.Add(name, value)
+	}
+	return headers
 }

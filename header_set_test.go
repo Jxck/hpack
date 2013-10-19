@@ -31,3 +31,11 @@ func TestHeaderToHeaderSet(t *testing.T) {
 		t.Errorf("got %v\nwant %v", headers, expected)
 	}
 }
+
+func TestHeaderSetToHeader(t *testing.T) {
+	actual := HeaderSetToHeader(headerset)
+	expected := headers
+	if !reflect.DeepEqual(actual, expected) {
+		t.Errorf("got %v\nwant %v", headers, expected)
+	}
+}
