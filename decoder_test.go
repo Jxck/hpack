@@ -14,9 +14,6 @@ func TestIndexedHeaderDecode(t *testing.T) {
 	if !ok {
 		t.Fatal("Parsed incorrect frame type:", frame)
 	}
-	if f.flag1 != 1 {
-		t.Errorf("got %v\nwant %v", f.flag1, 1)
-	}
 	if f.Index != 38 {
 		t.Errorf("got %v\nwant %v", f.Index, 38)
 	}
@@ -37,15 +34,6 @@ func TestNewNameWithoutIndexingDecode(t *testing.T) {
 	f, ok := frame.(*NewNameWithoutIndexing)
 	if !ok {
 		t.Fatal("Parsed incorrect frame type:", frame)
-	}
-	if f.flag1 != 0 {
-		t.Errorf("got %v\nwant %v", f.flag1, 0)
-	}
-	if f.flag2 != 1 {
-		t.Errorf("got %v\nwant %v", f.flag2, 1)
-	}
-	if f.flag3 != 1 {
-		t.Errorf("got %v\nwant %v", f.flag3, 1)
 	}
 	if f.Index != 0 {
 		t.Errorf("got %v\nwant %v", f.Index, 0)
@@ -76,15 +64,6 @@ func TestIndexedNameWithoutIndexingDecode(t *testing.T) {
 	if !ok {
 		t.Fatal("Parsed incorrect frame type:", frame)
 	}
-	if f.flag1 != 0 {
-		t.Errorf("got %v\nwant %v", f.flag1, 0)
-	}
-	if f.flag2 != 1 {
-		t.Errorf("got %v\nwant %v", f.flag2, 1)
-	}
-	if f.flag3 != 1 {
-		t.Errorf("got %v\nwant %v", f.flag3, 1)
-	}
 	if f.Index != 3 {
 		t.Errorf("got %v\nwant %v", f.Index, 3)
 	}
@@ -107,15 +86,6 @@ func TestIndexedNameWithIncrementalIndexingDecode(t *testing.T) {
 	f, ok := frame.(*IndexedNameWithIncrementalIndexing)
 	if !ok {
 		t.Fatal("Parsed incorrect frame type:", frame)
-	}
-	if f.flag1 != 0 {
-		t.Errorf("got %v\nwant %v", f.flag1, 0)
-	}
-	if f.flag2 != 1 {
-		t.Errorf("got %v\nwant %v", f.flag2, 1)
-	}
-	if f.flag3 != 0 {
-		t.Errorf("got %v\nwant %v", f.flag3, 0)
 	}
 	if f.Index != 3 {
 		t.Errorf("got %v\nwant %v", f.Index, 3)
@@ -143,15 +113,6 @@ func TestNewNameWithIncrementalIndexingDecode(t *testing.T) {
 	f, ok := frame.(*NewNameWithIncrementalIndexing)
 	if !ok {
 		t.Fatal("Parsed incorrect frame type:", frame)
-	}
-	if f.flag1 != 0 {
-		t.Errorf("got %v\nwant %v", f.flag1, 0)
-	}
-	if f.flag2 != 1 {
-		t.Errorf("got %v\nwant %v", f.flag2, 1)
-	}
-	if f.flag3 != 0 {
-		t.Errorf("got %v\nwant %v", f.flag3, 0)
 	}
 	if f.Index != 0 {
 		t.Errorf("got %v\nwant %v", f.Index, 0)
@@ -183,12 +144,6 @@ func TestIndexedNameWithSubstitutionIndexingDecode(t *testing.T) {
 	if !ok {
 		t.Fatal("Parsed incorrect frame type:", frame)
 	}
-	if f.flag1 != 0 {
-		t.Errorf("got %v\nwant %v", f.flag1, 0)
-	}
-	if f.flag2 != 0 {
-		t.Errorf("got %v\nwant %v", f.flag2, 0)
-	}
 	if f.Index != 3 {
 		t.Errorf("got %v\nwant %v", f.Index, 3)
 	}
@@ -203,8 +158,7 @@ func TestIndexedNameWithSubstitutionIndexingDecode(t *testing.T) {
 	}
 }
 
-/*
-func TestIndexedNameWithIncrementalIndexing3(t *testing.T) {
+func TestIndexedNameWithIncrementalIndexing(t *testing.T) {
 
 	// 0x5f 0101 1111 (literal header, incremental indexing, name index = 40) 40n5=[31 9]
 	// 0x0a 0000 1010
@@ -219,15 +173,6 @@ func TestIndexedNameWithIncrementalIndexing3(t *testing.T) {
 	if !ok {
 		t.Fatal("Parsed incorrect frame type:", frame)
 	}
-	if f.flag1 != 0 {
-		t.Errorf("got %v\nwant %v", f.flag1, 0)
-	}
-	if f.flag2 != 1 {
-		t.Errorf("got %v\nwant %v", f.flag2, 1)
-	}
-	if f.flag3 != 0 {
-		t.Errorf("got %v\nwant %v", f.flag3, 0)
-	}
 	if f.Index != 40 {
 		t.Errorf("got %v\nwant %v", f.Index, 40)
 	}
@@ -238,7 +183,6 @@ func TestIndexedNameWithIncrementalIndexing3(t *testing.T) {
 		t.Errorf("got %v\nwant %v", f.ValueString, "second")
 	}
 }
-*/
 
 func TestNewNameWithSubstitutionIndexing(t *testing.T) {
 	// 0x0       (literal header with substitution indexing, new name)
@@ -258,12 +202,6 @@ func TestNewNameWithSubstitutionIndexing(t *testing.T) {
 	f, ok := frame.(*NewNameWithSubstitutionIndexing)
 	if !ok {
 		t.Fatal("Parsed incorrect frame type:", frame)
-	}
-	if f.flag1 != 0 {
-		t.Errorf("got %v\nwant %v", f.flag1, 0)
-	}
-	if f.flag2 != 0 {
-		t.Errorf("got %v\nwant %v", f.flag2, 0)
 	}
 	if f.Index != 0 {
 		t.Errorf("got %v\nwant %v", f.Index, 0)
