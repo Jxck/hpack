@@ -31,6 +31,13 @@ EOS 11111111|11111111|11110111|00 [26]
 */
 
 func main() {
+	buffer := []byte("{")
+	huff := RequestHuffmanTable[buffer[0]]
+
+	result := []byte{}
+
+	result = append(result, huff.code)
+	log.Println(result)
 }
 
 type HuffmanCode struct {
