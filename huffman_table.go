@@ -19,24 +19,50 @@ func init() {
 
 ["{", "a", "}"]
  17   5    17
-                               {          a                                }
-[1111 1111, 1111 1110, 0000 0001, 0000 1000, 1111 1111, 1111 1111, 0000 0000]
- ---- ----  ---- ----          -     - ----  ---- ----  ---- ----          -
 
-EOS 11111111|11111111|11110111|00 [26]
+"{"(17) [1111 1111, 1111 1110, 1]
 
-                       {     a                      }
-[1111 1111, 1111 1110, 1010 0011, 1111 1111, 1111 1101]
- ---- ----  ---- ----  ---- ----, ---- ----, ---- ---+
+"a"(5)  [0100, 0]
+
+"}"(17) [1111 1111, 1111 1111, 0]
+
+EOS(26) [1111 1111, 1111 1111, 1111 0111, 00]
+
+result(40)
+        [1111 1111, 1111 1110, 1010 0011, 1111 1111, 1111 1101]
+				                       {     a                      }+
 */
 
 func main() {
+	var result []byte
+
 	buffer := []byte("{")
+	// huffman table で変換
 	huff := RequestHuffmanTable[buffer[0]]
 
-	result := []byte{}
+	for {
+		if huff.bit >= 8 {
+			// 先頭 8bit を切り出す
+			b := huff.code >> (huff.bit - 8)
 
-	result = append(result, huff.code)
+			// 結果配列に追加
+			result = append(result, byte(b))
+
+			// 8bit 抜いた残り
+			huff.code -= b << (huff.bit - 8)
+
+			// 残りの bit 数に更新 (TODO: 先にやる)
+			huff.bit -= 8
+		} else {
+			// 残りビットが先頭に来るようにする
+			b := huff.code << (8 - huff.bit)
+
+			log.Println(b)
+			break
+		}
+	}
+
+	log.Println(huff)
 	log.Println(result)
 }
 
