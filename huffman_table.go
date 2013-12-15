@@ -31,6 +31,8 @@ EOS 11111111|11111111|11110111|00 [26]
 */
 
 func main() {
+	buffer := []byte{"{"}
+	log.Println(buffer)
 }
 
 type HuffmanCode struct {
