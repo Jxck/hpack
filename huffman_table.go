@@ -36,42 +36,72 @@ result(40)
 func main() {
 	var result []Byte
 
-	buffer := []byte("{")
+	// エンコード対象
+	buffer := []byte("{a}")
 
 	// 1 byte の入れ物
 	byt := NewByte()
 
 	for _, v := range buffer {
+
 		// huffman table で変換
 		huff := RequestHuffmanTable[v]
-		for huff.length > 0 {
-			if huff.length > byt.remain { // huff の方が大きい
-				offset := huff.length - byt.remain
-				// 先頭から byt に入るだけ切り出す
-				tmp := huff.code >> offset
-				byt.value += tmp
-				byt.remain -= 8
-				// 元のコードから使った分引く
-				huff.code = huff.code - (tmp << offset)
-				huff.length = huff.length - 8
-				if byt.remain == 0 { // いっぱいだったら
-					// 結果配列に追加
-					result = append(result, byt)
-					// 空にする
-					byt = NewByte()
-				}
-			} else if huff.length < byt.remain { // remain の方が大きい
-				tmp := huff.code << (byt.remain - huff.length)
-				byt.value += tmp
-				byt.remain -= huff.length
 
-				huff.code = 0
+		for huff.length > 0 { // huff.code を使いきるまで
+
+			if byt.remain > huff.length {
+				// huff.code の全てを入れる
+
+				// 左シフトして桁を合わせる
+				shift := byt.remain - huff.length
+				tmp := huff.code << shift
+
+				// byt に追加、入れ多分だけ長さを減らす
+				byt.value += tmp
+				byt.remain = shift
+
+				// huff は空に
 				huff.length = 0
+
+			} else {
+				// huff.code の一部を入れる
+
+				// 右シフトして入れる分だけ切り出す
+				shift := huff.length - byt.remain
+				tmp := huff.code >> shift
+
+				// byt に追加、もう入らない
+				byt.value += tmp
+				byt.remain = 0
+
+				// huff から使った分だけ減らす
+				huff.code -= (tmp << shift)
+				huff.length = shift
+			}
+
+			if byt.remain == 0 {
+				// byt が埋まったら配列に移して初期化
+				result = append(result, byt)
+				byt = NewByte()
 			}
 		}
 	}
 
-	log.Println(result)
+	if byt.remain > 0 { // EOS でパディング
+		// パディング分切り出す
+		eos := RequestHuffmanTable[256]
+		shift := eos.length - byt.remain
+		padding := eos.code >> shift
+
+		// byt に加える
+		byt.value += padding
+		byt.remain = 0
+
+		// 配列に移す。最後なので初期化はしない。
+		result = append(result, byt)
+	}
+
+	log.Println("=========\n", result)
 }
 
 type Byte struct {
