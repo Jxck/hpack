@@ -8,14 +8,21 @@ func init() {
 	log.SetFlags(log.Lshortfile)
 }
 
-func HuffmanEncode(raw []byte) (encoded []byte) {
+func HuffmanEncodeRequest(raw []byte) (encoded []byte) {
+	return HuffmanEncode(&RequestHuffmanTable, raw)
+}
+func HuffmanEncodeResponse(raw []byte) (encoded []byte) {
+	return HuffmanEncode(&ResponseHuffmanTable, raw)
+}
+
+func HuffmanEncode(table *[257]HuffmanCode, raw []byte) (encoded []byte) {
 	// 1 byte の入れ物
 	byt := NewByte()
 
 	for _, v := range raw {
 
 		// huffman table で変換
-		huff := RequestHuffmanTable[v]
+		huff := table[v]
 
 		for huff.length > 0 { // huff.code を使いきるまで
 

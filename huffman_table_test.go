@@ -25,7 +25,7 @@ func TestHuffmanEncode(t *testing.T) {
 	for _, tc := range testcase {
 		raw := []byte(tc.str)
 		expected := tc.hex
-		encoded := HuffmanEncode(raw)
+		encoded := HuffmanEncodeRequest(raw)
 		actual := toHexString(encoded)
 		if actual != expected {
 			t.Errorf("\ngot  %v\nwant %v", actual, expected)
