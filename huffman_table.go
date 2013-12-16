@@ -34,41 +34,58 @@ result(40)
 */
 
 func main() {
-	var result []byte
+	var result []Byte
 
 	buffer := []byte("{")
-	// huffman table で変換
-	huff := RequestHuffmanTable[buffer[0]]
 
-	for {
-		if huff.bit >= 8 {
-			// 先頭 8bit を切り出す
-			b := huff.code >> (huff.bit - 8)
+	// 1 byte の入れ物
+	byt := NewByte()
 
-			// 結果配列に追加
-			result = append(result, byte(b))
+	for _, v := range buffer {
+		// huffman table で変換
+		huff := RequestHuffmanTable[v]
+		for huff.length > 0 {
+			if huff.length > byt.remain { // huff の方が大きい
+				offset := huff.length - byt.remain
+				// 先頭から byt に入るだけ切り出す
+				tmp := huff.code >> offset
+				byt.value += tmp
+				byt.remain -= 8
+				// 元のコードから使った分引く
+				huff.code = huff.code - (tmp << offset)
+				huff.length = huff.length - 8
+				if byt.remain == 0 { // いっぱいだったら
+					// 結果配列に追加
+					result = append(result, byt)
+					// 空にする
+					byt = NewByte()
+				}
+			} else if huff.length < byt.remain { // remain の方が大きい
+				tmp := huff.code << (byt.remain - huff.length)
+				byt.value += tmp
+				byt.remain -= huff.length
 
-			// 8bit 抜いた残り
-			huff.code -= b << (huff.bit - 8)
-
-			// 残りの bit 数に更新 (TODO: 先にやる)
-			huff.bit -= 8
-		} else {
-			// 残りビットが先頭に来るようにする
-			b := huff.code << (8 - huff.bit)
-
-			log.Println(b)
-			break
+				huff.code = 0
+				huff.length = 0
+			}
 		}
 	}
 
-	log.Println(huff)
 	log.Println(result)
 }
 
+type Byte struct {
+	value  uint32
+	remain uint8
+}
+
+func NewByte() Byte {
+	return Byte{0, 8}
+}
+
 type HuffmanCode struct {
-	code uint32
-	bit  uint8
+	code   uint32
+	length uint8
 }
 
 /*
