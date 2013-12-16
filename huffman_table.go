@@ -35,15 +35,25 @@ result(40)
 */
 
 func main() {
-	var result []byte
+	raw := []byte("www.example.com")
+	encoded := Encode(raw)
+	log.Println(encoded)
 
-	// エンコード対象
-	buffer := []byte("www.example.com")
+	actual := ""
+	for i, v := range encoded {
+		actual += fmt.Sprintf("%x", v)
+		if i%2 == 1 {
+			actual += fmt.Sprint(" ")
+		}
+	}
+	log.Println(actual == "db6d 883e 68d1 cb12 25ba 7f")
+}
 
+func Encode(raw []byte) (encoded []byte) {
 	// 1 byte の入れ物
 	byt := NewByte()
 
-	for _, v := range buffer {
+	for _, v := range raw {
 
 		// huffman table で変換
 		huff := RequestHuffmanTable[v]
@@ -82,7 +92,7 @@ func main() {
 
 			if byt.remain == 0 {
 				// byt が埋まったら配列に移して初期化
-				result = append(result, byte(byt.value))
+				encoded = append(encoded, byte(byt.value))
 				byt = NewByte()
 			}
 		}
@@ -99,19 +109,13 @@ func main() {
 		byt.remain = 0
 
 		// 配列に移す。最後なので初期化はしない。
-		result = append(result, byte(byt.value))
+		encoded = append(encoded, byte(byt.value))
 	}
 
-	actual := ""
-	for i, v := range result {
-		actual += fmt.Sprintf("%x", v)
-		if i%2 == 1 {
-			actual += fmt.Sprint(" ")
-		}
-	}
-	log.Println(actual == "db6d 883e 68d1 cb12 25ba 7f")
+	return encoded
 }
 
+// 結果 1 Byte を生成するための struct
 type Byte struct {
 	value  uint32
 	remain uint8
