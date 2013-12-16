@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 )
 
@@ -37,7 +38,7 @@ func main() {
 	var result []byte
 
 	// エンコード対象
-	buffer := []byte("{a}")
+	buffer := []byte("www.example.com")
 
 	// 1 byte の入れ物
 	byt := NewByte()
@@ -101,7 +102,14 @@ func main() {
 		result = append(result, byte(byt.value))
 	}
 
-	log.Println(result)
+	actual := ""
+	for i, v := range result {
+		actual += fmt.Sprintf("%x", v)
+		if i%2 == 1 {
+			actual += fmt.Sprint(" ")
+		}
+	}
+	log.Println(actual == "db6d 883e 68d1 cb12 25ba 7f")
 }
 
 type Byte struct {
