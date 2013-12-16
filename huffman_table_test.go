@@ -41,12 +41,24 @@ var responseTestCase = []struct {
 	str, hex string
 }{
 	{"302", "409f"},
-	{"private", "c31b39bf387f"},
-	{"Mon, 21 Oct 2013 20:13:21 GMT", "a2fba20320f2ab303124018b490d3209e877"},
-	{"https://www.example.com", "e39e7864dd7afd3d3d248747db87284955f6ff"},
-	{"Mon, 21 Oct 2013 20:13:22 GMT", "a2fba20320f2ab303124018b490d3309e877"},
 	{"gzip", "e1fbb30f"},
-	{"foo=ASDJKHQKBZXOQWEOPIUAXQWEOIU; max-age=3600; version=1", "df7dfb36d3d9e1fcfc3fafe7abfcfefcbfaf3edf2f977fd36ff7fd79f6f977fd3de16bfa46fe10d889447de1ce18e565f76c2f"},
+	{"private", "c31b39bf387f"},
+	{
+		"Mon, 21 Oct 2013 20:13:21 GMT",
+		"a2fba20320f2ab303124018b490d3209e877",
+	},
+	{
+		"Mon, 21 Oct 2013 20:13:22 GMT",
+		"a2fba20320f2ab303124018b490d3309e877",
+	},
+	{
+		"https://www.example.com",
+		"e39e7864dd7afd3d3d248747db87284955f6ff",
+	},
+	{
+		"foo=ASDJKHQKBZXOQWEOPIUAXQWEOIU; max-age=3600; version=1",
+		"df7dfb36d3d9e1fcfc3fafe7abfcfefcbfaf3edf2f977fd36ff7fd79f6f977fd3de16bfa46fe10d889447de1ce18e565f76c2f",
+	},
 }
 
 func TestHuffmanEncodeResponse(t *testing.T) {
