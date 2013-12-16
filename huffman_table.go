@@ -34,7 +34,7 @@ result(40)
 */
 
 func main() {
-	var result []Byte
+	var result []byte
 
 	// エンコード対象
 	buffer := []byte("{a}")
@@ -81,7 +81,7 @@ func main() {
 
 			if byt.remain == 0 {
 				// byt が埋まったら配列に移して初期化
-				result = append(result, byt)
+				result = append(result, byte(byt.value))
 				byt = NewByte()
 			}
 		}
@@ -98,10 +98,10 @@ func main() {
 		byt.remain = 0
 
 		// 配列に移す。最後なので初期化はしない。
-		result = append(result, byt)
+		result = append(result, byte(byt.value))
 	}
 
-	log.Println("=========\n", result)
+	log.Println(result)
 }
 
 type Byte struct {
