@@ -1,7 +1,6 @@
 package hpack
 
 import (
-	"fmt"
 	"log"
 )
 
@@ -34,22 +33,7 @@ result(40)
 				                       {     a                      }+
 */
 
-func main() {
-	raw := []byte("www.example.com")
-	encoded := Encode(raw)
-	log.Println(encoded)
-
-	actual := ""
-	for i, v := range encoded {
-		actual += fmt.Sprintf("%x", v)
-		if i%2 == 1 {
-			actual += fmt.Sprint(" ")
-		}
-	}
-	log.Println(actual == "db6d 883e 68d1 cb12 25ba 7f")
-}
-
-func Encode(raw []byte) (encoded []byte) {
+func HuffmanEncode(raw []byte) (encoded []byte) {
 	// 1 byte の入れ物
 	byt := NewByte()
 
