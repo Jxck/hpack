@@ -20,9 +20,9 @@ var Table = []huff{
 	{2, 3},
 	{3, 3},
 	{4, 3},
-	//{5, 3},
-	//{6, 3},
-	//{7, 3},
+	{5, 3},
+	{6, 3},
+	{7, 3},
 }
 
 type node struct {
@@ -102,34 +102,32 @@ func Show(current *node) {
 [1000 1101, 0111 1111, 0101 1011]
    e   d    c  h   h    f   d  d
 
-a 000
-b 001
-c 010
-d 011
-e 100
-f 101
-g 110
-h 111
+0 a 000,   4 e 100
+1 b 001,   5 f 101
+2 c 010,   6 g 110
+3 d 011,   7 h 111
 */
-func Decode(root *node, codes []byte) (data int) {
+func Decode(root *node, codes []byte) []int {
+	var result []int
 	current := root
-	var mask byte = 1 << 7
+	var mask byte
 	for _, code := range codes {
+		mask = 1 << 7
 		log.Printf("%b", code)
 		for mask > 0 {
-			log.Printf("%b", mask)
-			if current.data != -1 {
-				break
-			}
+			log.Printf("%b %b %b", code, mask, code&mask)
 			if code&mask == mask {
 				current = current.right
 			} else {
 				current = current.left
 			}
-
+			if current.data != -1 {
+				log.Println("==", current.data)
+				result = append(result, current.data)
+				current = root
+			}
 			mask = mask >> 1
 		}
-		log.Println(current.data)
 	}
-	return current.data
+	return result
 }
