@@ -39,8 +39,8 @@ func (n *node) String() string {
 func main() {
 	root := BuildTree()
 	Show(root)
-	var bit byte = 4
-	log.Println(Decode(root, bit))
+	var code = []byte{141, 127, 91}
+	log.Println(Decode(root, code))
 }
 
 func BuildTree() (root *node) {
@@ -49,27 +49,41 @@ func BuildTree() (root *node) {
 	for i, e := range Table {
 		current := root
 		for e.bit > 0 {
-			if e.code%2 == 0 {
-				next := current.left
-				if next == nil {
-					next = &node{nil, nil, -1}
-					current.left = next
-				}
-				current = next
-			} else {
+			e.bit -= 1
+			mask := pow(2, e.bit)
+			if e.code&mask == mask {
 				next := current.right
 				if next == nil {
 					next = &node{nil, nil, -1}
 					current.right = next
 				}
 				current = next
+			} else {
+				next := current.left
+				if next == nil {
+					next = &node{nil, nil, -1}
+					current.left = next
+				}
+				current = next
 			}
-			e.code = e.code / 2
-			e.bit -= 1
 		}
 		current.data = i
 	}
 	return root
+}
+
+func pow(x, y uint8) (ans uint32) {
+	x32 := uint32(x)
+	if y == 0 {
+		return 1
+	}
+
+	ans = x32
+	for y > 1 {
+		ans *= x32
+		y--
+	}
+	return ans
 }
 
 func Show(current *node) {
@@ -80,15 +94,25 @@ func Show(current *node) {
 	}
 }
 
-func Decode(root *node, bit byte) (data int) {
+func Decode(root *node, codes []byte) (data int) {
 	current := root
-	for bit > 0 {
-		if bit%2 == 0 {
-			current = current.left
-		} else {
-			current = current.right
+	var mask byte = 1 << 7
+	for _, code := range codes {
+		log.Printf("%b", code)
+		for mask > 0 {
+			log.Printf("%b", mask)
+			if current.data != -1 {
+				break
+			}
+			if code&mask == mask {
+				current = current.right
+			} else {
+				current = current.left
+			}
+
+			mask = mask >> 1
 		}
-		bit = bit / 2
+		log.Println(current.data)
 	}
 	return current.data
 }
