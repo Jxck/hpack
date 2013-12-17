@@ -94,6 +94,23 @@ func Show(current *node) {
 	}
 }
 
+// byte の配列をデコードする際に、
+// 値をうまく引き継ぐようにする。
+
+/* テストデータ
+[141,       127,       91       ]
+[1000 1101, 0111 1111, 0101 1011]
+   e   d    c  h   h    f   d  d
+
+a 000
+b 001
+c 010
+d 011
+e 100
+f 101
+g 110
+h 111
+*/
 func Decode(root *node, codes []byte) (data int) {
 	current := root
 	var mask byte = 1 << 7
