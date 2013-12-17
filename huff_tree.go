@@ -9,12 +9,12 @@ func init() {
 	log.SetFlags(log.Lshortfile)
 }
 
-type huff struct {
-	code uint32
-	bit  uint8
+type HuffmanCode struct {
+	code   uint32
+	length uint8
 }
 
-var Table = []huff{
+var RequestHuffmanTable = [257]HuffmanCode{
 	{0, 3},
 	{1, 3},
 	{2, 3},
@@ -46,11 +46,11 @@ func main() {
 func BuildTree() (root *node) {
 	root = &node{nil, nil, -1}
 
-	for i, e := range Table {
+	for i, e := range RequestHuffmanTable {
 		current := root
-		for e.bit > 0 {
-			e.bit -= 1
-			mask := pow(2, e.bit)
+		for e.length > 0 {
+			e.length -= 1
+			mask := uint32(1 << e.length)
 			if e.code&mask == mask {
 				next := current.right
 				if next == nil {
@@ -70,20 +70,6 @@ func BuildTree() (root *node) {
 		current.data = i
 	}
 	return root
-}
-
-func pow(x, y uint8) (ans uint32) {
-	x32 := uint32(x)
-	if y == 0 {
-		return 1
-	}
-
-	ans = x32
-	for y > 1 {
-		ans *= x32
-		y--
-	}
-	return ans
 }
 
 func Show(current *node) {
