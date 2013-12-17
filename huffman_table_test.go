@@ -5,6 +5,8 @@ import (
 	"testing"
 )
 
+// ===== Encode =====
+
 func toHexString(hex []byte) (hexstr string) {
 	for _, v := range hex {
 		s := fmt.Sprintf("%x", v)
@@ -70,5 +72,24 @@ func TestHuffmanEncodeResponse(t *testing.T) {
 		if actual != expected {
 			t.Errorf("\ngot  %v\nwant %v", actual, expected)
 		}
+	}
+}
+
+// ===== Decode =====
+
+func TestHuffmanDecodeResponse(t *testing.T) {
+	expected := "302"
+	root := BuildResponseTree()
+	Show(root)
+	var code = []byte{0x40, 0x9f}
+	result := HuffmanDecode(root, code)
+
+	actual := ""
+	for _, c := range result {
+		actual += string(c)
+	}
+
+	if actual != expected {
+		t.Errorf("\ngot  %v\nwant %v", actual, expected)
 	}
 }
