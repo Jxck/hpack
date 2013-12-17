@@ -10,64 +10,64 @@ func init() {
 }
 
 type huff struct {
-	data string
-	bit  byte
+	code uint32
+	bit  uint8
 }
 
 var Table = []huff{
-	{"a", 0},
-	{"b", 1},
-	{"c", 2},
-	{"d", 3},
-	{"e", 4},
-	{"f", 5},
-	{"g", 6},
-	{"h", 7},
+	{0, 3},
+	{1, 3},
+	{2, 3},
+	{3, 3},
+	{4, 3},
+	//{5, 3},
+	//{6, 3},
+	//{7, 3},
 }
 
 type node struct {
 	left, right *node
-	data        string
+	data        int
 }
 
 func (n *node) String() string {
-	return fmt.Sprintf("%p %p %p (%s)\n", n, n.left, n.right, n.data)
+	return fmt.Sprintf(
+		"%p %p %p (%d)\n",
+		n, n.left, n.right, n.data)
 }
 
 func main() {
 	root := BuildTree()
 	Show(root)
-	var bit byte = 3
+	var bit byte = 4
 	log.Println(Decode(root, bit))
 }
 
 func BuildTree() (root *node) {
-	root = &node{}
+	root = &node{nil, nil, -1}
 
-	for _, e := range Table {
+	for i, e := range Table {
 		current := root
-		for {
-			if e.bit%2 == 0 {
+		for e.bit > 0 {
+			if e.code%2 == 0 {
 				next := current.left
 				if next == nil {
-					next = &node{}
+					next = &node{nil, nil, -1}
 					current.left = next
 				}
 				current = next
 			} else {
 				next := current.right
 				if next == nil {
-					next = &node{}
+					next = &node{nil, nil, -1}
 					current.right = next
 				}
 				current = next
 			}
-			e.bit = e.bit / 2
-			if e.bit == 0 {
-				current.data = e.data
-				break
-			}
+			e.code = e.code / 2
+			e.bit -= 1
 		}
+		current.data = i
 	}
 	return root
 }
@@ -80,7 +80,7 @@ func Show(current *node) {
 	}
 }
 
-func Decode(root *node, bit byte) (data string) {
+func Decode(root *node, bit byte) (data int) {
 	current := root
 	for bit > 0 {
 		if bit%2 == 0 {
