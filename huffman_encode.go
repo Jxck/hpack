@@ -19,13 +19,13 @@ func NewByte() *Byte {
 }
 
 func HuffmanEncodeRequest(raw []byte) (encoded []byte) {
-	return HuffmanEncode(raw, &RequestHuffmanTable)
+	return HuffmanEncode(raw, RequestHuffmanTable)
 }
 func HuffmanEncodeResponse(raw []byte) (encoded []byte) {
-	return HuffmanEncode(raw, &ResponseHuffmanTable)
+	return HuffmanEncode(raw, ResponseHuffmanTable)
 }
 
-func HuffmanEncode(raw []byte, table *[257]HuffmanCode) (encoded []byte) {
+func HuffmanEncode(raw []byte, table *HuffmanTable) (encoded []byte) {
 	// 空のバイト列はそのまま返す
 	if len(raw) == 0 {
 		return raw

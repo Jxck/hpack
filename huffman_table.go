@@ -5,11 +5,13 @@ type HuffmanCode struct {
 	length byte
 }
 
+type HuffmanTable [257]HuffmanCode
+
 /*
   RequestHuffmanTable  [257]HuffmanCode
   ResponseHuffmanTable [257]HuffmanCode
 */
-var RequestHuffmanTable = [257]HuffmanCode{
+var RequestHuffmanTable = &HuffmanTable{
 	{0x7ffffba, 27},
 	{0x7ffffbb, 27},
 	{0x7ffffbc, 27},
@@ -269,7 +271,7 @@ var RequestHuffmanTable = [257]HuffmanCode{
 	{0x3ffffdc, 26},
 }
 
-var ResponseHuffmanTable = [257]HuffmanCode{
+var ResponseHuffmanTable = &HuffmanTable{
 	{0x1ffffbc, 25},
 	{0x1ffffbd, 25},
 	{0x1ffffbe, 25},
