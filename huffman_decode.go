@@ -86,11 +86,11 @@ func BuildTree(table *[257]HuffmanCode) (root *node) {
 	return root
 }
 
-func HuffmanDecodeRequest(codes []byte) []int {
+func HuffmanDecodeRequest(codes []byte) []byte {
 	return HuffmanDecode(RequestHuffmanTree, codes)
 }
 
-func HuffmanDecodeResponse(codes []byte) []int {
+func HuffmanDecodeResponse(codes []byte) []byte {
 	return HuffmanDecode(ResponseHuffmanTree, codes)
 }
 
@@ -107,9 +107,9 @@ func HuffmanDecodeResponse(codes []byte) []int {
 
 // バイト配列を渡すと木を辿り
 // その葉にあるテーブルへのインデックスの配列を返す。
-func HuffmanDecode(root *node, codes []byte) []int {
+func HuffmanDecode(root *node, codes []byte) []byte {
 	// 初期化
-	var result []int
+	var result []byte
 	var mask byte
 
 	// スタート地点
@@ -126,8 +126,10 @@ func HuffmanDecode(root *node, codes []byte) []int {
 			}
 			if current.data != -1 { // 移動先で値を見つけたら
 				// log.Println("==", current.data)
-				result = append(result, current.data) // それを結果に追加
-				current = root                        // 残った bit を使ってまた根からたどる
+
+				// それを結果に追加、ここでは 256 までなので byte に変換
+				result = append(result, byte(current.data))
+				current = root // 残った bit を使ってまた根からたどる
 			}
 			mask = mask >> 1 // 1bit 処理したら減らす
 		}
