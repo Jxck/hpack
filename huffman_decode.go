@@ -108,6 +108,11 @@ func HuffmanDecodeResponse(codes []byte) []byte {
 // バイト配列を渡すと木を辿り
 // その葉にあるテーブルへのインデックスの配列を返す。
 func HuffmanDecode(root *node, codes []byte) []byte {
+	// 空のバイト列はそのまま返す
+	if len(codes) == 0 {
+		return codes
+	}
+
 	// 初期化
 	var result []byte
 	var mask byte

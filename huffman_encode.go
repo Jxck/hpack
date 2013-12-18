@@ -26,6 +26,11 @@ func HuffmanEncodeResponse(raw []byte) (encoded []byte) {
 }
 
 func HuffmanEncode(raw []byte, table *[257]HuffmanCode) (encoded []byte) {
+	// 空のバイト列はそのまま返す
+	if len(raw) == 0 {
+		return raw
+	}
+
 	// 1 byte の入れ物
 	byt := NewByte()
 
