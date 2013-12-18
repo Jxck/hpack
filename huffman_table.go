@@ -1,5 +1,10 @@
 package hpack
 
+type HuffmanCode struct {
+	code   uint32
+	length byte
+}
+
 /*
   RequestHuffmanTable  [257]HuffmanCode
   ResponseHuffmanTable [257]HuffmanCode

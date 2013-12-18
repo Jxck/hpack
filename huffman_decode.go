@@ -12,7 +12,7 @@ func init() {
 // huffman tree の node
 type node struct {
 	left, right *node // 左右の子ノードへのポインタ
-	data        int   // Table へのインデクスを持つ
+	data        int   // Table のインデクスを持つ 257 なので int
 }
 
 // 空のノードを生成
@@ -37,6 +37,7 @@ func Show(current *node) {
 	}
 }
 
+// 実際に呼ばれる関数
 func BuildRequestTree() (root *node) {
 	return BuildTree(&RequestHuffmanTable)
 }
@@ -49,13 +50,13 @@ func BuildResponseTree() (root *node) {
 func BuildTree(table *[257]HuffmanCode) (root *node) {
 	root = NewNode()
 
-	for i, e := range table { // 全てのコードについて実施
+	for i, huff := range table { // 全てのコードについて実施
 		current := root // たどる時は根から
 
-		for e.length > 0 { // 1 コードの長さを消化するまで繰り返す
-			e.length -= 1
-			mask := uint32(1 << e.length) // length=5 なら 10000 でマスクする
-			if e.code&mask == mask {      // 11011 & 10000 = 10000 マスク結果とマスクの比較でわかる
+		for huff.length > 0 { // 1 コードの長さを消化するまで繰り返す
+			huff.length -= 1
+			mask := uint32(1 << huff.length) // length=5 なら 10000 でマスクする
+			if huff.code&mask == mask {      // 11011 & 10000 = 10000 マスク結果とマスクの比較でわかる
 				next := current.right // 1 だったら右
 				if next == nil {      // 無かったらノードを足す
 					next = NewNode()
@@ -70,7 +71,7 @@ func BuildTree(table *[257]HuffmanCode) (root *node) {
 				}
 				current = next
 			}
-		} // 木をコード長まで降りたところ
+		} // 木をコード長(huff.length)まで降りたところ
 		// ここにテーブルのインデックスを入れる
 		current.data = i
 	}
@@ -88,7 +89,8 @@ func BuildTree(table *[257]HuffmanCode) (root *node) {
 3 d 011,   7 h 111
 */
 
-// バイト配列を渡すと木を辿り、その葉にあるテーブルへのインデックスの配列を返す。
+// バイト配列を渡すと木を辿り
+// その葉にあるテーブルへのインデックスの配列を返す。
 func HuffmanDecode(root *node, codes []byte) []int {
 	// 初期化
 	var result []int
@@ -97,7 +99,7 @@ func HuffmanDecode(root *node, codes []byte) []int {
 	// スタート地点
 	current := root
 	for _, code := range codes { // バイト配列の頭から順に
-		mask = 128 // 常に 1000 0000 をマスクに使う。 1<<7 から定数に変更した
+		mask = 128 // 1000 0000 をマスクに使う。 1<<7 から定数に変更した
 		log.Printf("%b", code)
 		for mask > 0 { // 8bit 読み終わるまで
 			log.Printf("%b %b %b", code, mask, code&mask)
@@ -114,5 +116,7 @@ func HuffmanDecode(root *node, codes []byte) []int {
 			mask = mask >> 1 // 1bit 処理したら減らす
 		}
 	}
+	// 葉の値を見つけずに終わったら、それは EOS をたどる途中なので
+	// 今は無視している。
 	return result
 }

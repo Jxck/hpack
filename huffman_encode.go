@@ -11,33 +11,28 @@ func init() {
 // 結果 1 Byte を生成するための struct
 type Byte struct {
 	value  uint32
-	remain uint8
+	remain byte
 }
 
-func NewByte() Byte {
-	return Byte{0, 8}
-}
-
-type HuffmanCode struct {
-	code   uint32
-	length uint8
+func NewByte() *Byte {
+	return &Byte{0, 8}
 }
 
 func HuffmanEncodeRequest(raw []byte) (encoded []byte) {
-	return HuffmanEncode(&RequestHuffmanTable, raw)
+	return HuffmanEncode(raw, &RequestHuffmanTable)
 }
 func HuffmanEncodeResponse(raw []byte) (encoded []byte) {
-	return HuffmanEncode(&ResponseHuffmanTable, raw)
+	return HuffmanEncode(raw, &ResponseHuffmanTable)
 }
 
-func HuffmanEncode(table *[257]HuffmanCode, raw []byte) (encoded []byte) {
+func HuffmanEncode(raw []byte, table *[257]HuffmanCode) (encoded []byte) {
 	// 1 byte の入れ物
 	byt := NewByte()
 
-	for _, v := range raw {
+	for _, b := range raw {
 
 		// huffman table で変換
-		huff := table[v]
+		huff := table[b]
 
 		for huff.length > 0 { // huff.code を使いきるまで
 
@@ -89,8 +84,10 @@ func HuffmanEncode(table *[257]HuffmanCode, raw []byte) (encoded []byte) {
 		byt.value += padding
 		byt.remain = 0
 
-		// 配列に移す。最後なので初期化はしない。
+		// 配列に移す
 		encoded = append(encoded, byte(byt.value))
+		// 最後なのでゼロ値でGC
+		byt = &Byte{}
 	}
 
 	return encoded
