@@ -80,7 +80,7 @@ func TestHuffmanEncodeResponse(t *testing.T) {
 func TestHuffmanDecodeResponse(t *testing.T) {
 	expected := "302"
 	root := BuildResponseTree()
-	Show(root)
+	// Show(root)
 	var code = []byte{0x40, 0x9f}
 	result := HuffmanDecode(root, code)
 

@@ -31,7 +31,7 @@ func (n *node) String() string {
 // デバッグ用
 func Show(current *node) {
 	if current != nil {
-		fmt.Println(current)
+		log.Println(current)
 		Show(current.left)
 		Show(current.right)
 	}
@@ -100,16 +100,16 @@ func HuffmanDecode(root *node, codes []byte) []int {
 	current := root
 	for _, code := range codes { // バイト配列の頭から順に
 		mask = 128 // 1000 0000 をマスクに使う。 1<<7 から定数に変更した
-		log.Printf("%b", code)
+		// log.Printf("%b", code)
 		for mask > 0 { // 8bit 読み終わるまで
-			log.Printf("%b %b %b", code, mask, code&mask)
+			// log.Printf("%b %b %b", code, mask, code&mask)
 			if code&mask == mask { // 1100 & 1000 = 1000 マスクすると先頭ビットが分かる
 				current = current.right // 1 なら右
 			} else {
 				current = current.left // 0 なら左
 			}
 			if current.data != -1 { // 移動先で値を見つけたら
-				log.Println("==", current.data)
+				// log.Println("==", current.data)
 				result = append(result, current.data) // それを結果に追加
 				current = root                        // 残った bit を使ってまた根からたどる
 			}
