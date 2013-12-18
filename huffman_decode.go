@@ -25,7 +25,7 @@ type node struct {
 
 // 空のノードを生成
 // data int を持たないことを -1 で表わす
-func NewNode() *node {
+func newNode() *node {
 	return &node{nil, nil, -1}
 }
 
@@ -37,11 +37,11 @@ func (n *node) String() string {
 }
 
 // デバッグ用
-func Show(current *node) {
+func show(current *node) {
 	if current != nil {
 		log.Println(current)
-		Show(current.left)
-		Show(current.right)
+		show(current.left)
+		show(current.right)
 	}
 }
 
@@ -56,7 +56,7 @@ func BuildResponseTree() (root *node) {
 
 // ツリーを構築する
 func BuildTree(table *HuffmanTable) (root *node) {
-	root = NewNode()
+	root = newNode()
 
 	for i, huff := range table { // 全てのコードについて実施
 		current := root // たどる時は根から
@@ -67,14 +67,14 @@ func BuildTree(table *HuffmanTable) (root *node) {
 			if huff.code&mask == mask {      // 11011 & 10000 = 10000 マスク結果とマスクの比較でわかる
 				next := current.right // 1 だったら右
 				if next == nil {      // 無かったらノードを足す
-					next = NewNode()
+					next = newNode()
 					current.right = next
 				}
 				current = next
 			} else {
 				next := current.left // 0 だったら左
 				if next == nil {     // 無かったらノードを足す
-					next = NewNode()
+					next = newNode()
 					current.left = next
 				}
 				current = next
