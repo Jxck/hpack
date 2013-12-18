@@ -5,8 +5,16 @@ import (
 	"log"
 )
 
+var (
+	RequestHuffmanTree  *node
+	ResponseHuffmanTree *node
+)
+
 func init() {
 	log.SetFlags(log.Lshortfile)
+
+	RequestHuffmanTree = BuildRequestTree()
+	ResponseHuffmanTree = BuildResponseTree()
 }
 
 // huffman tree の node
@@ -76,6 +84,14 @@ func BuildTree(table *[257]HuffmanCode) (root *node) {
 		current.data = i
 	}
 	return root
+}
+
+func HuffmanDecodeRequest(codes []byte) []int {
+	return HuffmanDecode(RequestHuffmanTree, codes)
+}
+
+func HuffmanDecodeResponse(codes []byte) []int {
+	return HuffmanDecode(ResponseHuffmanTree, codes)
 }
 
 /* テストデータ
