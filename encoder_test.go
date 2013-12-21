@@ -17,59 +17,39 @@ func TestIndexedHeaderEncode(t *testing.T) {
 	}
 }
 
-func TestIndexedNameWithoutIndexingEncode(t *testing.T) {
-	var index uint64 = 3
-	var value string = "first"
-	frame := NewIndexedNameWithoutIndexing(index, value)
+func TestIndexedLiteral_NoIndexing(t *testing.T) {
+	var indexing bool = false
+	var index uint64 = 4
+	var value string = "/sample/path"
+	frame := NewIndexedLiteral(indexing, index, value)
 
 	actual := frame.Encode().Bytes()
-	buf := bytes.NewBuffer([]byte{0x64, 0x05})
-	buf.WriteString(value)
-	expected := buf.Bytes()
+	expected := bytes.NewBuffer([]byte{
+		0x44, 0x0c, 0x2f, 0x73,
+		0x61, 0x6d, 0x70, 0x6c,
+		0x65, 0x2f, 0x70, 0x61,
+		0x74, 0x68,
+	}).Bytes()
 	if !bytes.Equal(actual, expected) {
 		t.Errorf("got %v\nwant %v", actual, expected)
 	}
 }
 
-func TestNewNameWithoutIndexingEncode(t *testing.T) {
-	var name, value string = "mynewheader", "first"
-	frame := NewNewNameWithoutIndexing(name, value)
+func TestStringLiteral_Indexing(t *testing.T) {
+	var indexing bool = true
+	var name, value string = "custom-key", "custom-header"
+	frame := NewStringLiteral(indexing, name, value)
 
 	actual := frame.Encode().Bytes()
-	buf := bytes.NewBuffer([]byte{0x60, 0x0B})
-	buf.WriteString(name)
-	buf.WriteByte(0x05)
-	buf.WriteString(value)
-	expected := buf.Bytes()
-	if !bytes.Equal(actual, expected) {
-		t.Errorf("got %v\nwant %v", actual, expected)
-	}
-}
-
-func TestIndexedNameWithIncrementalIndexingEncode(t *testing.T) {
-	var index uint64 = 3
-	var value string = "/my-example/index.html"
-	frame := NewIndexedNameWithIncrementalIndexing(index, value)
-
-	actual := frame.Encode().Bytes()
-	buf := bytes.NewBuffer([]byte{0x44, 0x16})
-	buf.WriteString(value)
-	expected := buf.Bytes()
-	if !bytes.Equal(actual, expected) {
-		t.Errorf("got %v\nwant %v", actual, expected)
-	}
-}
-
-func TestNewNameWithIncrementalIndexingEncode(t *testing.T) {
-	var name, value string = "mynewheader", "first"
-	frame := NewNewNameWithIncrementalIndexing(name, value)
-
-	actual := frame.Encode().Bytes()
-	buf := bytes.NewBuffer([]byte{0x40, 0x0B})
-	buf.WriteString(name)
-	buf.WriteByte(0x05)
-	buf.WriteString(value)
-	expected := buf.Bytes()
+	expected := bytes.NewBuffer([]byte{
+		0x00, 0x0a, 0x63, 0x75,
+		0x73, 0x74, 0x6f, 0x6d,
+		0x2d, 0x6b, 0x65, 0x79,
+		0x0d, 0x63, 0x75, 0x73,
+		0x74, 0x6f, 0x6d, 0x2d,
+		0x68, 0x65, 0x61, 0x64,
+		0x65, 0x72,
+	}).Bytes()
 	if !bytes.Equal(actual, expected) {
 		t.Errorf("got %v\nwant %v", actual, expected)
 	}
