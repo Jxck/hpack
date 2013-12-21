@@ -19,6 +19,29 @@ func TestIndexedHeaderDecode(t *testing.T) {
 	}
 }
 
+func TestIndexedNameWithoutIndexingDecode(t *testing.T) {
+	// 0x64      (literal header without indexing, name index = 3)
+	// 0x05      (header value string length = 5)
+	// first
+	buf := bytes.NewBuffer([]byte{0x64, 0x05}) // 0110 00011 0000 0101
+	buf.WriteString("first")
+
+	frame := DecodeHeader(buf)
+	f, ok := frame.(*IndexedNameWithoutIndexing)
+	if !ok {
+		t.Fatal("Parsed incorrect frame type:", frame)
+	}
+	if f.Index != 3 {
+		t.Errorf("got %v\nwant %v", f.Index, 3)
+	}
+	if f.ValueLength != 5 {
+		t.Errorf("got %v\nwant %v", f.ValueLength, 5)
+	}
+	if f.ValueString != "first" {
+		t.Errorf("got %v\nwant %v", f.ValueString, "first")
+	}
+}
+
 func TestNewNameWithoutIndexingDecode(t *testing.T) {
 	// 0x60      (literal header without indexing, new name)
 	// 0x0B      (header name string length = 11)
@@ -52,26 +75,28 @@ func TestNewNameWithoutIndexingDecode(t *testing.T) {
 	}
 }
 
-func TestIndexedNameWithoutIndexingDecode(t *testing.T) {
-	// 0x64      (literal header without indexing, name index = 3)
-	// 0x05      (header value string length = 5)
-	// first
-	buf := bytes.NewBuffer([]byte{0x64, 0x05}) // 0110 00011 0000 0101
-	buf.WriteString("first")
+// TODO: test name ??
+func TestIndexedNameWithIncrementalIndexing(t *testing.T) {
+	// 0x5f 0101 1111 (literal header, incremental indexing, name index = 40) 40n5=[31 9]
+	// 0x0a 0000 1010
+	// 0x06 0000 0110 (header value string length = 6)
+	// second
+	buf := bytes.NewBuffer([]byte{0x5f, 0x0a, 0x06})
+	buf.WriteString("second")
 
 	frame := DecodeHeader(buf)
-	f, ok := frame.(*IndexedNameWithoutIndexing)
+	f, ok := frame.(*IndexedNameWithIncrementalIndexing)
 	if !ok {
 		t.Fatal("Parsed incorrect frame type:", frame)
 	}
-	if f.Index != 3 {
-		t.Errorf("got %v\nwant %v", f.Index, 3)
+	if f.Index != 40 {
+		t.Errorf("got %v\nwant %v", f.Index, 40)
 	}
-	if f.ValueLength != 5 {
-		t.Errorf("got %v\nwant %v", f.ValueLength, 5)
+	if f.ValueLength != 6 {
+		t.Errorf("got %v\nwant %v", f.ValueLength, 6)
 	}
-	if f.ValueString != "first" {
-		t.Errorf("got %v\nwant %v", f.ValueString, "first")
+	if f.ValueString != "second" {
+		t.Errorf("got %v\nwant %v", f.ValueString, "second")
 	}
 }
 
@@ -128,31 +153,5 @@ func TestNewNameWithIncrementalIndexingDecode(t *testing.T) {
 	}
 	if f.ValueString != "first" {
 		t.Errorf("got %v\nwant %v", f.ValueString, "first")
-	}
-}
-
-func TestIndexedNameWithIncrementalIndexing(t *testing.T) {
-
-	// 0x5f 0101 1111 (literal header, incremental indexing, name index = 40) 40n5=[31 9]
-	// 0x0a 0000 1010
-	// 0x06 0000 0110 (header value string length = 6)
-	// second
-	buf := bytes.NewBuffer([]byte{0x5f, 0x0a, 0x06})
-	buf.WriteString("second")
-
-	frame := DecodeHeader(buf)
-
-	f, ok := frame.(*IndexedNameWithIncrementalIndexing)
-	if !ok {
-		t.Fatal("Parsed incorrect frame type:", frame)
-	}
-	if f.Index != 40 {
-		t.Errorf("got %v\nwant %v", f.Index, 40)
-	}
-	if f.ValueLength != 6 {
-		t.Errorf("got %v\nwant %v", f.ValueLength, 6)
-	}
-	if f.ValueString != "second" {
-		t.Errorf("got %v\nwant %v", f.ValueString, "second")
 	}
 }
