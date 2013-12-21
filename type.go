@@ -49,6 +49,7 @@ func CreateIndexedNameWithoutIndexing(index uint64, value string) (frame *Indexe
 }
 
 // Literal Header Field without Indexing - New Name
+//
 //   0   1   2   3   4   5   6   7
 // +---+---+---+---+---+---+---+---+
 // | 0 | 1 |           0           |
