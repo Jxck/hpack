@@ -1,4 +1,4 @@
-package hpack
+package huffman
 
 import (
 	"log"

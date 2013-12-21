@@ -1,4 +1,4 @@
-package hpack
+package huffman
 
 type HuffmanCode struct {
 	code   uint32
