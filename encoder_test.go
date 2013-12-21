@@ -6,7 +6,7 @@ import (
 )
 
 func TestIndexedHeaderEncode(t *testing.T) {
-	var index uint64 = 38
+	var index uint64 = 2
 	var frame *IndexedHeader
 	frame = NewIndexedHeader(index)
 

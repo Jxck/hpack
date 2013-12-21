@@ -7,7 +7,7 @@ import (
 
 func (frame *IndexedHeader) Encode() *bytes.Buffer {
 	index := integer.Encode(frame.Index, 7).Bytes()
-	buf := bytes.NewBuffer([]byte{0x80 + index[0]})
+	buf := bytes.NewBuffer([]byte{128 + index[0]})
 	index = index[1:]
 	if len(index) > 0 {
 		buf.Write(index)
