@@ -45,11 +45,13 @@ func TestDecodeInteger(t *testing.T) {
 
 func TestReadPrefixedInteger(t *testing.T) {
 	// 0x1F 0001 1111
-	// 0x0a 0000 1010
+	// 0x95 1001 0101
+	// 0x0A 0000 1010
 	// 0x06 0000 0110
-	buf := bytes.NewBuffer([]byte{0x1F, 0x0A, 0x06})
-	expected := []byte{0x1F, 0xA}
-	actual := ReadPrefixedInteger(buf, 5).Bytes()
+	var prefix uint8 = 5
+	buf := bytes.NewBuffer([]byte{0x1F, 0x95, 0x0A, 0x06})
+	expected := []byte{0x1F, 0x95, 0xA}
+	actual := ReadPrefixedInteger(buf, prefix).Bytes()
 	if !bytes.Equal(expected, actual) {
 		t.Errorf("got %v\nwant %v", actual, expected)
 	}

@@ -92,7 +92,9 @@ func DecodeInteger(buf []byte, N uint8) uint64 {
 	return I
 }
 
-// read prefixed bytes from buffer
+// read prefixed N bytes from buffer
+// if N bit of first byte is 2^N-1 (ex 1111 in N=4)
+// read follow byte until it's smaller than 128
 func ReadPrefixedInteger(buf *bytes.Buffer, N uint8) *bytes.Buffer {
 	var tmp uint8
 	boundary := byte(1<<N - 1)               // 2^N-1
