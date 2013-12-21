@@ -86,12 +86,12 @@ func BuildTree(table *HuffmanTable) (root *node) {
 	return root
 }
 
-func HuffmanDecodeRequest(codes []byte) []byte {
-	return HuffmanDecode(RequestHuffmanTree, codes)
+func DecodeRequest(codes []byte) []byte {
+	return Decode(RequestHuffmanTree, codes)
 }
 
-func HuffmanDecodeResponse(codes []byte) []byte {
-	return HuffmanDecode(ResponseHuffmanTree, codes)
+func DecodeResponse(codes []byte) []byte {
+	return Decode(ResponseHuffmanTree, codes)
 }
 
 /* テストデータ
@@ -107,7 +107,7 @@ func HuffmanDecodeResponse(codes []byte) []byte {
 
 // バイト配列を渡すと木を辿り
 // その葉にあるテーブルへのインデックスの配列を返す。
-func HuffmanDecode(root *node, codes []byte) []byte {
+func Decode(root *node, codes []byte) []byte {
 	// 空のバイト列はそのまま返す
 	if len(codes) == 0 {
 		return codes

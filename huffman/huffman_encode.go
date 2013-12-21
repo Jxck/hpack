@@ -18,14 +18,14 @@ func newByt() *byt {
 	return &byt{0, 8}
 }
 
-func HuffmanEncodeRequest(raw []byte) (encoded []byte) {
-	return HuffmanEncode(raw, RequestHuffmanTable)
+func EncodeRequest(raw []byte) (encoded []byte) {
+	return Encode(raw, RequestHuffmanTable)
 }
-func HuffmanEncodeResponse(raw []byte) (encoded []byte) {
-	return HuffmanEncode(raw, ResponseHuffmanTable)
+func EncodeResponse(raw []byte) (encoded []byte) {
+	return Encode(raw, ResponseHuffmanTable)
 }
 
-func HuffmanEncode(raw []byte, table *HuffmanTable) (encoded []byte) {
+func Encode(raw []byte, table *HuffmanTable) (encoded []byte) {
 	// 空のバイト列はそのまま返す
 	if len(raw) == 0 {
 		return raw

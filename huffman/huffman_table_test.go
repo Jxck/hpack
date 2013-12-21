@@ -28,11 +28,11 @@ var requestTestCase = []struct {
 	{"custom-value", "4eb08b74979a17a8ff"},
 }
 
-func TestHuffmanEncodeRequest(t *testing.T) {
+func TestEncodeRequest(t *testing.T) {
 	for _, tc := range requestTestCase {
 		raw := []byte(tc.str)
 		expected := tc.hex
-		encoded := HuffmanEncodeRequest(raw)
+		encoded := EncodeRequest(raw)
 		actual := toHexString(encoded)
 		if actual != expected {
 			t.Errorf("\ngot  %v\nwant %v", actual, expected)
@@ -64,11 +64,11 @@ var responseTestCase = []struct {
 	},
 }
 
-func TestHuffmanEncodeResponse(t *testing.T) {
+func TestEncodeResponse(t *testing.T) {
 	for _, tc := range responseTestCase {
 		raw := []byte(tc.str)
 		expected := tc.hex
-		encoded := HuffmanEncodeResponse(raw)
+		encoded := EncodeResponse(raw)
 		actual := toHexString(encoded)
 		if actual != expected {
 			t.Errorf("\ngot  %v\nwant %v", actual, expected)
@@ -77,11 +77,11 @@ func TestHuffmanEncodeResponse(t *testing.T) {
 }
 
 // ===== Decode =====
-func TestHuffmanDecodeResponse(t *testing.T) {
+func TestDecodeResponse(t *testing.T) {
 	expected := "302"
 	// Show(root)
 	var code = []byte{0x40, 0x9f}
-	result := HuffmanDecodeResponse(code)
+	result := DecodeResponse(code)
 	actual := string(result)
 	if actual != expected {
 		t.Errorf("\ngot  %v\nwant %v", actual, expected)
@@ -89,12 +89,12 @@ func TestHuffmanDecodeResponse(t *testing.T) {
 }
 
 // ===== Encode -> Decode =====
-func TestHuffmanEncodeDecode(t *testing.T) {
+func TestEncodeDecode(t *testing.T) {
 	// Request
 	for _, tc := range requestTestCase {
 		expected := []byte(tc.str)
-		encoded := HuffmanEncodeRequest(expected)
-		actual := HuffmanDecodeRequest(encoded)
+		encoded := EncodeRequest(expected)
+		actual := DecodeRequest(encoded)
 
 		if reflect.DeepEqual(actual, expected) == false {
 			t.Errorf("\ngot  %v\nwant %v", actual, expected)
@@ -103,8 +103,8 @@ func TestHuffmanEncodeDecode(t *testing.T) {
 	// Response
 	for _, tc := range responseTestCase {
 		expected := []byte(tc.str)
-		encoded := HuffmanEncodeResponse(expected)
-		actual := HuffmanDecodeResponse(encoded)
+		encoded := EncodeResponse(expected)
+		actual := DecodeResponse(encoded)
 
 		if reflect.DeepEqual(actual, expected) == false {
 			t.Errorf("\ngot  %v\nwant %v", actual, expected)
@@ -113,17 +113,17 @@ func TestHuffmanEncodeDecode(t *testing.T) {
 }
 
 // ===== Quick Check =====
-func TestQuickCheckHuffmanEncodeDecode(t *testing.T) {
+func TestQuickCheckEncodeDecode(t *testing.T) {
 	f := func(expected []byte) bool {
 		var encoded, actual []byte
 		// request
-		encoded = HuffmanEncodeRequest(expected)
-		actual = HuffmanDecodeRequest(encoded)
+		encoded = EncodeRequest(expected)
+		actual = DecodeRequest(encoded)
 		req := reflect.DeepEqual(actual, expected)
 
 		// response
-		encoded = HuffmanEncodeResponse(expected)
-		actual = HuffmanDecodeResponse(encoded)
+		encoded = EncodeResponse(expected)
+		actual = DecodeResponse(encoded)
 		res := reflect.DeepEqual(actual, expected)
 
 		return req && res
