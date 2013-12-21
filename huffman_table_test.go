@@ -8,7 +8,6 @@ import (
 )
 
 // ===== Encode =====
-
 func toHexString(hex []byte) (hexstr string) {
 	for _, v := range hex {
 		s := fmt.Sprintf("%x", v)
@@ -78,7 +77,6 @@ func TestHuffmanEncodeResponse(t *testing.T) {
 }
 
 // ===== Decode =====
-
 func TestHuffmanDecodeResponse(t *testing.T) {
 	expected := "302"
 	// Show(root)
