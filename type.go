@@ -4,12 +4,6 @@ import (
 	"bytes"
 )
 
-// type IndexedHeader
-// type IndexedNameWithoutIndexing
-// type NewNameWithoutIndexing
-// type IndexedNameWithIncrementalIndexing
-// type NewNameWithIncrementalIndexing
-
 type Frame interface {
 	Encode() *bytes.Buffer
 }
@@ -30,35 +24,39 @@ func NewIndexedHeader(index uint64) (frame *IndexedHeader) {
 	return
 }
 
-// Literal Header Field without Indexing - Indexed Name
+// Literal Header Field without Indexing - Indexed Name (F=1)
+// Literal Header Field with Incremental Indexing - Indexed Name (F=0)
 //
 //  0   1   2   3   4   5   6   7
 // +---+---+---+---+---+---+---+---+
-// | 0 | 1 |      Index (6+)       |
+// | 0 | F |      Index (6+)       |
 // +---+---+---+-------------------+
 // |       Value Length (8+)       |
 // +-------------------------------+
 // | Value String (Length octets)  |
 // +-------------------------------+
-type IndexedNameWithoutIndexing struct {
+type IndexedLiteral struct {
+	Indexing    bool
 	Index       uint64
 	ValueLength uint64
 	ValueString string
 }
 
-func NewIndexedNameWithoutIndexing(index uint64, value string) (frame *IndexedNameWithoutIndexing) {
-	frame = new(IndexedNameWithoutIndexing)
+func NewIndexedLiteral(indexing bool, index uint64, value string) (frame *IndexedLiteral) {
+	frame = new(IndexedLiteral)
+	frame.Indexing = indexing
 	frame.Index = index
 	frame.ValueLength = uint64(len(value))
 	frame.ValueString = value
 	return
 }
 
-// Literal Header Field without Indexing - New Name
+// Literal Header Field without Indexing - New Name (F=1)
+// Literal Header Field with Incremental Indexing - New Name (F=0)
 //
 //   0   1   2   3   4   5   6   7
 // +---+---+---+---+---+---+---+---+
-// | 0 | 1 |           0           |
+// | 0 | F |           0           |
 // +---+---+---+-------------------+
 // |       Name Length (8+)        |
 // +-------------------------------+
@@ -68,7 +66,8 @@ func NewIndexedNameWithoutIndexing(index uint64, value string) (frame *IndexedNa
 // +-------------------------------+
 // | Value String (Length octets)  |
 // +-------------------------------+
-type NewNameWithoutIndexing struct {
+type StringLiteral struct {
+	Indexing    bool
 	Index       uint64
 	NameLength  uint64
 	NameString  string
@@ -76,63 +75,9 @@ type NewNameWithoutIndexing struct {
 	ValueString string
 }
 
-func NewNewNameWithoutIndexing(name, value string) (frame *NewNameWithoutIndexing) {
-	frame = new(NewNameWithoutIndexing)
-	frame.NameLength = uint64(len(name))
-	frame.NameString = name
-	frame.ValueLength = uint64(len(value))
-	frame.ValueString = value
-	return
-}
-
-// Literal Header Field with Incremental Indexing - Indexed Name
-//
-//  0   1   2   3   4   5   6   7
-// +---+---+---+---+---+---+---+---+
-// | 0 | 0 |      Index (6+)       |
-// +---+---+---+-------------------+
-// |       Value Length (8+)       |
-// +-------------------------------+
-// | Value String (Length octets)  |
-// +-------------------------------+
-type IndexedNameWithIncrementalIndexing struct {
-	Index       uint64
-	ValueLength uint64
-	ValueString string
-}
-
-func NewIndexedNameWithIncrementalIndexing(index uint64, value string) (frame *IndexedNameWithIncrementalIndexing) {
-	frame = new(IndexedNameWithIncrementalIndexing)
-	frame.Index = index
-	frame.ValueLength = uint64(len(value))
-	frame.ValueString = value
-	return
-}
-
-// Literal Header Field with Incremental Indexing - New Name
-//
-//   0   1   2   3   4   5   6   7
-// +---+---+---+---+---+---+---+---+
-// | 0 | 0 |           0           |
-// +---+---+---+-------------------+
-// |       Name Length (8+)        |
-// +-------------------------------+
-// |  Name String (Length octets)  |
-// +-------------------------------+
-// |       Value Length (8+)       |
-// +-------------------------------+
-// | Value String (Length octets)  |
-// +-------------------------------+
-type NewNameWithIncrementalIndexing struct {
-	Index       uint8
-	NameLength  uint64
-	NameString  string
-	ValueLength uint64
-	ValueString string
-}
-
-func NewNewNameWithIncrementalIndexing(name, value string) (frame *NewNameWithIncrementalIndexing) {
-	frame = new(NewNameWithIncrementalIndexing)
+func NewStringLiteral(indexing bool, name, value string) (frame *StringLiteral) {
+	frame = new(StringLiteral)
+	frame.Indexing = indexing
 	frame.NameLength = uint64(len(name))
 	frame.NameString = name
 	frame.ValueLength = uint64(len(value))

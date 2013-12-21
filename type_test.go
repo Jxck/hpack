@@ -15,100 +15,48 @@ func TestNewIndexedHeader(t *testing.T) {
 	}
 }
 
-func TestNewNewNameWithoutIndexing(t *testing.T) {
-	var name string = "foo"
-	var value string = "var"
-	var frame *NewNameWithoutIndexing
-	frame = NewNewNameWithoutIndexing(name, value)
-
-	actual_len, expected_len := frame.NameLength, uint64(len(name))
-	if actual_len != expected_len {
-		t.Errorf("actual_len = %v\nexpected = %v", actual_len, expected_len)
-	}
-
-	actual, expected := frame.NameString, name
-	if actual != expected {
-		t.Errorf("actual = %v\nexpected = %v", actual, expected)
-	}
-
-	actual_len, expected_len = frame.ValueLength, uint64(len(value))
-	if actual_len != expected_len {
-		t.Errorf("actual_len = %v\nexpected = %v", actual_len, expected_len)
-	}
-
-	actual, expected = frame.ValueString, value
-	if actual != expected {
-		t.Errorf("actual = %v\nexpected = %v", actual, expected)
-	}
-}
-
-func TestNewIndexedNameWithoutIndexing(t *testing.T) {
+func TestNewIndexedLiteral(t *testing.T) {
+	var indexing bool = true
 	var index uint64 = 10
 	var value string = "var"
-	var frame *IndexedNameWithoutIndexing
-	frame = NewIndexedNameWithoutIndexing(index, value)
+	var frame *IndexedLiteral = NewIndexedLiteral(indexing, index, value)
 
-	actual, expected := frame.Index, index
-	if actual != expected {
-		t.Errorf("actual = %v\nexpected = %v", actual, expected)
-	}
-
-	actual_str, expected_str := frame.ValueString, value
-	if actual_str != expected_str {
-		t.Errorf("actual = %v\nexpected = %v", actual_str, expected_str)
-	}
-
-	actual_len, expected_len := frame.ValueLength, uint64(len(value))
-	if actual_len != expected_len {
-		t.Errorf("actual_len = %v\nexpected = %v", actual_len, expected_len)
+	if frame.Indexing != indexing ||
+		frame.Index != index ||
+		frame.ValueLength != len(value) ||
+		frame.ValueString != value {
+		t.Errorf(`faild NewIndexedLiteral
+							frame      = %v
+							---should---
+							indexing   = %v
+							index      = %v
+							value      = %v
+							len(value) = %v
+						`, frame, indexing, index, value, len(value))
 	}
 }
 
-func TestNewIndexedNameWithIncrementalIndexing(t *testing.T) {
-	var index uint64 = 10
-	var value string = "var"
-	var frame *IndexedNameWithIncrementalIndexing
-	frame = NewIndexedNameWithIncrementalIndexing(index, value)
-
-	actual, expected := frame.Index, index
-	if actual != expected {
-		t.Errorf("actual = %v\nexpected = %v", actual, expected)
-	}
-
-	actual_str, expected_str := frame.ValueString, value
-	if actual_str != expected_str {
-		t.Errorf("actual = %v\nexpected = %v", actual_str, expected_str)
-	}
-
-	actual_len, expected_len := frame.ValueLength, uint64(len(value))
-	if actual_len != expected_len {
-		t.Errorf("actual_len = %v\nexpected = %v", actual_len, expected_len)
-	}
-}
-
-func TestNewNewNameWithIncrementalIndexing(t *testing.T) {
+func TestNewStringLiteral(t *testing.T) {
+	var indexing bool = true
 	var name string = "foo"
 	var value string = "var"
-	var frame *NewNameWithIncrementalIndexing
-	frame = NewNewNameWithIncrementalIndexing(name, value)
+	var frame *NewStringLiteral = NewStringLiteral(indexing, name, value)
 
-	actual_len, expected_len := frame.NameLength, uint64(len(name))
-	if actual_len != expected_len {
-		t.Errorf("actual_len = %v\nexpected = %v", actual_len, expected_len)
-	}
-
-	actual, expected := frame.NameString, name
-	if actual != expected {
-		t.Errorf("actual = %v\nexpected = %v", actual, expected)
-	}
-
-	actual_len, expected_len = frame.ValueLength, uint64(len(value))
-	if actual_len != expected_len {
-		t.Errorf("actual_len = %v\nexpected = %v", actual_len, expected_len)
-	}
-
-	actual, expected = frame.ValueString, value
-	if actual != expected {
-		t.Errorf("actual = %v\nexpected = %v", actual, expected)
+	if frame.Indexing != indexing ||
+		frame.Index != 0 ||
+		frame.NameLength != len(name) ||
+		frame.NameString != name ||
+		frame.ValueLength != len(value) ||
+		frame.ValueString != value {
+		t.Errorf(`faild NewStringLiteral
+							frame      = %v
+							---should---
+							indexing   = %v
+							index      = %v
+							name       = %v
+							len(name)  = %v
+							value      = %v
+							len(value) = %v
+						`, frame, indexing, 0, name, len(name), value, len(value))
 	}
 }
