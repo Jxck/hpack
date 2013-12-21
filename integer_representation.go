@@ -76,7 +76,7 @@ func DecodeInteger(buf []byte, N uint8) uint64 {
 	if I < boundary {            // less than 2^N-1
 		return I // as is
 	}
-	for i, b := range buf[1:] { // continue flow bites if bigger than
+	for i, b := range buf[1:] { // continue while follow bites are bigger than 128
 		shift := uint8(7 * i)
 		if b > 128 { // if first bit is 1
 			// to 0 at first bit (- 128) and shift 7*i bit

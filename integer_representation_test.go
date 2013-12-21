@@ -3,6 +3,7 @@ package hpack
 import (
 	"bytes"
 	"testing"
+	"testing/quick"
 )
 
 func TestEncodeInteger(t *testing.T) {
@@ -40,6 +41,22 @@ func TestDecodeInteger(t *testing.T) {
 		if expected != actual {
 			t.Errorf("got %v\nwant %v", actual, expected)
 		}
+	}
+}
+
+func TestEncodeDecodeIntegerQuickCheck(t *testing.T) {
+	f := func(I uint64) bool {
+		var N uint8 = 5
+		buf := EncodeInteger(I, N)
+		actual := DecodeInteger(buf.Bytes(), N)
+		t.Log(I)
+		t.Log(actual)
+		return actual == I
+	}
+	c := &quick.Config{}
+
+	if err := quick.Check(f, c); err != nil {
+		t.Error(err)
 	}
 }
 
