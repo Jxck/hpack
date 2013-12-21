@@ -62,28 +62,6 @@ func TestIncrementalIndexingWithNewName(t *testing.T) {
 	}
 }
 
-func TestSubstitutionIndexingWithIndexedName(t *testing.T) {
-	frame := CreateIndexedNameWithSubstitutionIndexing(0, 10, "ftp")
-
-	server := NewRequestContext()
-	server.Decode(frame.Encode().Bytes())
-	target := server.HeaderTable.Headers[10]
-	if target.Name != ":scheme" || target.Value != "ftp" {
-		t.Errorf("got (%v, %v)\nwant (%v %v)", target.Name, target.Value, ":scheme", "ftp")
-	}
-}
-
-func TestSubstitutionIndexingWithNewName(t *testing.T) {
-	frame := CreateNewNameWithSubstitutionIndexing("x-hello", 10, "world")
-
-	server := NewRequestContext()
-	server.Decode(frame.Encode().Bytes())
-	target := server.HeaderTable.Headers[10]
-	if target.Name != "x-hello" || target.Value != "world" {
-		t.Errorf("got (%v, %v)\nwant (%v %v)", target.Name, target.Value, "x-hello", "world")
-	}
-}
-
 func TestContextEncodeDecode(t *testing.T) {
 	var headers = http.Header{
 		"Scheme":     []string{"https"},

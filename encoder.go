@@ -56,22 +56,3 @@ func (frame *NewNameWithIncrementalIndexing) Encode() *bytes.Buffer {
 	buf.WriteString(frame.ValueString)
 	return buf
 }
-
-func (frame *IndexedNameWithSubstitutionIndexing) Encode() *bytes.Buffer {
-	buf := bytes.NewBuffer([]byte{})
-	buf.Write(integer.Encode(frame.Index+1, 6).Bytes())
-	buf.Write(integer.Encode(frame.SubstitutedIndex, 8).Bytes())
-	buf.Write(integer.Encode(frame.ValueLength, 8).Bytes())
-	buf.WriteString(frame.ValueString)
-	return buf
-}
-
-func (frame *NewNameWithSubstitutionIndexing) Encode() *bytes.Buffer {
-	buf := bytes.NewBuffer([]byte{0})
-	buf.Write(integer.Encode(frame.NameLength, 8).Bytes())
-	buf.WriteString(frame.NameString)
-	buf.Write(integer.Encode(frame.SubstitutedIndex, 8).Bytes())
-	buf.Write(integer.Encode(frame.ValueLength, 8).Bytes())
-	buf.WriteString(frame.ValueString)
-	return buf
-}

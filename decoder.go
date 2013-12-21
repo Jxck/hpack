@@ -34,17 +34,6 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		frame.Index = DecodePrefixedInteger(buf, 7)
 		return frame
 	}
-	if types == 0 {
-		// Literal Header with Substitution Indexing - New Name
-
-		frame := NewNewNameWithSubstitutionIndexing()
-		frame.NameLength = DecodePrefixedInteger(buf, 8)
-		frame.NameString = DecodeString(buf, frame.NameLength)
-		frame.SubstitutedIndex = DecodePrefixedInteger(buf, 8)
-		frame.ValueLength = DecodePrefixedInteger(buf, 8)
-		frame.ValueString = DecodeString(buf, frame.ValueLength)
-		return frame
-	}
 	if types == 0x40 {
 		// Literal Header with Incremental Indexing - New Name
 
@@ -87,19 +76,6 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 
 		frame := NewIndexedNameWithoutIndexing()
 		frame.Index = DecodePrefixedInteger(buf, 5) - 1
-		frame.ValueLength = DecodePrefixedInteger(buf, 8)
-		frame.ValueString = DecodeString(buf, frame.ValueLength)
-		return frame
-	}
-	if types>>6 == 0 {
-		// Literal Header with Substitution Indexing - Indexed Name
-
-		// unread first byte for parse frame
-		buf.UnreadByte()
-
-		frame := NewIndexedNameWithSubstitutionIndexing()
-		frame.Index = DecodePrefixedInteger(buf, 6) - 1
-		frame.SubstitutedIndex = DecodePrefixedInteger(buf, 8)
 		frame.ValueLength = DecodePrefixedInteger(buf, 8)
 		frame.ValueString = DecodeString(buf, frame.ValueLength)
 		return frame

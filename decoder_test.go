@@ -131,33 +131,6 @@ func TestNewNameWithIncrementalIndexingDecode(t *testing.T) {
 	}
 }
 
-func TestIndexedNameWithSubstitutionIndexingDecode(t *testing.T) {
-	// 0x04       (literal header, substitution indexing, name index = 3)
-	// 0x26       (replaced entry index = 38)
-	// 0x1f       (header value string length = 31)
-	// /my-example/resources/script.js
-	buf := bytes.NewBuffer([]byte{0x04, 0x26, 0x1f}) // 00000100 00100110 00011111
-	buf.WriteString("/my-example/resources/script.js")
-
-	frame := DecodeHeader(buf)
-	f, ok := frame.(*IndexedNameWithSubstitutionIndexing)
-	if !ok {
-		t.Fatal("Parsed incorrect frame type:", frame)
-	}
-	if f.Index != 3 {
-		t.Errorf("got %v\nwant %v", f.Index, 3)
-	}
-	if f.SubstitutedIndex != 38 {
-		t.Errorf("got %v\nwant %v", f.SubstitutedIndex, 38)
-	}
-	if f.ValueLength != 31 {
-		t.Errorf("got %v\nwant %v", f.ValueLength, 31)
-	}
-	if f.ValueString != "/my-example/resources/script.js" {
-		t.Errorf("got %v\nwant %v", f.ValueString, "/my-example/resources/script.js")
-	}
-}
-
 func TestIndexedNameWithIncrementalIndexing(t *testing.T) {
 
 	// 0x5f 0101 1111 (literal header, incremental indexing, name index = 40) 40n5=[31 9]
@@ -181,44 +154,5 @@ func TestIndexedNameWithIncrementalIndexing(t *testing.T) {
 	}
 	if f.ValueString != "second" {
 		t.Errorf("got %v\nwant %v", f.ValueString, "second")
-	}
-}
-
-func TestNewNameWithSubstitutionIndexing(t *testing.T) {
-	// 0x0       (literal header with substitution indexing, new name)
-	// 0x0B      (header name string length = 11)
-	// mynewheader
-	// 0x26      (replaced entry index = 38)
-	// 0x05      (header value string length = 5)
-	// first
-	buf := bytes.NewBuffer([]byte{0x0, 0x0B}) // 00000000 00001011
-	buf.WriteString("mynewheader")
-	buf.WriteByte(0x26)
-	buf.WriteByte(0x05)
-	buf.WriteString("first")
-
-	frame := DecodeHeader(buf)
-
-	f, ok := frame.(*NewNameWithSubstitutionIndexing)
-	if !ok {
-		t.Fatal("Parsed incorrect frame type:", frame)
-	}
-	if f.Index != 0 {
-		t.Errorf("got %v\nwant %v", f.Index, 0)
-	}
-	if f.NameLength != 11 {
-		t.Errorf("got %v\nwant %v", f.NameLength, 11)
-	}
-	if f.NameString != "mynewheader" {
-		t.Errorf("got %v\nwant %v", f.NameString, "mynewheader")
-	}
-	if f.SubstitutedIndex != 38 {
-		t.Errorf("got %v\nwant %v", f.SubstitutedIndex, 38)
-	}
-	if f.ValueLength != 5 {
-		t.Errorf("got %v\nwant %v", f.ValueLength, 5)
-	}
-	if f.ValueString != "first" {
-		t.Errorf("got %v\nwant %v", f.ValueString, "first")
 	}
 }
