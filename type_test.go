@@ -25,14 +25,15 @@ func TestNewIndexedLiteral(t *testing.T) {
 		frame.Index != index ||
 		frame.ValueLength != uint64(len(value)) ||
 		frame.ValueString != value {
-		t.Errorf(`faild NewIndexedLiteral
-							frame      = %v
-							---should---
-							indexing   = %v
-							index      = %v
-							value      = %v
-							len(value) = %v
-						`, frame, indexing, index, value, len(value))
+		t.Errorf(`
+faild NewIndexedLiteral
+frame      = %v
+---should---
+indexing   = %v
+index      = %v
+len(value) = %v
+value      = %v
+`, frame, indexing, index, len(value), value)
 	}
 }
 
@@ -48,15 +49,16 @@ func TestNewStringLiteral(t *testing.T) {
 		frame.NameString != name ||
 		frame.ValueLength != uint64(len(value)) ||
 		frame.ValueString != value {
-		t.Errorf(`faild NewStringLiteral
-							frame      = %v
-							---should---
-							indexing   = %v
-							index      = %v
-							name       = %v
-							len(name)  = %v
-							value      = %v
-							len(value) = %v
-						`, frame, indexing, 0, name, len(name), value, len(value))
+		t.Errorf(`
+faild NewStringLiteral
+frame      = %v
+---should---
+indexing   = %v
+index      = %v
+len(name)  = %v
+name       = %v
+len(value) = %v
+value      = %v
+`, frame, indexing, 0, len(name), name, len(value), value)
 	}
 }
