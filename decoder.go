@@ -11,7 +11,7 @@ import (
 // TODO: make it return channel
 func Decode(wire []byte) []Frame {
 	buf := bytes.NewBuffer(wire)
-	frames := []Frame{}
+	frames := []Frame{} // TODO: make()
 	for buf.Len() > 0 {
 		frames = append(frames, DecodeHeader(buf))
 	}
