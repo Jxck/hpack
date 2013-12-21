@@ -18,7 +18,7 @@ type IndexedHeader struct {
 	Index uint64
 }
 
-func CreateIndexedHeader(index uint64) (frame *IndexedHeader) {
+func NewIndexedHeader(index uint64) (frame *IndexedHeader) {
 	frame = new(IndexedHeader)
 	frame.Index = index
 	return
@@ -40,7 +40,7 @@ type IndexedNameWithoutIndexing struct {
 	ValueString string
 }
 
-func CreateIndexedNameWithoutIndexing(index uint64, value string) (frame *IndexedNameWithoutIndexing) {
+func NewIndexedNameWithoutIndexing(index uint64, value string) (frame *IndexedNameWithoutIndexing) {
 	frame = new(IndexedNameWithoutIndexing)
 	frame.Index = index
 	frame.ValueLength = uint64(len(value))
@@ -70,7 +70,7 @@ type NewNameWithoutIndexing struct {
 	ValueString string
 }
 
-func CreateNewNameWithoutIndexing(name, value string) (frame *NewNameWithoutIndexing) {
+func NewNewNameWithoutIndexing(name, value string) (frame *NewNameWithoutIndexing) {
 	frame = new(NewNameWithoutIndexing)
 	frame.NameLength = uint64(len(name))
 	frame.NameString = name
@@ -95,7 +95,7 @@ type IndexedNameWithIncrementalIndexing struct {
 	ValueString string
 }
 
-func CreateIndexedNameWithIncrementalIndexing(index uint64, value string) (frame *IndexedNameWithIncrementalIndexing) {
+func NewIndexedNameWithIncrementalIndexing(index uint64, value string) (frame *IndexedNameWithIncrementalIndexing) {
 	frame = new(IndexedNameWithIncrementalIndexing)
 	frame.Index = index
 	frame.ValueLength = uint64(len(value))
@@ -125,7 +125,7 @@ type NewNameWithIncrementalIndexing struct {
 	ValueString string
 }
 
-func CreateNewNameWithIncrementalIndexing(name, value string) (frame *NewNameWithIncrementalIndexing) {
+func NewNewNameWithIncrementalIndexing(name, value string) (frame *NewNameWithIncrementalIndexing) {
 	frame = new(NewNameWithIncrementalIndexing)
 	frame.NameLength = uint64(len(name))
 	frame.NameString = name

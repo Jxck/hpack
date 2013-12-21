@@ -7,7 +7,7 @@ import (
 )
 
 func TestIndexedHeader(t *testing.T) {
-	frame := CreateIndexedHeader(0)
+	frame := NewIndexedHeader(0)
 
 	server := NewRequestContext()
 	server.Decode(frame.Encode().Bytes())
@@ -18,7 +18,7 @@ func TestIndexedHeader(t *testing.T) {
 }
 
 func TestIndexedNameWithoutIndexing(t *testing.T) {
-	frame := CreateIndexedNameWithoutIndexing(0, "ftp")
+	frame := NewIndexedNameWithoutIndexing(0, "ftp")
 
 	server := NewRequestContext()
 	server.Decode(frame.Encode().Bytes())
@@ -29,7 +29,7 @@ func TestIndexedNameWithoutIndexing(t *testing.T) {
 }
 
 func TestNewNameWithoutIndexing(t *testing.T) {
-	frame := CreateNewNameWithoutIndexing("x-hello", "world")
+	frame := NewNewNameWithoutIndexing("x-hello", "world")
 
 	server := NewRequestContext()
 	server.Decode(frame.Encode().Bytes())
@@ -41,7 +41,7 @@ func TestNewNameWithoutIndexing(t *testing.T) {
 
 // TODO: check refset, emmitedset in test
 func TestIncrementalIndexingWithIndexedName(t *testing.T) {
-	frame := CreateIndexedNameWithIncrementalIndexing(0, "ftp")
+	frame := NewIndexedNameWithIncrementalIndexing(0, "ftp")
 
 	server := NewRequestContext()
 	server.Decode(frame.Encode().Bytes())
@@ -52,7 +52,7 @@ func TestIncrementalIndexingWithIndexedName(t *testing.T) {
 }
 
 func TestIncrementalIndexingWithNewName(t *testing.T) {
-	frame := CreateNewNameWithIncrementalIndexing("x-hello", "world")
+	frame := NewNewNameWithIncrementalIndexing("x-hello", "world")
 
 	server := NewRequestContext()
 	server.Decode(frame.Encode().Bytes())

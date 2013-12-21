@@ -4,10 +4,10 @@ import (
 	"testing"
 )
 
-func TestCreateIndexedHeader(t *testing.T) {
+func TestNewIndexedHeader(t *testing.T) {
 	var index uint64 = 10
 	var frame *IndexedHeader
-	frame = CreateIndexedHeader(index)
+	frame = NewIndexedHeader(index)
 
 	actual, expected := frame.Index, index
 	if actual != expected {
@@ -15,11 +15,11 @@ func TestCreateIndexedHeader(t *testing.T) {
 	}
 }
 
-func TestCreateNewNameWithoutIndexing(t *testing.T) {
+func TestNewNewNameWithoutIndexing(t *testing.T) {
 	var name string = "foo"
 	var value string = "var"
 	var frame *NewNameWithoutIndexing
-	frame = CreateNewNameWithoutIndexing(name, value)
+	frame = NewNewNameWithoutIndexing(name, value)
 
 	actual_len, expected_len := frame.NameLength, uint64(len(name))
 	if actual_len != expected_len {
@@ -42,11 +42,11 @@ func TestCreateNewNameWithoutIndexing(t *testing.T) {
 	}
 }
 
-func TestCreateIndexedNameWithoutIndexing(t *testing.T) {
+func TestNewIndexedNameWithoutIndexing(t *testing.T) {
 	var index uint64 = 10
 	var value string = "var"
 	var frame *IndexedNameWithoutIndexing
-	frame = CreateIndexedNameWithoutIndexing(index, value)
+	frame = NewIndexedNameWithoutIndexing(index, value)
 
 	actual, expected := frame.Index, index
 	if actual != expected {
@@ -64,11 +64,11 @@ func TestCreateIndexedNameWithoutIndexing(t *testing.T) {
 	}
 }
 
-func TestCreateIndexedNameWithIncrementalIndexing(t *testing.T) {
+func TestNewIndexedNameWithIncrementalIndexing(t *testing.T) {
 	var index uint64 = 10
 	var value string = "var"
 	var frame *IndexedNameWithIncrementalIndexing
-	frame = CreateIndexedNameWithIncrementalIndexing(index, value)
+	frame = NewIndexedNameWithIncrementalIndexing(index, value)
 
 	actual, expected := frame.Index, index
 	if actual != expected {
@@ -86,11 +86,11 @@ func TestCreateIndexedNameWithIncrementalIndexing(t *testing.T) {
 	}
 }
 
-func TestCreateNewNameWithIncrementalIndexing(t *testing.T) {
+func TestNewNewNameWithIncrementalIndexing(t *testing.T) {
 	var name string = "foo"
 	var value string = "var"
 	var frame *NewNameWithIncrementalIndexing
-	frame = CreateNewNameWithIncrementalIndexing(name, value)
+	frame = NewNewNameWithIncrementalIndexing(name, value)
 
 	actual_len, expected_len := frame.NameLength, uint64(len(name))
 	if actual_len != expected_len {

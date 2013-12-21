@@ -156,7 +156,7 @@ func (c *Context) CleanReferenceSet(headerSet HeaderSet) []byte {
 			index, _ := c.HeaderTable.SearchHeader(name, value)
 
 			// Indexed Header を生成
-			frame := CreateIndexedHeader(uint64(index))
+			frame := NewIndexedHeader(uint64(index))
 			f := frame.Encode()
 			buf.Write(f.Bytes())
 			Debug(fmt.Sprintf("indexed header index=%v removal from reference set", index))
@@ -183,7 +183,7 @@ func (c *Context) ProcessHeader(headerSet HeaderSet) []byte {
 		index, h := c.HeaderTable.SearchHeader(name, value)
 		if h != nil { // 3.1 HT にエントリがある
 			// Indexed Heaer で index だけ送れば良い
-			frame := CreateIndexedHeader(uint64(index))
+			frame := NewIndexedHeader(uint64(index))
 			f := frame.Encode()
 			Debug(fmt.Sprintf("indexed header index=%v", index))
 			Debug(fmt.Sprintf("add to refset (%q, %q)", name, value))
@@ -192,14 +192,14 @@ func (c *Context) ProcessHeader(headerSet HeaderSet) []byte {
 		} else if index != -1 { // HT に name だけある
 			// Indexed Name Without Indexing
 			// value だけ送る。 HT は更新しない。
-			frame := CreateIndexedNameWithoutIndexing(uint64(index), value)
+			frame := NewIndexedNameWithoutIndexing(uint64(index), value)
 			f := frame.Encode()
 			Debug(fmt.Sprintf("literal header without indexing, name index=%v value=%q", index, value))
 			buf.Write(f.Bytes())
 		} else { // HT に name も value もない
 			// New Name Without Indexing
 			// name, value を送って HT は更新しない。
-			frame := CreateNewNameWithoutIndexing(name, value)
+			frame := NewNewNameWithoutIndexing(name, value)
 			f := frame.Encode()
 			Debug(fmt.Sprintf("literal header without indexing, new name name=%q value=%q", name, value))
 			buf.Write(f.Bytes())
