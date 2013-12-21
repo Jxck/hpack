@@ -7,12 +7,12 @@ import (
 
 func TestEncodeInteger(t *testing.T) {
 	testcases := []struct {
-		expected, actual []uint8
+		expected, actual []byte
 	}{
-		{[]uint8{10}, EncodeInteger(10, 5).Bytes()},
-		{[]uint8{31, 9}, EncodeInteger(40, 5).Bytes()},
-		{[]uint8{31, 154, 10}, EncodeInteger(1337, 5).Bytes()},
-		{[]uint8{31, 161, 141, 183, 1}, EncodeInteger(3000000, 5).Bytes()},
+		{[]byte{10}, EncodeInteger(10, 5).Bytes()},
+		{[]byte{31, 9}, EncodeInteger(40, 5).Bytes()},
+		{[]byte{31, 154, 10}, EncodeInteger(1337, 5).Bytes()},
+		{[]byte{31, 161, 141, 183, 1}, EncodeInteger(3000000, 5).Bytes()},
 	}
 
 	for _, testcase := range testcases {
@@ -28,10 +28,10 @@ func TestDecodeInteger(t *testing.T) {
 	testcases := []struct {
 		expected, actual uint64
 	}{
-		{10, DecodeInteger([]uint8{10}, 5)},
-		{40, DecodeInteger([]uint8{31, 9}, 5)},
-		{1337, DecodeInteger([]uint8{31, 154, 10}, 5)},
-		{3000000, DecodeInteger([]uint8{31, 161, 141, 183, 1}, 5)},
+		{10, DecodeInteger([]byte{10}, 5)},
+		{40, DecodeInteger([]byte{31, 9}, 5)},
+		{1337, DecodeInteger([]byte{31, 154, 10}, 5)},
+		{3000000, DecodeInteger([]byte{31, 161, 141, 183, 1}, 5)},
 	}
 
 	for _, testcase := range testcases {
