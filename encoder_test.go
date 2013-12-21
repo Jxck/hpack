@@ -6,8 +6,9 @@ import (
 )
 
 func TestIndexedHeaderEncode(t *testing.T) {
-	frame := new(IndexedHeader)
-	frame.Index = 38
+	var index uint64 = 38
+	var frame *IndexedHeader
+	frame = NewIndexedHeader(index)
 
 	actual := frame.Encode().Bytes()
 	expected := []byte{0xA6}
@@ -16,33 +17,29 @@ func TestIndexedHeaderEncode(t *testing.T) {
 	}
 }
 
-func TestNewNameWithoutIndexingEncode(t *testing.T) {
-	frame := new(NewNameWithoutIndexing)
-	frame.NameLength = 11
-	frame.NameString = "mynewheader"
-	frame.ValueLength = 5
-	frame.ValueString = "first"
+func TestIndexedNameWithoutIndexingEncode(t *testing.T) {
+	var index uint64 = 3
+	var value string = "first"
+	frame := NewIndexedNameWithoutIndexing(index, value)
 
 	actual := frame.Encode().Bytes()
-	buf := bytes.NewBuffer([]byte{0x60, 0x0B})
-	buf.WriteString("mynewheader")
-	buf.WriteByte(0x05)
-	buf.WriteString("first")
+	buf := bytes.NewBuffer([]byte{0x64, 0x05})
+	buf.WriteString(value)
 	expected := buf.Bytes()
 	if !bytes.Equal(actual, expected) {
 		t.Errorf("got %v\nwant %v", actual, expected)
 	}
 }
 
-func TestIndexedNameWithoutIndexingEncode(t *testing.T) {
-	frame := new(IndexedNameWithoutIndexing)
-	frame.Index = 3
-	frame.ValueLength = 5
-	frame.ValueString = "first"
+func TestNewNameWithoutIndexingEncode(t *testing.T) {
+	var name, value string = "mynewheader", "first"
+	frame := NewNewNameWithoutIndexing(name, value)
 
 	actual := frame.Encode().Bytes()
-	buf := bytes.NewBuffer([]byte{0x64, 0x05})
-	buf.WriteString("first")
+	buf := bytes.NewBuffer([]byte{0x60, 0x0B})
+	buf.WriteString(name)
+	buf.WriteByte(0x05)
+	buf.WriteString(value)
 	expected := buf.Bytes()
 	if !bytes.Equal(actual, expected) {
 		t.Errorf("got %v\nwant %v", actual, expected)
@@ -50,14 +47,13 @@ func TestIndexedNameWithoutIndexingEncode(t *testing.T) {
 }
 
 func TestIndexedNameWithIncrementalIndexingEncode(t *testing.T) {
-	frame := new(IndexedNameWithIncrementalIndexing)
-	frame.Index = 3
-	frame.ValueLength = 22
-	frame.ValueString = "/my-example/index.html"
+	var index uint64 = 3
+	var value string = "/my-example/index.html"
+	frame := NewIndexedNameWithIncrementalIndexing(index, value)
 
 	actual := frame.Encode().Bytes()
 	buf := bytes.NewBuffer([]byte{0x44, 0x16})
-	buf.WriteString("/my-example/index.html")
+	buf.WriteString(value)
 	expected := buf.Bytes()
 	if !bytes.Equal(actual, expected) {
 		t.Errorf("got %v\nwant %v", actual, expected)
@@ -65,17 +61,14 @@ func TestIndexedNameWithIncrementalIndexingEncode(t *testing.T) {
 }
 
 func TestNewNameWithIncrementalIndexingEncode(t *testing.T) {
-	frame := new(NewNameWithIncrementalIndexing)
-	frame.NameLength = 11
-	frame.NameString = "mynewheader"
-	frame.ValueLength = 5
-	frame.ValueString = "first"
+	var name, value string = "mynewheader", "first"
+	frame := NewNewNameWithIncrementalIndexing(name, value)
 
 	actual := frame.Encode().Bytes()
 	buf := bytes.NewBuffer([]byte{0x40, 0x0B})
-	buf.WriteString("mynewheader")
+	buf.WriteString(name)
 	buf.WriteByte(0x05)
-	buf.WriteString("first")
+	buf.WriteString(value)
 	expected := buf.Bytes()
 	if !bytes.Equal(actual, expected) {
 		t.Errorf("got %v\nwant %v", actual, expected)
