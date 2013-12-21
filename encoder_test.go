@@ -11,7 +11,7 @@ func TestIndexedHeaderEncode(t *testing.T) {
 	frame = NewIndexedHeader(index)
 
 	actual := frame.Encode().Bytes()
-	expected := []byte{0xA6}
+	expected := []byte{0x82}
 	if !bytes.Equal(actual, expected) {
 		t.Errorf("got %v\nwant %v", actual, expected)
 	}
