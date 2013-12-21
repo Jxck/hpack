@@ -1,4 +1,4 @@
-package hpack
+package integer_representation
 
 import (
 	"bytes"
