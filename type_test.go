@@ -23,7 +23,7 @@ func TestNewIndexedLiteral(t *testing.T) {
 
 	if frame.Indexing != indexing ||
 		frame.Index != index ||
-		frame.ValueLength != len(value) ||
+		frame.ValueLength != uint64(len(value)) ||
 		frame.ValueString != value {
 		t.Errorf(`faild NewIndexedLiteral
 							frame      = %v
@@ -40,13 +40,13 @@ func TestNewStringLiteral(t *testing.T) {
 	var indexing bool = true
 	var name string = "foo"
 	var value string = "var"
-	var frame *NewStringLiteral = NewStringLiteral(indexing, name, value)
+	var frame *StringLiteral = NewStringLiteral(indexing, name, value)
 
 	if frame.Indexing != indexing ||
 		frame.Index != 0 ||
-		frame.NameLength != len(name) ||
+		frame.NameLength != uint64(len(name)) ||
 		frame.NameString != name ||
-		frame.ValueLength != len(value) ||
+		frame.ValueLength != uint64(len(value)) ||
 		frame.ValueString != value {
 		t.Errorf(`faild NewStringLiteral
 							frame      = %v
