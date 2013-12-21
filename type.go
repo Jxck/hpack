@@ -8,7 +8,7 @@ type Frame interface {
 	Encode() *bytes.Buffer
 }
 
-// Indexed Header Representation
+// Indexed Header Field
 //
 // 	0   1   2   3   4   5   6   7
 // +---+---+---+---+---+---+---+---+
@@ -29,11 +29,39 @@ func CreateIndexedHeader(index uint64) (frame *IndexedHeader) {
 	return
 }
 
-// Literal Header without Indexing - New Name
+// Literal Header Field without Indexing - Indexed Name
 //
-// 0   1   2   3   4   5   6   7
+//  0   1   2   3   4   5   6   7
 // +---+---+---+---+---+---+---+---+
-// | 0 | 1 | 1 |         0         |
+// | 0 | 1 |      Index (6+)       |
+// +---+---+---+-------------------+
+// |       Value Length (8+)       |
+// +-------------------------------+
+// | Value String (Length octets)  |
+// +-------------------------------+
+type IndexedNameWithoutIndexing struct {
+	Index       uint64
+	ValueLength uint64
+	ValueString string
+}
+
+func NewIndexedNameWithoutIndexing() (frame *IndexedNameWithoutIndexing) {
+	frame = &IndexedNameWithoutIndexing{}
+	return
+}
+
+func CreateIndexedNameWithoutIndexing(index uint64, value string) (frame *IndexedNameWithoutIndexing) {
+	frame = NewIndexedNameWithoutIndexing()
+	frame.Index = index
+	frame.ValueLength = uint64(len(value))
+	frame.ValueString = value
+	return
+}
+
+// Literal Header Field without Indexing - New Name
+//   0   1   2   3   4   5   6   7
+// +---+---+---+---+---+---+---+---+
+// | 0 | 1 |           0           |
 // +---+---+---+-------------------+
 // |       Name Length (8+)        |
 // +-------------------------------+
@@ -66,40 +94,11 @@ func CreateNewNameWithoutIndexing(name, value string) (frame *NewNameWithoutInde
 	return
 }
 
-// Literal Header without Indexing - Indexed Name
+// Literal Header Field with Incremental Indexing - Indexed Name
 //
-//   0   1   2   3   4   5   6   7
+//  0   1   2   3   4   5   6   7
 // +---+---+---+---+---+---+---+---+
-// | 0 | 1 | 1 |    Index (5+)     |
-// +---+---+---+-------------------+
-// |       Value Length (8+)       |
-// +-------------------------------+
-// | Value String (Length octets)  |
-// +-------------------------------+
-type IndexedNameWithoutIndexing struct {
-	Index       uint64
-	ValueLength uint64
-	ValueString string
-}
-
-func NewIndexedNameWithoutIndexing() (frame *IndexedNameWithoutIndexing) {
-	frame = &IndexedNameWithoutIndexing{}
-	return
-}
-
-func CreateIndexedNameWithoutIndexing(index uint64, value string) (frame *IndexedNameWithoutIndexing) {
-	frame = NewIndexedNameWithoutIndexing()
-	frame.Index = index
-	frame.ValueLength = uint64(len(value))
-	frame.ValueString = value
-	return
-}
-
-// Literal Header with Incremental Indexing - Indexed Name
-//
-// 0   1   2   3   4   5   6   7
-// +---+---+---+---+---+---+---+---+
-// | 0 | 1 | 0 |    Index (5+)     |
+// | 0 | 0 |      Index (6+)       |
 // +---+---+---+-------------------+
 // |       Value Length (8+)       |
 // +-------------------------------+
@@ -124,11 +123,11 @@ func CreateIndexedNameWithIncrementalIndexing(index uint64, value string) (frame
 	return
 }
 
-// Literal Header with Incremental Indexing - New Name
+// Literal Header Field with Incremental Indexing - New Name
 //
-// 0   1   2   3   4   5   6   7
+//   0   1   2   3   4   5   6   7
 // +---+---+---+---+---+---+---+---+
-// | 0 | 1 | 0 |         0         |
+// | 0 | 0 |           0           |
 // +---+---+---+-------------------+
 // |       Name Length (8+)        |
 // +-------------------------------+
