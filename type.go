@@ -4,6 +4,12 @@ import (
 	"bytes"
 )
 
+// type IndexedHeader
+// type IndexedNameWithoutIndexing
+// type NewNameWithoutIndexing
+// type IndexedNameWithIncrementalIndexing
+// type NewNameWithIncrementalIndexing
+
 type Frame interface {
 	Encode() *bytes.Buffer
 }

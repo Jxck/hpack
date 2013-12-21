@@ -15,15 +15,6 @@ func (frame *IndexedHeader) Encode() *bytes.Buffer {
 	return buf
 }
 
-func (frame *NewNameWithoutIndexing) Encode() *bytes.Buffer {
-	buf := bytes.NewBuffer([]byte{0x60})
-	buf.Write(integer.Encode(frame.NameLength, 8).Bytes())
-	buf.WriteString(frame.NameString)
-	buf.Write(integer.Encode(frame.ValueLength, 8).Bytes())
-	buf.WriteString(frame.ValueString)
-	return buf
-}
-
 func (frame *IndexedNameWithoutIndexing) Encode() *bytes.Buffer {
 	index := integer.Encode(frame.Index+1, 5).Bytes()
 	buf := bytes.NewBuffer([]byte{0x60 + index[0]})
@@ -31,6 +22,15 @@ func (frame *IndexedNameWithoutIndexing) Encode() *bytes.Buffer {
 	if len(index) > 0 {
 		buf.Write(index)
 	}
+	buf.Write(integer.Encode(frame.ValueLength, 8).Bytes())
+	buf.WriteString(frame.ValueString)
+	return buf
+}
+
+func (frame *NewNameWithoutIndexing) Encode() *bytes.Buffer {
+	buf := bytes.NewBuffer([]byte{0x60})
+	buf.Write(integer.Encode(frame.NameLength, 8).Bytes())
+	buf.WriteString(frame.NameString)
 	buf.Write(integer.Encode(frame.ValueLength, 8).Bytes())
 	buf.WriteString(frame.ValueString)
 	return buf
