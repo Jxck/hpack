@@ -18,13 +18,8 @@ type IndexedHeader struct {
 	Index uint64
 }
 
-func NewIndexedHeader() (frame *IndexedHeader) {
-	frame = &IndexedHeader{}
-	return
-}
-
 func CreateIndexedHeader(index uint64) (frame *IndexedHeader) {
-	frame = NewIndexedHeader()
+	frame = new(IndexedHeader)
 	frame.Index = index
 	return
 }
@@ -45,13 +40,8 @@ type IndexedNameWithoutIndexing struct {
 	ValueString string
 }
 
-func NewIndexedNameWithoutIndexing() (frame *IndexedNameWithoutIndexing) {
-	frame = &IndexedNameWithoutIndexing{}
-	return
-}
-
 func CreateIndexedNameWithoutIndexing(index uint64, value string) (frame *IndexedNameWithoutIndexing) {
-	frame = NewIndexedNameWithoutIndexing()
+	frame = new(IndexedNameWithoutIndexing)
 	frame.Index = index
 	frame.ValueLength = uint64(len(value))
 	frame.ValueString = value
@@ -79,14 +69,8 @@ type NewNameWithoutIndexing struct {
 	ValueString string
 }
 
-func NewNewNameWithoutIndexing() (frame *NewNameWithoutIndexing) {
-	frame = &NewNameWithoutIndexing{}
-	frame.Index = 0
-	return
-}
-
 func CreateNewNameWithoutIndexing(name, value string) (frame *NewNameWithoutIndexing) {
-	frame = NewNewNameWithoutIndexing()
+	frame = new(NewNameWithoutIndexing)
 	frame.NameLength = uint64(len(name))
 	frame.NameString = name
 	frame.ValueLength = uint64(len(value))
@@ -110,13 +94,8 @@ type IndexedNameWithIncrementalIndexing struct {
 	ValueString string
 }
 
-func NewIndexedNameWithIncrementalIndexing() (frame *IndexedNameWithIncrementalIndexing) {
-	frame = &IndexedNameWithIncrementalIndexing{}
-	return
-}
-
 func CreateIndexedNameWithIncrementalIndexing(index uint64, value string) (frame *IndexedNameWithIncrementalIndexing) {
-	frame = NewIndexedNameWithIncrementalIndexing()
+	frame = new(IndexedNameWithIncrementalIndexing)
 	frame.Index = index
 	frame.ValueLength = uint64(len(value))
 	frame.ValueString = value
@@ -145,14 +124,8 @@ type NewNameWithIncrementalIndexing struct {
 	ValueString string
 }
 
-func NewNewNameWithIncrementalIndexing() (frame *NewNameWithIncrementalIndexing) {
-	frame = &NewNameWithIncrementalIndexing{}
-	frame.Index = 0
-	return
-}
-
 func CreateNewNameWithIncrementalIndexing(name, value string) (frame *NewNameWithIncrementalIndexing) {
-	frame = NewNewNameWithIncrementalIndexing()
+	frame = new(NewNameWithIncrementalIndexing)
 	frame.NameLength = uint64(len(name))
 	frame.NameString = name
 	frame.ValueLength = uint64(len(value))

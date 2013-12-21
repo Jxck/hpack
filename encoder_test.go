@@ -6,7 +6,7 @@ import (
 )
 
 func TestIndexedHeaderEncode(t *testing.T) {
-	frame := NewIndexedHeader()
+	frame := new(IndexedHeader)
 	frame.Index = 38
 
 	actual := frame.Encode().Bytes()
@@ -17,7 +17,7 @@ func TestIndexedHeaderEncode(t *testing.T) {
 }
 
 func TestNewNameWithoutIndexingEncode(t *testing.T) {
-	frame := NewNewNameWithoutIndexing()
+	frame := new(NewNameWithoutIndexing)
 	frame.NameLength = 11
 	frame.NameString = "mynewheader"
 	frame.ValueLength = 5
@@ -35,7 +35,7 @@ func TestNewNameWithoutIndexingEncode(t *testing.T) {
 }
 
 func TestIndexedNameWithoutIndexingEncode(t *testing.T) {
-	frame := NewIndexedNameWithoutIndexing()
+	frame := new(IndexedNameWithoutIndexing)
 	frame.Index = 3
 	frame.ValueLength = 5
 	frame.ValueString = "first"
@@ -50,7 +50,7 @@ func TestIndexedNameWithoutIndexingEncode(t *testing.T) {
 }
 
 func TestIndexedNameWithIncrementalIndexingEncode(t *testing.T) {
-	frame := NewIndexedNameWithIncrementalIndexing()
+	frame := new(IndexedNameWithIncrementalIndexing)
 	frame.Index = 3
 	frame.ValueLength = 22
 	frame.ValueString = "/my-example/index.html"
@@ -65,7 +65,7 @@ func TestIndexedNameWithIncrementalIndexingEncode(t *testing.T) {
 }
 
 func TestNewNameWithIncrementalIndexingEncode(t *testing.T) {
-	frame := NewNewNameWithIncrementalIndexing()
+	frame := new(NewNameWithIncrementalIndexing)
 	frame.NameLength = 11
 	frame.NameString = "mynewheader"
 	frame.ValueLength = 5

@@ -30,14 +30,14 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		// unread first byte for parse frame
 		buf.UnreadByte()
 
-		frame := NewIndexedHeader()
+		frame := new(IndexedHeader)
 		frame.Index = DecodePrefixedInteger(buf, 7)
 		return frame
 	}
 	if types == 0x40 {
 		// Literal Header with Incremental Indexing - New Name
 
-		frame := NewNewNameWithIncrementalIndexing()
+		frame := new(NewNameWithIncrementalIndexing)
 		frame.NameLength = DecodePrefixedInteger(buf, 8)
 		frame.NameString = DecodeString(buf, frame.NameLength)
 		frame.ValueLength = DecodePrefixedInteger(buf, 8)
@@ -47,7 +47,7 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 	if types == 0x60 {
 		// Literal Header without Indexing - New Name
 
-		frame := NewNewNameWithoutIndexing()
+		frame := new(NewNameWithoutIndexing)
 		frame.NameLength = DecodePrefixedInteger(buf, 8)
 		frame.NameString = DecodeString(buf, frame.NameLength)
 		frame.ValueLength = DecodePrefixedInteger(buf, 8)
@@ -60,7 +60,7 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		// unread first byte for parse frame
 		buf.UnreadByte()
 
-		frame := NewIndexedNameWithIncrementalIndexing()
+		frame := new(IndexedNameWithIncrementalIndexing)
 		// 0 describes "not in the header table", but index of Header Table start with 0
 		// so Index is represented as +1 integer
 		frame.Index = DecodePrefixedInteger(buf, 5) - 1
@@ -74,7 +74,7 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		// unread first byte for parse frame
 		buf.UnreadByte()
 
-		frame := NewIndexedNameWithoutIndexing()
+		frame := new(IndexedNameWithoutIndexing)
 		frame.Index = DecodePrefixedInteger(buf, 5) - 1
 		frame.ValueLength = DecodePrefixedInteger(buf, 8)
 		frame.ValueString = DecodeString(buf, frame.ValueLength)
