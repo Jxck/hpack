@@ -18,7 +18,7 @@ import (
 //          Encode (I % 128 + 128) on 8 bits
 //          I = I / 128
 //     encode (I) on 8 bits
-func EncodeInteger(I uint64, N uint8) *bytes.Buffer {
+func Encode(I uint64, N uint8) *bytes.Buffer {
 	buf := new(bytes.Buffer)
 	boundary := uint64(1<<N - 1) // 2^N-1
 
@@ -70,7 +70,7 @@ func EncodeInteger(I uint64, N uint8) *bytes.Buffer {
 //     While b > 128
 //         I += (b - 128) * 128^(i-1)
 //         i++
-func DecodeInteger(buf []byte, N uint8) uint64 {
+func Decode(buf []byte, N uint8) uint64 {
 	boundary := uint64(1<<N - 1) // 2^N-1
 	I := uint64(buf[0])          // Read N bit from first 1 byte as I
 	if I < boundary {            // less than 2^N-1

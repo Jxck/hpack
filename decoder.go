@@ -3,6 +3,7 @@ package hpack
 import (
 	"bytes"
 	"encoding/binary"
+	integer "github.com/jxck/hpack/integer_representation"
 	"log"
 )
 
@@ -108,8 +109,8 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 
 // read N prefixed Integer from buffer as uint64
 func DecodePrefixedInteger(buf *bytes.Buffer, N uint8) uint64 {
-	tmp := ReadPrefixedInteger(buf, N).Bytes()
-	return DecodeInteger(tmp, N)
+	tmp := integer.ReadPrefixedInteger(buf, N).Bytes()
+	return integer.Decode(tmp, N)
 }
 
 // read n byte from buffer as string

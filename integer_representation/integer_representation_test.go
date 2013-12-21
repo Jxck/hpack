@@ -6,14 +6,14 @@ import (
 	"testing/quick"
 )
 
-func TestEncodeInteger(t *testing.T) {
+func TestEncode(t *testing.T) {
 	testcases := []struct {
 		expected, actual []byte
 	}{
-		{[]byte{10}, EncodeInteger(10, 5).Bytes()},
-		{[]byte{31, 9}, EncodeInteger(40, 5).Bytes()},
-		{[]byte{31, 154, 10}, EncodeInteger(1337, 5).Bytes()},
-		{[]byte{31, 161, 141, 183, 1}, EncodeInteger(3000000, 5).Bytes()},
+		{[]byte{10}, Encode(10, 5).Bytes()},
+		{[]byte{31, 9}, Encode(40, 5).Bytes()},
+		{[]byte{31, 154, 10}, Encode(1337, 5).Bytes()},
+		{[]byte{31, 161, 141, 183, 1}, Encode(3000000, 5).Bytes()},
 	}
 
 	for _, testcase := range testcases {
@@ -25,14 +25,14 @@ func TestEncodeInteger(t *testing.T) {
 	}
 }
 
-func TestDecodeInteger(t *testing.T) {
+func TestDecode(t *testing.T) {
 	testcases := []struct {
 		expected, actual uint64
 	}{
-		{10, DecodeInteger([]byte{10}, 5)},
-		{40, DecodeInteger([]byte{31, 9}, 5)},
-		{1337, DecodeInteger([]byte{31, 154, 10}, 5)},
-		{3000000, DecodeInteger([]byte{31, 161, 141, 183, 1}, 5)},
+		{10, Decode([]byte{10}, 5)},
+		{40, Decode([]byte{31, 9}, 5)},
+		{1337, Decode([]byte{31, 154, 10}, 5)},
+		{3000000, Decode([]byte{31, 161, 141, 183, 1}, 5)},
 	}
 
 	for _, testcase := range testcases {
@@ -44,11 +44,11 @@ func TestDecodeInteger(t *testing.T) {
 	}
 }
 
-func TestEncodeDecodeIntegerQuickCheck(t *testing.T) {
+func TestEncodeDecodeQuickCheck(t *testing.T) {
 	f := func(I uint64) bool {
 		var N uint8 = 5
-		buf := EncodeInteger(I, N)
-		actual := DecodeInteger(buf.Bytes(), N)
+		buf := Encode(I, N)
+		actual := Decode(buf.Bytes(), N)
 		t.Log(I)
 		t.Log(actual)
 		return actual == I
