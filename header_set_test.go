@@ -3,39 +3,46 @@ package hpack
 import (
 	"net/http"
 	"reflect"
+	"strings"
 	"testing"
 )
 
-var headers = http.Header{
+var header = http.Header{
 	"Method":      []string{"GET"},
 	"Scheme":      []string{"http"},
 	"Host":        []string{"example.com"},
 	"Path":        []string{"/index.html"},
 	"Accept":      []string{"*/*"},
-	"Mynewheader": []string{"first,second"},
+	"Mynewheader": []string{"first", "second"},
 }
 
-var headerset = HeaderSet{
-	":method":     "GET",
-	":scheme":     "http",
-	":host":       "example.com",
-	":path":       "/index.html",
-	"accept":      "*/*",
-	"mynewheader": "first,second",
+var headerSet = HeaderSet{
+	HeaderField{":method", "GET"},
+	HeaderField{":scheme", "http"},
+	HeaderField{":host", "example.com"},
+	HeaderField{":path", "/index.html"},
+	HeaderField{"accept", "*/*"},
+	HeaderField{"mynewheader", "first,second"},
 }
 
 func TestHeaderToHeaderSet(t *testing.T) {
-	actual := HeaderToHeaderSet(headers)
-	expected := headerset
+	actual := HeaderToHeaderSet(header)
+	expected := headerSet
 	if !reflect.DeepEqual(actual, expected) {
-		t.Errorf("got %v\nwant %v", headers, expected)
+		t.Errorf("got %v\nwant %v", actual, expected)
 	}
 }
 
 func TestHeaderSetToHeader(t *testing.T) {
-	actual := HeaderSetToHeader(headerset)
-	expected := headers
+	actual := HeaderSetToHeader(headerSet)
+	expected := header
+	// But, multi value in single key like
+	// myheader: ["first", "second"]
+	// becames
+	// myheader: ["first,second"]
+	joined := []string{strings.Join(expected["Mynewheader"], ",")}
+	expected["Mynewheader"] = joined
 	if !reflect.DeepEqual(actual, expected) {
-		t.Errorf("got %v\nwant %v", headers, expected)
+		t.Errorf("got %v\nwant %v", actual, expected)
 	}
 }
