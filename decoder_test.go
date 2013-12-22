@@ -6,152 +6,89 @@ import (
 )
 
 func TestIndexedHeaderDecode(t *testing.T) {
-	// 0xa6       (indexed header, index = 38: removal from reference set)
-	buf := bytes.NewBuffer([]byte{0xA6}) // 10100110
+	buf := bytes.NewBuffer([]byte{0x82})
 
-	frame := DecodeHeader(buf)
-	f, ok := frame.(*IndexedHeader)
+	// expected
+	var index uint64 = 2
+
+	decoded := DecodeHeader(buf)
+	frame, ok := decoded.(*IndexedHeader)
 	if !ok {
-		t.Fatal("Parsed incorrect frame type:", frame)
+		t.Errorf("Decoded to incorrect frame type: %T", frame)
 	}
-	if f.Index != 38 {
-		t.Errorf("got %v\nwant %v", f.Index, 38)
+	if frame.Index != index {
+		t.Errorf("got %v\nwant %v", frame.Index, index)
 	}
 }
 
-func TestIndexedNameWithoutIndexingDecode(t *testing.T) {
-	// 0x64      (literal header without indexing, name index = 3)
-	// 0x05      (header value string length = 5)
-	// first
-	buf := bytes.NewBuffer([]byte{0x64, 0x05}) // 0110 00011 0000 0101
-	buf.WriteString("first")
+func TestIndexedLiteralDecode_NoIndexing(t *testing.T) {
+	buf := bytes.NewBuffer([]byte{
+		0x44, 0x0c, 0x2f, 0x73,
+		0x61, 0x6d, 0x70, 0x6c,
+		0x65, 0x2f, 0x70, 0x61,
+		0x74, 0x68,
+	})
 
-	frame := DecodeHeader(buf)
-	f, ok := frame.(*IndexedNameWithoutIndexing)
+	// expected
+	var indexing bool = false
+	var index uint64 = 4
+	var value string = "/sample/path"
+
+	decoded := DecodeHeader(buf)
+	frame, ok := decoded.(*IndexedLiteral)
 	if !ok {
-		t.Fatal("Parsed incorrect frame type:", frame)
+		t.Errorf("Decoded to incorrect frame type: %T", frame)
 	}
-	if f.Index != 3 {
-		t.Errorf("got %v\nwant %v", f.Index, 3)
-	}
-	if f.ValueLength != 5 {
-		t.Errorf("got %v\nwant %v", f.ValueLength, 5)
-	}
-	if f.ValueString != "first" {
-		t.Errorf("got %v\nwant %v", f.ValueString, "first")
+	if frame.Indexing != indexing ||
+		frame.Index != index ||
+		frame.ValueLength != uint64(len(value)) ||
+		frame.ValueString != value {
+		t.Errorf(`
+frame      = %v
+---should---
+indexing   = %v
+index      = %v
+len(value) = %v
+value      = %v
+`, frame, indexing, index, len(value), value)
 	}
 }
 
-func TestNewNameWithoutIndexingDecode(t *testing.T) {
-	// 0x60      (literal header without indexing, new name)
-	// 0x0B      (header name string length = 11)
-	// mynewheader
-	// 0x05      (header value string length = 5)
-	// first
-	buf := bytes.NewBuffer([]byte{0x60, 0x0B}) // 0110 00000 0000 1011
-	buf.WriteString("mynewheader")
-	buf.WriteByte(0x05)
-	buf.WriteString("first")
+func TestStringLiteralDecode_Indexing(t *testing.T) {
+	buf := bytes.NewBuffer([]byte{
+		0x00, 0x0a, 0x63, 0x75,
+		0x73, 0x74, 0x6f, 0x6d,
+		0x2d, 0x6b, 0x65, 0x79,
+		0x0d, 0x63, 0x75, 0x73,
+		0x74, 0x6f, 0x6d, 0x2d,
+		0x68, 0x65, 0x61, 0x64,
+		0x65, 0x72,
+	})
 
-	frame := DecodeHeader(buf)
-	f, ok := frame.(*NewNameWithoutIndexing)
+	// expected
+	var indexing bool = true
+	var name, value string = "custom-key", "custom-header"
+
+	decoded := DecodeHeader(buf)
+	frame, ok := decoded.(*StringLiteral)
 	if !ok {
-		t.Fatal("Parsed incorrect frame type:", frame)
+		t.Errorf("Decoded to incorrect frame type: %T", frame)
 	}
-	if f.Index != 0 {
-		t.Errorf("got %v\nwant %v", f.Index, 0)
-	}
-	if f.NameLength != 11 {
-		t.Errorf("got %v\nwant %v", f.NameLength, 11)
-	}
-	if f.NameString != "mynewheader" {
-		t.Errorf("got %v\nwant %v", f.NameString, "mynewheader")
-	}
-	if f.ValueLength != 5 {
-		t.Errorf("got %v\nwant %v", f.ValueLength, 5)
-	}
-	if f.ValueString != "first" {
-		t.Errorf("got %v\nwant %v", f.ValueString, "first")
-	}
-}
-
-// TODO: test name ??
-func TestIndexedNameWithIncrementalIndexing(t *testing.T) {
-	// 0x5f 0101 1111 (literal header, incremental indexing, name index = 40) 40n5=[31 9]
-	// 0x0a 0000 1010
-	// 0x06 0000 0110 (header value string length = 6)
-	// second
-	buf := bytes.NewBuffer([]byte{0x5f, 0x0a, 0x06})
-	buf.WriteString("second")
-
-	frame := DecodeHeader(buf)
-	f, ok := frame.(*IndexedNameWithIncrementalIndexing)
-	if !ok {
-		t.Fatal("Parsed incorrect frame type:", frame)
-	}
-	if f.Index != 40 {
-		t.Errorf("got %v\nwant %v", f.Index, 40)
-	}
-	if f.ValueLength != 6 {
-		t.Errorf("got %v\nwant %v", f.ValueLength, 6)
-	}
-	if f.ValueString != "second" {
-		t.Errorf("got %v\nwant %v", f.ValueString, "second")
-	}
-}
-
-func TestIndexedNameWithIncrementalIndexingDecode(t *testing.T) {
-	// 0x44      (literal header with incremental indexing, name index = 3)
-	// 0x16      (header value string length = 22)
-	// /my-example/index.html
-	buf := bytes.NewBuffer([]byte{0x44, 0x16}) // 0100 0100 0001 0110
-	buf.WriteString("/my-example/index.html")
-
-	frame := DecodeHeader(buf)
-	f, ok := frame.(*IndexedNameWithIncrementalIndexing)
-	if !ok {
-		t.Fatal("Parsed incorrect frame type:", frame)
-	}
-	if f.Index != 3 {
-		t.Errorf("got %v\nwant %v", f.Index, 3)
-	}
-	if f.ValueLength != 22 {
-		t.Errorf("got %v\nwant %v", f.ValueLength, 22)
-	}
-	if f.ValueString != "/my-example/index.html" {
-		t.Errorf("got %v\nwant %v", f.ValueString, "/my-example/index.html")
-	}
-}
-
-func TestNewNameWithIncrementalIndexingDecode(t *testing.T) {
-	// 0x40      (literal header with incremental indexing, new name)
-	// 0x0B      (header name string length = 11)
-	// mynewheader
-	// 0x05      (header value string length = 5)
-	// first
-	buf := bytes.NewBuffer([]byte{0x40, 0x0B}) // 01000000 00001011
-	buf.WriteString("mynewheader")
-	buf.WriteByte(0x05)
-	buf.WriteString("first")
-
-	frame := DecodeHeader(buf)
-	f, ok := frame.(*NewNameWithIncrementalIndexing)
-	if !ok {
-		t.Fatal("Parsed incorrect frame type:", frame)
-	}
-	if f.Index != 0 {
-		t.Errorf("got %v\nwant %v", f.Index, 0)
-	}
-	if f.NameLength != 11 {
-		t.Errorf("got %v\nwant %v", f.NameLength, 11)
-	}
-	if f.NameString != "mynewheader" {
-		t.Errorf("got %v\nwant %v", f.NameString, "mynewheader")
-	}
-	if f.ValueLength != 5 {
-		t.Errorf("got %v\nwant %v", f.ValueLength, 5)
-	}
-	if f.ValueString != "first" {
-		t.Errorf("got %v\nwant %v", f.ValueString, "first")
+	if frame.Indexing != indexing ||
+		frame.Index != 0 ||
+		frame.NameLength != uint64(len(name)) ||
+		frame.NameString != name ||
+		frame.ValueLength != uint64(len(value)) ||
+		frame.ValueString != value {
+		t.Errorf(`
+frame      = %v
+---should---
+indexing   = %v
+index      = %v
+len(name)  = %v
+name       = %v
+len(value) = %v
+value      = %v
+`, frame, indexing, 0, len(name), name, len(value), value)
 	}
 }

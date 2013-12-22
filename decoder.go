@@ -24,60 +24,61 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 	if err := binary.Read(buf, binary.BigEndian, &types); err != nil {
 		log.Println("binary.Read failed:", err)
 	}
-	if types >= 0x80 { // >= 128
+	if types >= 0x80 { // 1xxx xxxx
 		// Indexed Header Representation
 
 		// unread first byte for parse frame
 		buf.UnreadByte()
 
-		frame := new(IndexedHeader)
-		frame.Index = DecodePrefixedInteger(buf, 7)
+		index := DecodePrefixedInteger(buf, 7)
+		frame := NewIndexedHeader(index)
 		return frame
 	}
-	if types == 0x40 {
-		// Literal Header with Incremental Indexing - New Name
+	if types == 0 { // 0000 0000
+		// Literal Header Field with Incremental Indexing - New Name (F=0)
+		indexing := true
+		nameLength := DecodePrefixedInteger(buf, 8)
+		name := DecodeString(buf, nameLength)
+		valueLength := DecodePrefixedInteger(buf, 8)
+		value := DecodeString(buf, valueLength)
+		frame := NewStringLiteral(indexing, name, value)
+		return frame
+	}
+	if types == 0x40 { // 0100 0000
+		// Literal Header Field without Indexing - New Name (F=1)
 
-		frame := new(NewNameWithIncrementalIndexing)
-		frame.NameLength = DecodePrefixedInteger(buf, 8)
-		frame.NameString = DecodeString(buf, frame.NameLength)
-		frame.ValueLength = DecodePrefixedInteger(buf, 8)
-		frame.ValueString = DecodeString(buf, frame.ValueLength)
+		indexing := false
+		nameLength := DecodePrefixedInteger(buf, 8)
+		name := DecodeString(buf, nameLength)
+		valueLength := DecodePrefixedInteger(buf, 8)
+		value := DecodeString(buf, valueLength)
+		frame := NewStringLiteral(indexing, name, value)
 		return frame
 	}
-	if types == 0x60 {
-		// Literal Header without Indexing - New Name
-
-		frame := new(NewNameWithoutIndexing)
-		frame.NameLength = DecodePrefixedInteger(buf, 8)
-		frame.NameString = DecodeString(buf, frame.NameLength)
-		frame.ValueLength = DecodePrefixedInteger(buf, 8)
-		frame.ValueString = DecodeString(buf, frame.ValueLength)
-		return frame
-	}
-	if types>>5 == 0x2 {
-		// iteral Header with Incremental Indexing - Indexed Name
+	if types&0xc0 == 0x40 { // 01xx xxxx & 1100 0000 == 0100 0000
+		// Literal Header Field without Indexing - Indexed Name (F=1)
 
 		// unread first byte for parse frame
 		buf.UnreadByte()
 
-		frame := new(IndexedNameWithIncrementalIndexing)
-		// 0 describes "not in the header table", but index of Header Table start with 0
-		// so Index is represented as +1 integer
-		frame.Index = DecodePrefixedInteger(buf, 5) - 1
-		frame.ValueLength = DecodePrefixedInteger(buf, 8)
-		frame.ValueString = DecodeString(buf, frame.ValueLength)
+		indexing := false
+		index := DecodePrefixedInteger(buf, 6)
+		valueLength := DecodePrefixedInteger(buf, 8)
+		value := DecodeString(buf, valueLength)
+		frame := NewIndexedLiteral(indexing, index, value)
 		return frame
 	}
-	if types&0x60 == 0x60 {
-		// Literal Header without Indexing - Indexed Name
-
+	if types&0xc0 == 0 { // 00xx xxxx & 1100 0000 == 0000 0000
+		// Literal Header Field with Incremental Indexing - Indexed Name (F=0)
 		// unread first byte for parse frame
 		buf.UnreadByte()
 
-		frame := new(IndexedNameWithoutIndexing)
-		frame.Index = DecodePrefixedInteger(buf, 5) - 1
-		frame.ValueLength = DecodePrefixedInteger(buf, 8)
-		frame.ValueString = DecodeString(buf, frame.ValueLength)
+		indexing := true
+
+		index := DecodePrefixedInteger(buf, 6)
+		valueLength := DecodePrefixedInteger(buf, 8)
+		value := DecodeString(buf, valueLength)
+		frame := NewIndexedLiteral(indexing, index, value)
 		return frame
 	}
 	return nil

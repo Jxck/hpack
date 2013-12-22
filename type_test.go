@@ -26,7 +26,6 @@ func TestNewIndexedLiteral(t *testing.T) {
 		frame.ValueLength != uint64(len(value)) ||
 		frame.ValueString != value {
 		t.Errorf(`
-faild NewIndexedLiteral
 frame      = %v
 ---should---
 indexing   = %v
@@ -50,7 +49,6 @@ func TestNewStringLiteral(t *testing.T) {
 		frame.ValueLength != uint64(len(value)) ||
 		frame.ValueString != value {
 		t.Errorf(`
-faild NewStringLiteral
 frame      = %v
 ---should---
 indexing   = %v
