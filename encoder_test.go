@@ -17,7 +17,7 @@ func TestIndexedHeaderEncode(t *testing.T) {
 	}
 }
 
-func TestIndexedLiteral_NoIndexing(t *testing.T) {
+func TestIndexedLiteralEncode_NoIndexing(t *testing.T) {
 	var indexing bool = false
 	var index uint64 = 4
 	var value string = "/sample/path"
@@ -35,7 +35,7 @@ func TestIndexedLiteral_NoIndexing(t *testing.T) {
 	}
 }
 
-func TestStringLiteral_Indexing(t *testing.T) {
+func TestStringLiteralEncode_Indexing(t *testing.T) {
 	var indexing bool = true
 	var name, value string = "custom-key", "custom-header"
 	frame := NewStringLiteral(indexing, name, value)
