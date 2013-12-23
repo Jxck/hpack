@@ -25,16 +25,8 @@ var headerSet = HeaderSet{
 	HeaderField{"mynewheader", "first,second"},
 }
 
-func TestHeaderToHeaderSet(t *testing.T) {
-	actual := HeaderToHeaderSet(header)
-	expected := headerSet
-	if !reflect.DeepEqual(actual, expected) {
-		t.Errorf("got %v\nwant %v", actual, expected)
-	}
-}
-
 func TestHeaderSetToHeader(t *testing.T) {
-	actual := HeaderSetToHeader(headerSet)
+	actual := headerSet.ToHeader()
 	expected := header
 	// But, multi value in single key like
 	// myheader: ["first", "second"]
@@ -42,6 +34,14 @@ func TestHeaderSetToHeader(t *testing.T) {
 	// myheader: ["first,second"]
 	joined := []string{strings.Join(expected["Mynewheader"], ",")}
 	expected["Mynewheader"] = joined
+	if !reflect.DeepEqual(actual, expected) {
+		t.Errorf("got %v\nwant %v", actual, expected)
+	}
+}
+
+func TestHeaderToHeaderSet(t *testing.T) {
+	actual := HeaderToHeaderSet(header)
+	expected := headerSet
 	if !reflect.DeepEqual(actual, expected) {
 		t.Errorf("got %v\nwant %v", actual, expected)
 	}

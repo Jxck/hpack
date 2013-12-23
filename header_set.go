@@ -28,6 +28,21 @@ func RemovePrefix(name string) string {
 	return name
 }
 
+// HeaderSet => http.Header
+// But, multi value in single key like
+// myheader: ["first", "second"]
+// becames
+// myheader: ["first,second"]
+func (headerSet HeaderSet) ToHeader() http.Header {
+	headers := make(http.Header, len(headerSet))
+	for _, headerField := range headerSet {
+		name := RemovePrefix(headerField.Name)
+		value := headerField.Value
+		headers.Add(name, value)
+	}
+	return headers
+}
+
 // http.Header => HeaderSet
 func HeaderToHeaderSet(header http.Header) HeaderSet {
 	headerSet := make(HeaderSet, 0, len(header))
@@ -44,19 +59,4 @@ func HeaderToHeaderSet(header http.Header) HeaderSet {
 		headerSet = append(headerSet, headerField)
 	}
 	return headerSet
-}
-
-// HeaderSet => http.Header
-// But, multi value in single key like
-// myheader: ["first", "second"]
-// becames
-// myheader: ["first,second"]
-func HeaderSetToHeader(headerSet HeaderSet) http.Header {
-	headers := make(http.Header, len(headerSet))
-	for _, headerField := range headerSet {
-		name := RemovePrefix(headerField.Name)
-		value := headerField.Value
-		headers.Add(name, value)
-	}
-	return headers
 }
