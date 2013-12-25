@@ -21,6 +21,7 @@ type HeaderField struct {
 	Value string
 }
 
+// Add prefix if name is Must Header
 func NewHeaderField(name, value string) HeaderField {
 	name = strings.ToLower(name)
 	mustname, ok := MustHeader[name]
