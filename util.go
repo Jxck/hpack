@@ -1,11 +1,37 @@
 package hpack
 
 import (
-	"fmt"
 	"net/http"
 	"strings"
 )
 
+// remove ":" prefix
+func RemovePrefix(name string) string {
+	if strings.HasPrefix(name, ":") {
+		name = strings.TrimLeft(name, ":")
+	}
+	return name
+}
+
+// http.Header => HeaderSet
+func HeaderToHeaderSet(header http.Header) HeaderSet {
+	headerSet := make(HeaderSet, 0, len(header))
+	for name, values := range header {
+		// process name
+		name = strings.ToLower(name)
+		mustname, ok := MustHeader[name]
+		if ok {
+			name = mustname
+		}
+		// process values
+		value := strings.Join(values, ",")
+		headerField := NewHeaderField(name, value)
+		headerSet = append(headerSet, headerField)
+	}
+	return headerSet
+}
+
+/*
 func padding(str string) string {
 	l := 20 - len(str)
 	return str + strings.Repeat(" ", l)
@@ -46,3 +72,4 @@ func RefSetString(r ReferenceSet) string {
 	str += "====\n"
 	return str
 }
+*/

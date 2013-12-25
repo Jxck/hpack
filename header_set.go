@@ -2,7 +2,6 @@ package hpack
 
 import (
 	"net/http"
-	"strings"
 )
 
 // A header set is a potentially ordered group of header fields that are encoded jointly.
@@ -20,14 +19,6 @@ var MustHeader = map[string]string{
 	"status": ":status",
 }
 
-// remove ":" prefix
-func RemovePrefix(name string) string {
-	if strings.HasPrefix(name, ":") {
-		name = strings.TrimLeft(name, ":")
-	}
-	return name
-}
-
 // HeaderSet => http.Header
 // But, multi value in single key like
 // myheader: ["first", "second"]
@@ -41,22 +32,4 @@ func (headerSet HeaderSet) ToHeader() http.Header {
 		headers.Add(name, value)
 	}
 	return headers
-}
-
-// http.Header => HeaderSet
-func HeaderToHeaderSet(header http.Header) HeaderSet {
-	headerSet := make(HeaderSet, 0, len(header))
-	for name, values := range header {
-		// process name
-		name = strings.ToLower(name)
-		mustname, ok := MustHeader[name]
-		if ok {
-			name = mustname
-		}
-		// process values
-		value := strings.Join(values, ",")
-		headerField := NewHeaderField(name, value)
-		headerSet = append(headerSet, headerField)
-	}
-	return headerSet
 }

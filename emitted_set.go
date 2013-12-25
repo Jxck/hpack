@@ -20,12 +20,7 @@ func NewEmittedSet() EmittedSet {
 	return EmittedSet{http.Header{}}
 }
 
-func (e EmittedSet) Emit(name, value string) {
-	name = RemovePrefix(name)
-	e.Add(name, value)
-}
-
-func (e EmittedSet) Check(name, value string) bool {
-	name = RemovePrefix(name)
-	return e.Get(name) == value
+func (e EmittedSet) Emit(hf HeaderField) {
+	name := RemovePrefix(hf.Name)
+	e.Add(name, hf.Value)
 }
