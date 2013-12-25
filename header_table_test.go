@@ -7,12 +7,12 @@ import (
 func TestHeaderTableSize(t *testing.T) {
 	ht := HeaderTable{
 		DEFAULT_HEADER_TABLE_SIZE,
-		[]HeaderField{
-			{"1234", "1234"},
-			{"1234", "1234"},
-			{"1234", "1234"},
-			{"1234", "1234"},
-			{"1234", "1234"},
+		[]*HeaderField{
+			NewHeaderField("1234", "1234"),
+			NewHeaderField("1234", "1234"),
+			NewHeaderField("1234", "1234"),
+			NewHeaderField("1234", "1234"),
+			NewHeaderField("1234", "1234"),
 		},
 	}
 	size := ht.Size()

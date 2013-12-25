@@ -23,12 +23,14 @@ func init() {
 type Context struct {
 	HT HeaderTable
 	RS *ReferenceSet
+	ES *EmittedSet
 }
 
 func NewContext() Context {
 	return Context{
 		HT: HeaderTable{},
 		RS: NewReferenceSet(),
+		ES: NewEmittedSet(),
 	}
 }
 
@@ -43,6 +45,7 @@ func (c *Context) Decode(wire []byte) {
 			 * idx=0 の場合 Reference Set を空にする
 			 */
 			if index == 0 {
+				Debug(Red("Empty ReferenceSet"))
 				c.RS.Empty()
 			}
 
@@ -50,19 +53,22 @@ func (c *Context) Decode(wire []byte) {
 			 * idx が Reference Set にあった場合
 			 * Reference Set から消す
 			 */
-			// if RefSet.Has(index) {
-			//   RefSet.Remove(inx)
-			//   continue
-			// }
+			if c.RS.Has(index) {
+				Debug(Red(fmt.Sprintf("Remove %v from ReferenceSet", index)))
+				c.RS.Remove(index)
+				continue
+			}
 
 			/**
 			 * idx が Reference Set に無い場合
 			 * 該当のエントリを取り出す
 			 */
-			var headerField HeaderField
+			var headerField *HeaderField
 
 			if index > c.HT.Len() {
-				// Static Header Table の中にあった場合
+				/**
+				 * Static Header Table の中にあった場合
+				 */
 				index = index - c.HT.Len() - 1
 				headerField = StaticHeaderTable[index]
 				Debug(Red("== Indexed - Add =="))
@@ -71,6 +77,7 @@ func (c *Context) Decode(wire []byte) {
 
 				// Emit
 				Debug(Blue("Emit"))
+				c.ES.Emit(headerField)
 
 				// ヘッダテーブルにコピーする
 				// insertedIndex := c.HT.Push(headerField)

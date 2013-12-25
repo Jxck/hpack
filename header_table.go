@@ -10,7 +10,7 @@ const DEFAULT_HEADER_TABLE_SIZE int = 4096
 // The data stored in this table is in first-in, first-out order.
 type HeaderTable struct {
 	HEADER_TABLE_SIZE int
-	HeaderFields      []HeaderField
+	HeaderFields      []*HeaderField
 }
 
 // get total size of Header Table
@@ -30,8 +30,8 @@ func (ht *HeaderTable) Len() int {
 // push new Header Field to the of HeaderTable
 // with eviction
 // :TODO (check & test eviction more)
-func (ht *HeaderTable) Push(hf HeaderField) {
-	tmp := []HeaderField{hf}
+func (ht *HeaderTable) Push(hf *HeaderField) {
+	tmp := []*HeaderField{hf}
 	ht.HeaderFields = append(tmp, ht.HeaderFields...)
 }
 
