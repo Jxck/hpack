@@ -1,23 +1,25 @@
 package hpack
 
-type Headers []Header
+// TODO: what is default ?
+const DEFAULT_HEADER_TABLE_SIZE int = 4096
 
-var DEFAULT_HEADER_TABLE_SIZE int = 4096
-
+// The header table is a component used to associate stored header fields to index values.
+// The data stored in this table is in first-in, first-out order.
 type HeaderTable struct {
 	HEADER_TABLE_SIZE int
-	Headers
+	HeaderFields      []HeaderField
 }
 
 // get total size of Header Table
 func (ht *HeaderTable) Size() int {
-	var sum int
-	for _, h := range ht.Headers {
-		sum += h.Size()
+	var size int
+	for _, h := range ht.HeaderFields {
+		size += h.Size()
 	}
-	return sum
+	return size
 }
 
+/*
 // add name value pair to the end of HeaderTable
 // with eviction :TODO (check & test eviction more)
 func (ht *HeaderTable) Add(name, value string) {
@@ -29,6 +31,8 @@ func (ht *HeaderTable) Add(name, value string) {
 		ht.Headers = append(ht.Headers, header)
 	}
 }
+
+
 
 // replace Header at index i with name, value pair
 // with eviction :TODO (check & test eviction more)
@@ -120,79 +124,4 @@ func (ht HeaderTable) SearchHeader(name, value string) (int, *Header) {
 	// dosen't exists
 	return -1, nil // literal without index
 }
-
-func NewRequestHeaderTable() HeaderTable {
-	return HeaderTable{
-		DEFAULT_HEADER_TABLE_SIZE,
-		Headers{
-			{":scheme", "http"},
-			{":scheme", "https"},
-			{":host", ""},
-			{":path", "/"},
-			{":method", "GET"},
-			{"accept", ""},
-			{"accept-charset", ""},
-			{"accept-encoding", ""},
-			{"accept-language", ""},
-			{"cookie", ""},
-			{"if-modified-since", ""},
-			{"user-agent", ""},
-			{"referer", ""},
-			{"authorization", ""},
-			{"allow", ""},
-			{"cache-control", ""},
-			{"connection", ""},
-			{"content-length", ""},
-			{"content-type", ""},
-			{"date", ""},
-			{"expect", ""},
-			{"from", ""},
-			{"if-match", ""},
-			{"if-none-match", ""},
-			{"if-range", ""},
-			{"if-unmodified-since", ""},
-			{"max-forwards", ""},
-			{"proxy-authorization", ""},
-			{"range", ""},
-			{"via", ""},
-		},
-	}
-}
-
-func NewResponseHeaderTable() HeaderTable {
-	return HeaderTable{
-		DEFAULT_HEADER_TABLE_SIZE,
-		Headers{
-			{":status", "200"},
-			{"age", ""},
-			{"cache-control", ""},
-			{"content-length", ""},
-			{"content-type", ""},
-			{"date", ""},
-			{"etag", ""},
-			{"expires", ""},
-			{"last-modified", ""},
-			{"server", ""},
-			{"set-cookie", ""},
-			{"vary", ""},
-			{"via", ""},
-			{"access-control-allow-origin", ""},
-			{"accept-ranges", ""},
-			{"allow", ""},
-			{"connection", ""},
-			{"content-disposition", ""},
-			{"content-encoding", ""},
-			{"content-language", ""},
-			{"content-location", ""},
-			{"content-range", ""},
-			{"link", ""},
-			{"location", ""},
-			{"proxy-authenticate", ""},
-			{"refresh", ""},
-			{"retry-after", ""},
-			{"strict-transport-security", ""},
-			{"transfer-encoding", ""},
-			{"www-authenticate", ""},
-		},
-	}
-}
+*/

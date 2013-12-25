@@ -4,17 +4,10 @@ import (
 	"testing"
 )
 
-func TestHeaderSize(t *testing.T) {
-	h := Header{"hello", "world"}
-	if h.Size() != 42 {
-		t.Errorf("got %v\nwant %v", h.Size(), 42)
-	}
-}
-
 func TestHeaderTableSize(t *testing.T) {
 	ht := HeaderTable{
 		DEFAULT_HEADER_TABLE_SIZE,
-		Headers{
+		[]HeaderField{
 			{"1234", "1234"},
 			{"1234", "1234"},
 			{"1234", "1234"},
@@ -29,6 +22,7 @@ func TestHeaderTableSize(t *testing.T) {
 	}
 }
 
+/*
 func TestHeaderTableAdd(t *testing.T) {
 	ht := HeaderTable{
 		200,
@@ -215,3 +209,4 @@ func TestHeaderTableSearch(t *testing.T) {
 		t.Errorf("got %v %v\nwant %v %v", i, h, 3, expected)
 	}
 }
+*/
