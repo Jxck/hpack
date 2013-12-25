@@ -18,3 +18,12 @@ func (rs *ReferenceSet) Add(index int) {
 func (rs *ReferenceSet) Empty() {
 	*rs = ReferenceSet{}
 }
+
+func (rs *ReferenceSet) Has(index int) bool {
+	for _, idx := range *rs {
+		if idx == index {
+			return true
+		}
+	}
+	return false
+}
