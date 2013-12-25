@@ -49,52 +49,71 @@ func (c *Context) Decode(wire []byte) {
 				c.RS.Empty()
 			}
 
-			/**
-			 * idx が Reference Set にあった場合
-			 * Reference Set から消す
-			 */
-			if c.RS.Has(index) {
-				Debug(Red(fmt.Sprintf("Remove %v from ReferenceSet", index)))
-				c.RS.Remove(index)
-				continue
-			}
-
-			/**
-			 * idx が Reference Set に無い場合
-			 * 該当のエントリを取り出す
-			 */
 			var headerField *HeaderField
 
 			if index > c.HT.Len() {
 				/**
-				 * Static Header Table の中にあった場合
+				 * Static Header Table の中にある場合
 				 */
 				index = index - c.HT.Len() - 1
 				headerField = StaticHeaderTable[index]
-				Debug(Red("== Indexed - Add =="))
-				Debug(fmt.Sprintf("  idx = %v", index))
-				Debug(fmt.Sprintf("-> ST[%v] = %v", index, headerField))
 
-				// Emit
-				Debug(Blue("Emit"))
-				c.ES.Emit(headerField)
+				if c.RS.Has(headerField) {
+					/**
+					 * 参照が Reference Set にあった場合
+					 * Reference Set から消す
+					 */
+					Debug(Red(fmt.Sprintf("Remove %v from ReferenceSet", headerField)))
+					c.RS.Remove(headerField)
+					continue
+				} else {
+					/**
+					* 参照が Reference Set に無い場合
+					* 該当のエントリを取り出す
+					 */
 
-				// ヘッダテーブルにコピーする
-				// insertedIndex := c.HT.Push(headerField)
+					// Emit
+					Debug(Blue("Emit"))
+					c.ES.Emit(headerField)
 
-				// その参照を RefSet に追加する
-				// RefSet.Add(insertedIndex)
+					// ヘッダテーブルにコピーする
+					c.HT.Push(headerField)
 
+					// その参照を RefSet に追加する
+					c.RS.Add(headerField)
+
+					Debug(Red("== Indexed - Add =="))
+					Debug(fmt.Sprintf("  idx = %v", index))
+					Debug(fmt.Sprintf("-> ST[%v] = %v", index, headerField))
+				}
 			} else {
-				// Header Table の中にあった場合
-				Debug(Red("== Indexed - Add =="))
-				Debug(fmt.Sprintf("  idx = %v", index))
+				/**
+				 * Header Table の中にある場合
+				 */
+				index = index - c.HT.Len() - 1
+				headerField = c.HT.HeaderFields[index]
 
-				// Emit
-				Debug(Blue("Emit"))
+				if c.RS.Has(headerField) {
+					/**
+					 * 参照が Reference Set にあった場合
+					 * Reference Set から消す
+					 */
+					Debug(Red(fmt.Sprintf("Remove %v from ReferenceSet", headerField)))
+					c.RS.Remove(headerField)
+					continue
+				} else {
+					/**
+					* 参照が Reference Set に無い場合
+					* 該当のエントリを取り出す
+					 */
 
-				// その参照を RefSet に追加する
-				// RefSet.Add(index)
+					// Emit
+					Debug(Blue("Emit"))
+					c.ES.Emit(headerField)
+
+					// その参照を RefSet に追加する
+					c.RS.Add(headerField)
+				}
 			}
 		case *IndexedLiteral:
 			log.Printf("%v", f)
