@@ -13,6 +13,10 @@ type HeaderTable struct {
 	HeaderFields      []*HeaderField
 }
 
+func NewHeaderTable() *HeaderTable {
+	return &HeaderTable{}
+}
+
 // get total size of Header Table
 func (ht *HeaderTable) Size() int {
 	var size int

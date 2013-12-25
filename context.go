@@ -21,14 +21,14 @@ func init() {
 }
 
 type Context struct {
-	HT HeaderTable
+	HT *HeaderTable
 	RS *ReferenceSet
 	ES *EmittedSet
 }
 
 func NewContext() Context {
 	return Context{
-		HT: HeaderTable{},
+		HT: NewHeaderTable(),
 		RS: NewReferenceSet(),
 		ES: NewEmittedSet(),
 	}
