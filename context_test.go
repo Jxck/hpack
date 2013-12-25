@@ -2,6 +2,7 @@ package hpack
 
 import (
 	"net/http"
+	"reflect"
 	"testing"
 )
 
@@ -118,8 +119,11 @@ func TestScenario(t *testing.T) {
 		"Authority": []string{"www.example.com"},
 	}
 
-	_ = expected
-	//if !reflect.DeepEqual(client.EmittedSet.Header, expected) {
-	//	t.Errorf("got %v\nwant %v", client.EmittedSet.Header, expected)
-	//}
+	if client.HT.Size() != 180 {
+		t.Errorf("got %v\nwant %v", client.HT.Size(), 180)
+	}
+
+	if !reflect.DeepEqual(client.ES.Header, expected) {
+		t.Errorf("got %v\nwant %v", client.ES.Header, expected)
+	}
 }
