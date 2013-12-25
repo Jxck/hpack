@@ -5,7 +5,8 @@ import ()
 // TODO: what is default ?
 const DEFAULT_HEADER_TABLE_SIZE int = 4096
 
-// The header table is a component used to associate stored header fields to index values.
+// The header table is a component used to associate stored header
+// fields to index values.
 // The data stored in this table is in first-in, first-out order.
 type HeaderTable struct {
 	HEADER_TABLE_SIZE int
