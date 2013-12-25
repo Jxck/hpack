@@ -9,16 +9,6 @@ import (
 // TODO: make it slice of pointer ?
 type HeaderSet []HeaderField
 
-// method, scheme, host, path, status
-// are must and needs ":" prefix
-var MustHeader = map[string]string{
-	"scheme": ":scheme",
-	"method": ":method",
-	"path":   ":path",
-	"host":   ":host",
-	"status": ":status",
-}
-
 // HeaderSet => http.Header
 // But, multi value in single key like
 // myheader: ["first", "second"]

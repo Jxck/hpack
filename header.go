@@ -1,5 +1,19 @@
 package hpack
 
+import (
+	"strings"
+)
+
+// method, scheme, host, path, status
+// are must and needs ":" prefix
+var MustHeader = map[string]string{
+	"scheme": ":scheme",
+	"method": ":method",
+	"path":   ":path",
+	"host":   ":host",
+	"status": ":status",
+}
+
 // A name-value pair.
 // Both name and value are sequences of octets.
 type HeaderField struct {
@@ -8,6 +22,11 @@ type HeaderField struct {
 }
 
 func NewHeaderField(name, value string) HeaderField {
+	name = strings.ToLower(name)
+	mustname, ok := MustHeader[name]
+	if ok {
+		name = mustname
+	}
 	return HeaderField{name, value}
 }
 
