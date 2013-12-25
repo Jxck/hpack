@@ -9,9 +9,8 @@ import (
 
 // Decode Wire byte seq to Slice of Frames
 // TODO: make it return channel
-func Decode(wire []byte) []Frame {
+func Decode(wire []byte) (frames []Frame) {
 	buf := bytes.NewBuffer(wire)
-	frames := []Frame{} // TODO: make()
 	for buf.Len() > 0 {
 		frames = append(frames, DecodeHeader(buf))
 	}
