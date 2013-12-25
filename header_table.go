@@ -14,7 +14,10 @@ type HeaderTable struct {
 }
 
 func NewHeaderTable() *HeaderTable {
-	return &HeaderTable{}
+	return &HeaderTable{
+		DEFAULT_HEADER_TABLE_SIZE,
+		[]*HeaderField{},
+	}
 }
 
 // get total size of Header Table
