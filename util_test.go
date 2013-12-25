@@ -1,19 +1,23 @@
 package hpack
 
 import (
-	"reflect"
 	"testing"
 )
 
 func TestRemovePrefix(t *testing.T) {
-	fixture := []string{":foo", ":foo:", "::foo", ":foo:foo", "bar"}
-	expected := []string{"foo", "foo:", "foo", "foo:foo", "bar"}
-	actual := make([]string, len(fixture))
-	for i, name := range fixture {
-		actual[i] = RemovePrefix(name)
+	var params = []struct {
+		fixture, expected string
+	}{
+		{":foo", "foo"},
+		{":foo:", "foo:"},
+		{"::foo", "foo"},
+		{":foo:foo", "foo:foo"},
+		{"bar", "bar"},
 	}
 
-	if !reflect.DeepEqual(actual, expected) {
-		t.Errorf("got %v\nwant %v", actual, expected)
+	for _, param := range params {
+		if RemovePrefix(param.fixture) != param.expected {
+			t.Errorf("got %v\nwant %v", RemovePrefix(param.fixture), param.expected)
+		}
 	}
 }
