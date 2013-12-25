@@ -104,7 +104,6 @@ func (c *Context) Decode(wire []byte) {
 				} else {
 					/**
 					* 参照が Reference Set に無い場合
-					* 該当のエントリを取り出す
 					 */
 
 					// Emit
