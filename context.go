@@ -84,13 +84,12 @@ func (c *Context) Decode(wire []byte) {
 
 					Debug(Red("== Indexed - Add =="))
 					Debug(fmt.Sprintf("  idx = %v", index))
-					Debug(fmt.Sprintf("-> ST[%v] = %v", index, headerField))
+					Debug(fmt.Sprintf("  -> ST[%v] = %v", index, headerField))
 				}
 			} else {
 				/**
 				 * Header Table の中にある場合
 				 */
-				index = index - c.HT.Len() - 1
 				headerField = c.HT.HeaderFields[index]
 
 				if c.RS.Has(headerField) {
@@ -115,27 +114,59 @@ func (c *Context) Decode(wire []byte) {
 				}
 			}
 		case *IndexedLiteral:
-			log.Printf("%v", f)
-			Debug(Red(fmt.Sprintf("== Literal Indexed (idx=%t) ==", f.Indexing)))
+
+			// Index 先の Name と Literal Value から HeaderField を生成
+			index := int(f.Index)
+			var name, value string
+
+			if index > c.HT.Len() {
+				/**
+				 * Static Header Table の中にある場合
+				 */
+				index = index - c.HT.Len() - 1
+				name = StaticHeaderTable[index].Name
+			} else {
+				/**
+				 * Header Table の中にある場合
+				 */
+				name = c.HT.HeaderFields[index].Name
+			}
+
+			value = f.ValueString
+
+			// Header Field 生成
+			headerField := NewHeaderField(name, value)
 
 			if f.Indexing {
-				// HT に追加する場合
+				/**
+				 * HT に追加する場合
+				 */
 
 				// Emit
 				Debug(Blue("Emit"))
+				c.ES.Emit(headerField)
 
 				// ヘッダテーブルにコピーする
-				// insertedIndex := c.HT.Push(headerField)
+				c.HT.Push(headerField)
 
 				// その参照を RefSet に追加する
-				// RefSet.Add(insertedIndex)
+				c.RS.Add(headerField)
 
 			} else {
-				// HT に追加しない場合
+				/**
+				 * HT に追加しない場合
+				 */
 
 				// Emit
 				Debug(Blue("Emit"))
+				c.ES.Emit(headerField)
 			}
+
+			Debug(Red("== Literal Indexed =="))
+			Debug(fmt.Sprintf("  Indexed name (idx = %v)", index))
+			Debug(fmt.Sprintf("  -> ST[%v].Name = %v", index, name))
+			Debug(fmt.Sprintf("  Literal value (len = %v)", f.ValueLength))
+			Debug(fmt.Sprintf("  %v", f.ValueString))
 		case *StringLiteral:
 			log.Printf("%v", f)
 			Debug(Red(fmt.Sprintf("== Literal Indexed (idx=%t) ==", f.Indexing)))
