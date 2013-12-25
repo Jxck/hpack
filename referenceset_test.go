@@ -6,7 +6,8 @@ import (
 
 func TestReferenceSetAdd(t *testing.T) {
 	rs := NewReferenceSet()
-	rs.Add(1)
+	hf := NewHeaderField("key", "value")
+	rs.Add(hf)
 	if rs.Len() != 1 {
 		t.Errorf("\ngot  %v\nwant %v", rs.Len(), 1)
 	}
@@ -14,7 +15,8 @@ func TestReferenceSetAdd(t *testing.T) {
 
 func TestReferenceSetEmpty(t *testing.T) {
 	rs := NewReferenceSet()
-	rs.Add(1)
+	hf := NewHeaderField("key", "value")
+	rs.Add(hf)
 	rs.Empty()
 	if rs.Len() != 0 {
 		t.Errorf("\ngot  %v\nwant %v", rs.Len(), 0)
@@ -23,49 +25,52 @@ func TestReferenceSetEmpty(t *testing.T) {
 
 func TestReferenceSetHas(t *testing.T) {
 	rs := NewReferenceSet()
-	rs.Add(1)
-	rs.Add(2)
-	rs.Add(4)
+	ref1 := NewHeaderField("key1", "value1")
+	ref2 := NewHeaderField("key2", "value2")
+	ref3 := NewHeaderField("key3", "value3")
+	ref4 := NewHeaderField("key4", "value4")
 
-	expected := []bool{
-		false, // 0
-		true,  // 1
-		true,  // 2
-		false, // 3
-		true,  // 4
-		false, // 5
+	rs.Add(ref1)
+	rs.Add(ref2)
+	rs.Add(ref3)
+
+	if !(rs.Has(ref1) && rs.Has(ref2) && rs.Has(ref3)) {
+		t.Errorf("RefSet.Has() faild at %v", rs)
 	}
 
-	for i, b := range expected {
-		if rs.Has(i) != b {
-			t.Errorf("\ngot  %v\nwant %v", rs.Has(i), i)
-		}
+	if rs.Has(ref4) {
+		t.Errorf("RefSet shouldn't has %v", ref4)
 	}
 }
 
 func TestReferenceSetRemove(t *testing.T) {
 	rs := NewReferenceSet()
-	rs.Add(1)
-	rs.Add(2)
-	rs.Add(4)
+	ref1 := NewHeaderField("key1", "value1")
+	ref2 := NewHeaderField("key2", "value2")
+	ref3 := NewHeaderField("key3", "value3")
+	ref4 := NewHeaderField("key4", "value4")
 
-	ok := rs.Remove(2)
+	rs.Add(ref1)
+	rs.Add(ref2)
+	rs.Add(ref3)
+
+	ok := rs.Remove(ref2)
 	if !ok {
 		t.Errorf("remove faild")
 	}
 
-	if rs.Has(2) {
-		t.Errorf("\ngot  %v\nwant %v", rs.Has(2), false)
+	if rs.Has(ref2) {
+		t.Errorf("\ngot  %v\nwant %v", rs.Has(ref2), false)
 	}
 
-	ok = rs.Remove(100)
+	ok = rs.Remove(ref4)
 	if ok {
 		t.Errorf("unexpected remove")
 	}
 
 	// remove all
-	rs.Remove(1)
-	rs.Remove(4)
+	rs.Remove(ref1)
+	rs.Remove(ref3)
 
 	if rs.Len() != 0 {
 		t.Errorf("\ngot  %v\nwant %v", rs.Len(), 0)
