@@ -1,6 +1,7 @@
 package hpack
 
 import (
+	"reflect"
 	"testing"
 )
 
@@ -19,5 +20,13 @@ func TestRemovePrefix(t *testing.T) {
 		if RemovePrefix(param.fixture) != param.expected {
 			t.Errorf("got %v\nwant %v", RemovePrefix(param.fixture), param.expected)
 		}
+	}
+}
+
+func TestHeaderToHeaderSet(t *testing.T) {
+	actual := HeaderToHeaderSet(header)
+	expected := headerSet
+	if !reflect.DeepEqual(actual, expected) {
+		t.Errorf("got %v\nwant %v", actual, expected)
 	}
 }
