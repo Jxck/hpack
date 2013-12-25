@@ -6,8 +6,7 @@ import (
 
 // A header set is a potentially ordered group of header fields that are encoded jointly.
 // A complete set of key-value pairs contained in a HTTP request or response is a header set.
-// TODO: make it slice of pointer ?
-type HeaderSet []HeaderField
+type HeaderSet []*HeaderField
 
 // HeaderSet => http.Header
 // But, multi value in single key like

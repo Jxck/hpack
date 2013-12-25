@@ -22,13 +22,13 @@ type HeaderField struct {
 }
 
 // Add prefix if name is Must Header
-func NewHeaderField(name, value string) HeaderField {
+func NewHeaderField(name, value string) *HeaderField {
 	name = strings.ToLower(name)
 	mustname, ok := MustHeader[name]
 	if ok {
 		name = mustname
 	}
-	return HeaderField{name, value}
+	return &HeaderField{name, value}
 }
 
 // The size of an entry is the sum of its name's length in octets

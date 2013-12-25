@@ -1,6 +1,6 @@
 package hpack
 
-var StaticHeaderTable = []HeaderField{
+var StaticHeaderTable = []*HeaderField{
 	{":authority", ""},
 	{":method", "GET"},
 	{":method", "POST"},

@@ -17,12 +17,12 @@ var header = http.Header{
 }
 
 var headerSet = HeaderSet{
-	HeaderField{":method", "GET"},
-	HeaderField{":scheme", "http"},
-	HeaderField{":host", "example.com"},
-	HeaderField{":path", "/index.html"},
-	HeaderField{"accept", "*/*"},
-	HeaderField{"mynewheader", "first,second"},
+	NewHeaderField(":method", "GET"),
+	NewHeaderField(":scheme", "http"),
+	NewHeaderField(":host", "example.com"),
+	NewHeaderField(":path", "/index.html"),
+	NewHeaderField("accept", "*/*"),
+	NewHeaderField("mynewheader", "first,second"),
 }
 
 func TestHeaderSetToHeader(t *testing.T) {

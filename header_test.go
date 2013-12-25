@@ -6,7 +6,7 @@ import (
 
 func TestNewHeaderField(t *testing.T) {
 	var name, value string
-	var hf HeaderField
+	var hf *HeaderField
 	// Normal Header
 	name, value = "cookie", "xxxx"
 	hf = NewHeaderField(name, value)
