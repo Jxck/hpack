@@ -27,3 +27,15 @@ func (rs *ReferenceSet) Has(index int) bool {
 	}
 	return false
 }
+
+func (rs *ReferenceSet) Remove(index int) bool {
+	for i, idx := range *rs {
+		if idx == index {
+			tmp := *rs
+			copy(tmp[i:], tmp[i+1:])
+			*rs = tmp[:len(tmp)-1]
+			return true
+		}
+	}
+	return false
+}
