@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestScenario(t *testing.T) {
+func TestRequestWithoutHuffman(t *testing.T) {
 	buf := []byte{
 		0x82, 0x87, 0x86, 0x04,
 		0x0f, 0x77, 0x77, 0x77,
