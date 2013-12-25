@@ -108,7 +108,7 @@ func TestScenario(t *testing.T) {
 		0x6d, 0x70, 0x6c, 0x65,
 		0x2e, 0x63, 0x6f, 0x6d,
 	}
-	client := Context{}
+	client := NewContext()
 	client.Decode(buf)
 
 	expected := http.Header{

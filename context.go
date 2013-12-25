@@ -22,6 +22,14 @@ func init() {
 
 type Context struct {
 	HT HeaderTable
+	RS *ReferenceSet
+}
+
+func NewContext() Context {
+	return Context{
+		HT: HeaderTable{},
+		RS: NewReferenceSet(),
+	}
 }
 
 func (c *Context) Decode(wire []byte) {
@@ -35,6 +43,7 @@ func (c *Context) Decode(wire []byte) {
 			 * idx=0 の場合 Reference Set を空にする
 			 */
 			if index == 0 {
+				c.RS.Empty()
 			}
 
 			/**
