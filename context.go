@@ -1,13 +1,11 @@
 package hpack
 
 import (
-	"bytes"
 	"flag"
 	"fmt"
 	. "github.com/jxck/color"
 	. "github.com/jxck/logger"
 	"log"
-	"net/http"
 )
 
 var verbose bool
@@ -19,111 +17,127 @@ func init() {
 	flag.Parse()
 	LogLevel(loglevel)
 	Verbose(verbose)
+	log.SetFlags(log.Lshortfile)
 }
 
 type Context struct {
-	HeaderTable  HeaderTable
-	ReferenceSet ReferenceSet
-	EmittedSet   EmittedSet
-}
-
-func NewRequestContext() *Context {
-	var context = &Context{
-		HeaderTable:  NewRequestHeaderTable(),
-		ReferenceSet: NewReferenceSet(),
-		EmittedSet:   NewEmittedSet(),
-	}
-	return context
-}
-
-func NewResponseContext() *Context {
-	var context = &Context{
-		HeaderTable:  NewResponseHeaderTable(),
-		ReferenceSet: NewReferenceSet(),
-		EmittedSet:   NewEmittedSet(),
-	}
-	return context
+	HT HeaderTable
 }
 
 func (c *Context) Decode(wire []byte) {
-	// EmittedSet を clean
-	c.EmittedSet = NewEmittedSet()
-
 	frames := Decode(wire)
 	for _, frame := range frames {
 		switch f := frame.(type) {
 		case *IndexedHeader:
-			// HT にあるエントリをそのまま使う
-			header := c.HeaderTable.Headers[f.Index]
-			Debug(Red(">>> Indexed Header"))
-			Debug(fmt.Sprintf("use %v at HT[%v]", header, f.Index))
-			log.Println(header.Value, c.ReferenceSet[header.Name], c.EmittedSet)
-			if header.Value == c.ReferenceSet[header.Name] {
-				// refset にある場合は消す
-				Debug(fmt.Sprintf("delete from refset (%q, %q)", header.Name, header.Value))
-				c.ReferenceSet.Del(header.Name)
-			} else {
-				// refset にない場合は加える
-				Debug(fmt.Sprintf("emit and add to refset (%q, %q)", header.Name, header.Value))
-				c.EmittedSet.Emit(header.Name, header.Value)
-				c.ReferenceSet.Add(header.Name, header.Value)
+			index := int(f.Index)
+
+			/**
+			 * idx=0 の場合 Reference Set を空にする
+			 */
+			if index == 0 {
 			}
-			Debug(Red("<<<"))
-		case *IndexedNameWithoutIndexing:
-			// HT にある名前だけ使う
-			// HT も refset も更新しない
-			header := c.HeaderTable.Headers[f.Index]
-			name, value := header.Name, f.ValueString
-			Debug(Red(">>> Literal Header Field without Indexing - Indexed Name"))
-			Debug(fmt.Sprintf("name=%q at HT[%d], value=%q without indexing", name, f.Index, value))
-			Debug(fmt.Sprintf("emit (%q, %q)", name, value))
-			Debug(Red("<<<"))
-			c.EmittedSet.Emit(header.Name, f.ValueString)
-		case *NewNameWithoutIndexing:
-			// Name/Value ペアを送る
-			// HT も refset も更新しない
-			name, value := f.NameString, f.ValueString
-			Debug(Red(">>>  Literal Header Field without Indexing - New Name"))
-			Debug(fmt.Sprintf("name=%q, value=%q without indexing", name, value))
-			Debug(fmt.Sprintf("emit (%q, %q)", f.NameString, f.ValueString))
-			Debug(Red("<<<"))
-			c.EmittedSet.Emit(f.NameString, f.ValueString)
-		case *IndexedNameWithIncrementalIndexing:
-			// HT にある名前だけ使い
-			// HT に新しく追記する
-			// refset も更新する
-			name := c.HeaderTable.Headers[f.Index].Name
-			value := f.ValueString
-			Debug(Red(">>> Literal Header Field with Incremental Indexing - Indexed Name"))
-			Debug(fmt.Sprintf("name=%q at HT[%d], value=%q add incremental", name, f.Index, value))
-			Debug(fmt.Sprintf("emit and add refeset, HT (%q, %q)", name, value))
-			Debug(Red("<<<"))
-			c.EmittedSet.Emit(name, value)
-			c.HeaderTable.Add(name, value)
-			c.ReferenceSet.Add(name, value)
-		case *NewNameWithIncrementalIndexing:
-			// Name/Value ペアを送る
-			// HT と refset にも追記
-			name, value := f.NameString, f.ValueString
-			Debug(Red(">>> Literal Header Field with Incremental Indexing - New Name"))
-			Debug(fmt.Sprintf("name=%q and value=%q", name, value))
-			Debug(fmt.Sprintf("emit and add refeset, HT (%q, %q)", name, value))
-			Debug(Red("<<<"))
-			c.EmittedSet.Emit(name, value)
-			c.HeaderTable.Add(name, value)
-			c.ReferenceSet.Add(name, value)
+
+			/**
+			 * idx が Reference Set にあった場合
+			 * Reference Set から消す
+			 */
+			// if RefSet.Has(index) {
+			//   RefSet.Remove(inx)
+			//   continue
+			// }
+
+			/**
+			 * idx が Reference Set に無い場合
+			 * 該当のエントリを取り出す
+			 */
+			var headerField HeaderField
+
+			if index > c.HT.Len() {
+				// Static Header Table の中にあった場合
+				index = index - c.HT.Len() - 1
+				headerField = StaticHeaderTable[index]
+				Debug(Red("== Indexed - Add =="))
+				Debug(fmt.Sprintf("  idx = %v", index))
+				Debug(fmt.Sprintf("-> ST[%v] = %v", index, headerField))
+
+				// Emit
+				Debug(Blue("Emit"))
+
+				// ヘッダテーブルにコピーする
+				// insertedIndex := c.HT.Push(headerField)
+
+				// その参照を RefSet に追加する
+				// RefSet.Add(insertedIndex)
+
+			} else {
+				// Header Table の中にあった場合
+				Debug(Red("== Indexed - Add =="))
+				Debug(fmt.Sprintf("  idx = %v", index))
+
+				// Emit
+				Debug(Blue("Emit"))
+
+				// その参照を RefSet に追加する
+				// RefSet.Add(index)
+			}
+		case *IndexedLiteral:
+			log.Printf("%v", f)
+			Debug(Red(fmt.Sprintf("== Literal Indexed (idx=%t) ==", f.Indexing)))
+
+			if f.Indexing {
+				// HT に追加する場合
+
+				// Emit
+				Debug(Blue("Emit"))
+
+				// ヘッダテーブルにコピーする
+				// insertedIndex := c.HT.Push(headerField)
+
+				// その参照を RefSet に追加する
+				// RefSet.Add(insertedIndex)
+
+			} else {
+				// HT に追加しない場合
+
+				// Emit
+				Debug(Blue("Emit"))
+			}
+		case *StringLiteral:
+			log.Printf("%v", f)
+			Debug(Red(fmt.Sprintf("== Literal Indexed (idx=%t) ==", f.Indexing)))
+
+			if f.Indexing {
+				// HT に追加する場合
+
+				// Emit
+				Debug(Blue("Emit"))
+
+				// ヘッダテーブルにコピーする
+				// insertedIndex := c.HT.Push(headerField)
+
+				// その参照を RefSet に追加する
+				// RefSet.Add(insertedIndex)
+
+			} else {
+				// HT に追加しない場合
+
+				// Emit
+				Debug(Blue("Emit"))
+			}
+
 		default:
 			log.Fatal("%T", f)
 		}
 	}
 	// reference set の emitt されてないものを emit する
-	for name, value := range c.ReferenceSet {
-		if !c.EmittedSet.Check(name, value) {
-			c.EmittedSet.Emit(name, value)
-		}
-	}
+	//for name, value := range c.ReferenceSet {
+	//	if !c.EmittedSet.Check(name, value) {
+	//		c.EmittedSet.Emit(name, value)
+	//	}
+	//}
 }
 
+/*
 func (c *Context) Encode(header http.Header) []byte {
 	var buf bytes.Buffer
 
@@ -207,3 +221,4 @@ func (c *Context) ProcessHeader(headerSet HeaderSet) []byte {
 	}
 	return buf.Bytes()
 }
+*/

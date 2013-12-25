@@ -1,5 +1,7 @@
 package hpack
 
+import ()
+
 // TODO: what is default ?
 const DEFAULT_HEADER_TABLE_SIZE int = 4096
 
@@ -19,49 +21,20 @@ func (ht *HeaderTable) Size() int {
 	return size
 }
 
+// get length of Header Table
+func (ht *HeaderTable) Len() int {
+	return len(ht.HeaderFields)
+}
+
+// push new Header Field to the of HeaderTable
+// with eviction
+// :TODO (check & test eviction more)
+func (ht *HeaderTable) Push(hf HeaderField) {
+	tmp := []HeaderField{hf}
+	ht.HeaderFields = append(tmp, ht.HeaderFields...)
+}
+
 /*
-// add name value pair to the end of HeaderTable
-// with eviction :TODO (check & test eviction more)
-func (ht *HeaderTable) Add(name, value string) {
-	header := Header{name, value}
-	if header.Size() > ht.HEADER_TABLE_SIZE {
-		ht.DeleteAll()
-	} else {
-		ht.AllocSpace(header.Size())
-		ht.Headers = append(ht.Headers, header)
-	}
-}
-
-
-
-// replace Header at index i with name, value pair
-// with eviction :TODO (check & test eviction more)
-func (ht *HeaderTable) Replace(name, value string, i uint64) {
-	index := int(i)
-	header := Header{name, value}
-	if header.Size() > ht.HEADER_TABLE_SIZE {
-		ht.DeleteAll()
-	} else {
-		existHeader := ht.Headers[index]
-		needSpace := header.Size() - existHeader.Size()
-
-		// if new replaced header is bigger than existing header
-		// allocate space for replace
-		if needSpace > 0 {
-			removed := ht.AllocSpace(needSpace)
-			// if Allocate removes entry
-			// need to shift replace index
-			index -= removed
-			if index < 0 {
-				// if replace entry removed
-				// insert at first
-				index = 0
-			}
-		}
-		ht.Headers[index] = header
-	}
-}
-
 // remove Header at index i
 func (ht *HeaderTable) Remove(index int) {
 	// https://code.google.com/p/go-wiki/wiki/SliceTricks
