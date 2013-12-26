@@ -35,6 +35,11 @@ func NewContext() Context {
 }
 
 func (c *Context) Decode(wire []byte) {
+	// 各デコードごとに前回のをリセットする。
+	c.ES = NewEmittedSet()
+	c.RS.Reset()
+	log.Println("clean Emitted Set")
+
 	frames := Decode(wire)
 	for _, frame := range frames {
 		switch f := frame.(type) {
@@ -84,7 +89,7 @@ func (c *Context) Decode(wire []byte) {
 
 					// その参照を RefSet に追加する
 					Debug(Blue("Add to RS"))
-					c.RS.Add(headerField)
+					c.RS.Add(headerField, true)
 
 					Debug(Red("== Indexed - Add =="))
 					Debug(fmt.Sprintf("  idx = %v", index))
@@ -117,7 +122,7 @@ func (c *Context) Decode(wire []byte) {
 
 					// その参照を RefSet に追加する
 					Debug(Blue("Add to RS"))
-					c.RS.Add(headerField)
+					c.RS.Add(headerField, true)
 
 					Debug(Red("== Indexed - Add =="))
 					Debug(fmt.Sprintf("  idx = %v", index))
@@ -165,7 +170,7 @@ func (c *Context) Decode(wire []byte) {
 
 				// その参照を RefSet に追加する
 				Debug(Blue("Add to RS"))
-				c.RS.Add(headerField)
+				c.RS.Add(headerField, true)
 
 			} else {
 				/**
@@ -200,7 +205,7 @@ func (c *Context) Decode(wire []byte) {
 
 				// その参照を RefSet に追加する
 				Debug(Blue("Add to RS"))
-				c.RS.Add(headerField)
+				c.RS.Add(headerField, true)
 
 			} else {
 				// HT に追加しない場合
@@ -214,12 +219,17 @@ func (c *Context) Decode(wire []byte) {
 			log.Fatal("%T", f)
 		}
 	}
-	// reference set の emitt されてないものを emit する
-	//for name, value := range c.ReferenceSet {
-	//	if !c.EmittedSet.Check(name, value) {
-	//		c.EmittedSet.Emit(name, value)
-	//	}
-	//}
+
+	// reference set の残りを全て emit する
+	for _, referencedField := range *c.RS {
+		log.Println(referencedField)
+		if !referencedField.Emitted {
+			headerField := referencedField.HeaderField
+			log.Println(headerField)
+			Debug(Blue("Emit rest entries"))
+			c.ES.Emit(headerField)
+		}
+	}
 }
 
 /*

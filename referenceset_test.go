@@ -7,7 +7,7 @@ import (
 func TestReferenceSetAdd(t *testing.T) {
 	rs := NewReferenceSet()
 	hf := NewHeaderField("key", "value")
-	rs.Add(hf)
+	rs.Add(hf, true)
 	if rs.Len() != 1 {
 		t.Errorf("\ngot  %v\nwant %v", rs.Len(), 1)
 	}
@@ -16,7 +16,7 @@ func TestReferenceSetAdd(t *testing.T) {
 func TestReferenceSetEmpty(t *testing.T) {
 	rs := NewReferenceSet()
 	hf := NewHeaderField("key", "value")
-	rs.Add(hf)
+	rs.Add(hf, true)
 	rs.Empty()
 	if rs.Len() != 0 {
 		t.Errorf("\ngot  %v\nwant %v", rs.Len(), 0)
@@ -30,9 +30,9 @@ func TestReferenceSetHas(t *testing.T) {
 	ref3 := NewHeaderField("key3", "value3")
 	ref4 := NewHeaderField("key4", "value4")
 
-	rs.Add(ref1)
-	rs.Add(ref2)
-	rs.Add(ref3)
+	rs.Add(ref1, true)
+	rs.Add(ref2, true)
+	rs.Add(ref3, true)
 
 	if !(rs.Has(ref1) && rs.Has(ref2) && rs.Has(ref3)) {
 		t.Errorf("RefSet.Has() faild at %v", rs)
@@ -50,9 +50,9 @@ func TestReferenceSetRemove(t *testing.T) {
 	ref3 := NewHeaderField("key3", "value3")
 	ref4 := NewHeaderField("key4", "value4")
 
-	rs.Add(ref1)
-	rs.Add(ref2)
-	rs.Add(ref3)
+	rs.Add(ref1, true)
+	rs.Add(ref2, true)
+	rs.Add(ref3, true)
 
 	ok := rs.Remove(ref2)
 	if !ok {
