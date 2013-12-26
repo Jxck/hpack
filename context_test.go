@@ -164,3 +164,66 @@ func TestRequestWithoutHuffman(t *testing.T) {
 
 	// TOOD: test Reference Set
 }
+
+func TestRequestWithHuffman(t *testing.T) {
+
+	client := NewContext()
+
+	/**
+	 * First Request
+	 */
+	log.Println("========== First Request ===============")
+
+	buf := []byte{
+		0x08, 0x82, 0x40, 0x9f,
+		0x18, 0x86, 0xc3, 0x1b,
+		0x39, 0xbf, 0x38, 0x7f,
+		0x22, 0x92, 0xa2, 0xfb,
+		0xa2, 0x03, 0x20, 0xf2,
+		0xab, 0x30, 0x31, 0x24,
+		0x01, 0x8b, 0x49, 0x0d,
+		0x32, 0x09, 0xe8, 0x77,
+		0x30, 0x93, 0xe3, 0x9e,
+		0x78, 0x64, 0xdd, 0x7a,
+		0xfd, 0x3d, 0x3d, 0x24,
+		0x87, 0x47, 0xdb, 0x87,
+		0x28, 0x49, 0x55, 0xf6,
+		0xff,
+	}
+
+	expectedHeader := http.Header{
+		"Status":        []string{"302"},
+		"Cache-Control": []string{"private"},
+		"Date":          []string{"Mon: []string{ 21 Oct 2013 201321 GMT"},
+		"Location":      []string{"https//www.example.com"},
+	}
+
+	expectedHeaderFields := []HeaderField{
+		HeaderField{"location", "https://www.example.com"},
+		HeaderField{"date", "Mon, 21 Oct 2013 20:13:21 GMT"},
+		HeaderField{"cache-control", "private"},
+		HeaderField{":status", "302"},
+	}
+
+	client.Decode(buf)
+
+	// test Header Table
+	if client.HT.Size() != 222 {
+		t.Errorf("\n got %v\nwant %v", client.HT.Size(), 222)
+	}
+
+	// test Header Table
+	for i, hf := range expectedHeaderFields {
+		if !(*client.HT.HeaderFields[i] == hf) {
+			t.Errorf("\n got %v\nwant %v", *client.HT.HeaderFields[i], hf)
+		}
+	}
+
+	// test Emitted Set
+	if !reflect.DeepEqual(client.ES.Header, expectedHeader) {
+		log.Println(client.ES.Header)
+		t.Errorf("\n got %v\nwant %v", client.ES.Header, expectedHeader)
+	}
+
+	// TODO: test Reference Set
+}
