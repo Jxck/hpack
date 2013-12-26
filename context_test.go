@@ -7,6 +7,12 @@ import (
 )
 
 func TestRequestWithoutHuffman(t *testing.T) {
+
+	client := NewContext()
+
+	/**
+	 * First Request
+	 */
 	buf := []byte{
 		0x82, 0x87, 0x86, 0x04,
 		0x0f, 0x77, 0x77, 0x77,
@@ -29,7 +35,6 @@ func TestRequestWithoutHuffman(t *testing.T) {
 		HeaderField{":method", "GET"},
 	}
 
-	client := NewContext()
 	client.Decode(buf)
 
 	// test Header Table
@@ -39,7 +44,9 @@ func TestRequestWithoutHuffman(t *testing.T) {
 
 	// test Header Table
 	for i, hf := range expectedHeaderFields {
-		t.Log(*client.HT.HeaderFields[i] == hf)
+		if !(*client.HT.HeaderFields[i] == hf) {
+			t.Errorf("got %v\nwant %v", *client.HT.HeaderFields[i], hf)
+		}
 	}
 
 	// test Emitted Set
@@ -47,8 +54,55 @@ func TestRequestWithoutHuffman(t *testing.T) {
 		t.Errorf("got %v\nwant %v", client.ES.Header, expectedHeader)
 	}
 
-	// test Reference Set
+	// TOOD: test Reference Set
 	for i, hf := range *client.RS {
 		t.Log(i, hf)
 	}
+
+	/**
+	 * Second Request
+	 */
+	buf = []byte{
+		0x1b, 0x08, 0x6e, 0x6f,
+		0x2d, 0x63, 0x61, 0x63,
+		0x68, 0x65,
+	}
+
+	client.Decode(buf)
+
+	expectedHeader = http.Header{
+		"Method":        []string{"GET"},
+		"Scheme":        []string{"http"},
+		"Path":          []string{"/"},
+		"Authority":     []string{"www.example.com"},
+		"Cache-Control": []string{"no-cache"},
+	}
+
+	expectedHeaderFields = []HeaderField{
+		HeaderField{"cache-control", "no-cache"},
+		HeaderField{":authority", "www.example.com"},
+		HeaderField{":path", "/"},
+		HeaderField{":scheme", "http"},
+		HeaderField{":method", "GET"},
+	}
+
+	// test Header Table
+	if client.HT.Size() != 233 {
+		t.Errorf("got %v\nwant %v", client.HT.Size(), 233)
+	}
+
+	// test Header Table
+	for i, hf := range expectedHeaderFields {
+		if !(*client.HT.HeaderFields[i] == hf) {
+			t.Errorf("got %v\nwant %v", *client.HT.HeaderFields[i], hf)
+		}
+	}
+
+	// TOOD: test Reference Set
+	for i, hf := range *client.RS {
+		t.Log(i, hf)
+	}
+
+
+
 }
