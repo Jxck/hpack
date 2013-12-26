@@ -111,58 +111,56 @@ func TestRequestWithoutHuffman(t *testing.T) {
 	/**
 	 * Third Request
 	 */
-	/*
-		log.Println("========== Third Request ===============")
+	log.Println("========== Third Request ===============")
 
-		buf = []byte{
-			0x80, 0x85, 0x8c, 0x8b,
-			0x84, 0x00, 0x0a, 0x63,
-			0x75, 0x73, 0x74, 0x6f,
-			0x6d, 0x2d, 0x6b, 0x65,
-			0x79, 0x0c, 0x63, 0x75,
-			0x73, 0x74, 0x6f, 0x6d,
-			0x2d, 0x76, 0x61, 0x6c,
-			0x75, 0x65,
+	buf = []byte{
+		0x80, 0x85, 0x8c, 0x8b,
+		0x84, 0x00, 0x0a, 0x63,
+		0x75, 0x73, 0x74, 0x6f,
+		0x6d, 0x2d, 0x6b, 0x65,
+		0x79, 0x0c, 0x63, 0x75,
+		0x73, 0x74, 0x6f, 0x6d,
+		0x2d, 0x76, 0x61, 0x6c,
+		0x75, 0x65,
+	}
+
+	client.Decode(buf)
+
+	expectedHeader = http.Header{
+		"Method":     []string{"GET"},
+		"Scheme":     []string{"https"},
+		"Path":       []string{"/index.html"},
+		"Authority":  []string{"www.example.com"},
+		"Custom-Key": []string{"custom-value"},
+	}
+
+	expectedHeaderFields = []HeaderField{
+		HeaderField{"custom-key", "custom-value"},
+		HeaderField{":path", "/index.html"},
+		HeaderField{":scheme", "https"},
+		HeaderField{"cache-control", "no-cache"},
+		HeaderField{":authority", "www.example.com"},
+		HeaderField{":path", "/"},
+		HeaderField{":scheme", "http"},
+		HeaderField{":method", "GET"},
+	}
+
+	// test Header Table
+	if client.HT.Size() != 379 {
+		t.Errorf("\n got %v\nwant %v", client.HT.Size(), 379)
+	}
+
+	// test Header Table
+	for i, hf := range expectedHeaderFields {
+		if !(*client.HT.HeaderFields[i] == hf) {
+			t.Errorf("\n got %v\nwant %v", *client.HT.HeaderFields[i], hf)
 		}
+	}
 
-		client.Decode(buf)
+	// test Emitted Set
+	if !reflect.DeepEqual(client.ES.Header, expectedHeader) {
+		t.Errorf("\n got %v\nwant %v", client.ES.Header, expectedHeader)
+	}
 
-		expectedHeader = http.Header{
-			"Method":     []string{"GET"},
-			"Scheme":     []string{"https"},
-			"Path":       []string{"/index.html"},
-			"Authority":  []string{"www.example.com"},
-			"Custom-Key": []string{"custom-value"},
-		}
-
-		expectedHeaderFields = []HeaderField{
-			HeaderField{"custom-key", "custom-value"},
-			HeaderField{":path", "/index.html"},
-			HeaderField{":scheme", "https"},
-			HeaderField{"cache-control", "no-cache"},
-			HeaderField{":authority", "www.example.com"},
-			HeaderField{":path", "/"},
-			HeaderField{":scheme", "http"},
-			HeaderField{":method", "GET"},
-		}
-
-		// test Header Table
-		if client.HT.Size() != 379 {
-			t.Errorf("\n got %v\nwant %v", client.HT.Size(), 379)
-		}
-
-		// test Header Table
-		for i, hf := range expectedHeaderFields {
-			if !(*client.HT.HeaderFields[i] == hf) {
-				t.Errorf("\n got %v\nwant %v", *client.HT.HeaderFields[i], hf)
-			}
-		}
-
-		// test Emitted Set
-		if !reflect.DeepEqual(client.ES.Header, expectedHeader) {
-			t.Errorf("\n got %v\nwant %v", client.ES.Header, expectedHeader)
-		}
-
-		// TOOD: test Reference Set
-	*/
+	// TOOD: test Reference Set
 }
