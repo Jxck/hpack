@@ -40,6 +40,7 @@ func (c *Context) Decode(wire []byte) {
 		switch f := frame.(type) {
 		case *IndexedHeader:
 			index := int(f.Index)
+			log.Printf("IndexHeader index=%v", index)
 
 			/**
 			 * idx=0 の場合 Reference Set を空にする
@@ -47,6 +48,7 @@ func (c *Context) Decode(wire []byte) {
 			if index == 0 {
 				Debug(Red("Empty ReferenceSet"))
 				c.RS.Empty()
+				continue
 			}
 
 			var headerField *HeaderField
@@ -77,9 +79,11 @@ func (c *Context) Decode(wire []byte) {
 					c.ES.Emit(headerField)
 
 					// ヘッダテーブルにコピーする
+					Debug(Blue("Add to HT"))
 					c.HT.Push(headerField)
 
 					// その参照を RefSet に追加する
+					Debug(Blue("Add to RS"))
 					c.RS.Add(headerField)
 
 					Debug(Red("== Indexed - Add =="))
@@ -102,7 +106,6 @@ func (c *Context) Decode(wire []byte) {
 					 */
 					Debug(Red(fmt.Sprintf("Remove %v from ReferenceSet", headerField)))
 					c.RS.Remove(headerField)
-					continue
 				} else {
 					/**
 					* 参照が Reference Set に無い場合
@@ -113,7 +116,12 @@ func (c *Context) Decode(wire []byte) {
 					c.ES.Emit(headerField)
 
 					// その参照を RefSet に追加する
+					Debug(Blue("Add to RS"))
 					c.RS.Add(headerField)
+
+					Debug(Red("== Indexed - Add =="))
+					Debug(fmt.Sprintf("  idx = %v", index))
+					Debug(fmt.Sprintf("  -> HT[%v] = %v", index, headerField))
 				}
 			}
 		case *IndexedLiteral:
@@ -121,6 +129,7 @@ func (c *Context) Decode(wire []byte) {
 			// Index 先の Name と Literal Value から HeaderField を生成
 			index := int(f.Index)
 			var name, value string
+			log.Printf("IndexLiteral index=%v", index)
 
 			if index > c.HT.Len() {
 				/**
@@ -133,7 +142,6 @@ func (c *Context) Decode(wire []byte) {
 				 * Header Table の中にある場合
 				 */
 				index = index - 1
-
 				name = c.HT.HeaderFields[index].Name
 			}
 
@@ -152,9 +160,11 @@ func (c *Context) Decode(wire []byte) {
 				c.ES.Emit(headerField)
 
 				// ヘッダテーブルにコピーする
+				Debug(Blue("Add to HT"))
 				c.HT.Push(headerField)
 
 				// その参照を RefSet に追加する
+				Debug(Blue("Add to RS"))
 				c.RS.Add(headerField)
 
 			} else {
@@ -167,32 +177,37 @@ func (c *Context) Decode(wire []byte) {
 				c.ES.Emit(headerField)
 			}
 
-			Debug(Red("== Literal Indexed =="))
+			Debug(Red("== Indexed Literal =="))
 			Debug(fmt.Sprintf("  Indexed name (idx = %v)", index))
 			Debug(fmt.Sprintf("  -> ST[%v].Name = %v", index, name))
 			Debug(fmt.Sprintf("  Literal value (len = %v)", f.ValueLength))
 			Debug(fmt.Sprintf("  %v", f.ValueString))
 		case *StringLiteral:
 			log.Printf("%v", f)
-			Debug(Red(fmt.Sprintf("== Literal Indexed (idx=%t) ==", f.Indexing)))
+			Debug(Red(fmt.Sprintf("== String Literal (%v) ==", f)))
 
+			headerField := NewHeaderField(f.NameString, f.ValueString)
 			if f.Indexing {
 				// HT に追加する場合
 
 				// Emit
 				Debug(Blue("Emit"))
+				c.ES.Emit(headerField)
 
 				// ヘッダテーブルにコピーする
-				// insertedIndex := c.HT.Push(headerField)
+				Debug(Blue("Add to HT"))
+				c.HT.Push(headerField)
 
 				// その参照を RefSet に追加する
-				// RefSet.Add(insertedIndex)
+				Debug(Blue("Add to RS"))
+				c.RS.Add(headerField)
 
 			} else {
 				// HT に追加しない場合
 
 				// Emit
 				Debug(Blue("Emit"))
+				c.ES.Emit(headerField)
 			}
 
 		default:

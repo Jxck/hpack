@@ -39,19 +39,19 @@ func TestRequestWithoutHuffman(t *testing.T) {
 
 	// test Header Table
 	if client.HT.Size() != 180 {
-		t.Errorf("got %v\nwant %v", client.HT.Size(), 180)
+		t.Errorf("\n got %v\nwant %v", client.HT.Size(), 180)
 	}
 
 	// test Header Table
 	for i, hf := range expectedHeaderFields {
 		if !(*client.HT.HeaderFields[i] == hf) {
-			t.Errorf("got %v\nwant %v", *client.HT.HeaderFields[i], hf)
+			t.Errorf("\n got %v\nwant %v", *client.HT.HeaderFields[i], hf)
 		}
 	}
 
 	// test Emitted Set
 	if !reflect.DeepEqual(client.ES.Header, expectedHeader) {
-		t.Errorf("got %v\nwant %v", client.ES.Header, expectedHeader)
+		t.Errorf("\n got %v\nwant %v", client.ES.Header, expectedHeader)
 	}
 
 	// TOOD: test Reference Set
@@ -88,13 +88,13 @@ func TestRequestWithoutHuffman(t *testing.T) {
 
 	// test Header Table
 	if client.HT.Size() != 233 {
-		t.Errorf("got %v\nwant %v", client.HT.Size(), 233)
+		t.Errorf("\n got %v\nwant %v", client.HT.Size(), 233)
 	}
 
 	// test Header Table
 	for i, hf := range expectedHeaderFields {
 		if !(*client.HT.HeaderFields[i] == hf) {
-			t.Errorf("got %v\nwant %v", *client.HT.HeaderFields[i], hf)
+			t.Errorf("\n got %v\nwant %v", *client.HT.HeaderFields[i], hf)
 		}
 	}
 
@@ -128,25 +128,25 @@ func TestRequestWithoutHuffman(t *testing.T) {
 	}
 
 	expectedHeaderFields = []HeaderField{
-		HeaderField{"custom-key:", "custom-value"},
-		HeaderField{":path:", "/index.html"},
-		HeaderField{":scheme:", "https"},
-		HeaderField{"cache-control:", "no-cache"},
-		HeaderField{":authority:", "www.example.com"},
-		HeaderField{":path:", "/"},
-		HeaderField{":scheme:", "http"},
-		HeaderField{":method:", "GET"},
+		HeaderField{"custom-key", "custom-value"},
+		HeaderField{":path", "/index.html"},
+		HeaderField{":scheme", "https"},
+		HeaderField{"cache-control", "no-cache"},
+		HeaderField{":authority", "www.example.com"},
+		HeaderField{":path", "/"},
+		HeaderField{":scheme", "http"},
+		HeaderField{":method", "GET"},
 	}
 
 	// test Header Table
 	if client.HT.Size() != 379 {
-		t.Errorf("got %v\nwant %v", client.HT.Size(), 379)
+		t.Errorf("\n got %v\nwant %v", client.HT.Size(), 379)
 	}
 
 	// test Header Table
 	for i, hf := range expectedHeaderFields {
 		if !(*client.HT.HeaderFields[i] == hf) {
-			t.Errorf("got %v\nwant %v", *client.HT.HeaderFields[i], hf)
+			t.Errorf("\n got %v\nwant %v", *client.HT.HeaderFields[i], hf)
 		}
 	}
 
