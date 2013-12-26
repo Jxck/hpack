@@ -91,9 +91,8 @@ func (c *Context) Decode(wire []byte) {
 				 * Header Table の中にある場合
 				 */
 
-				// どこかで HT にデータが追加できていないっぽい
-				log.Println("HERE HAS A BUGGGG========", c.HT.HeaderFields, index)
-
+				// 実態は配列なので 0 オリジン
+				index = index - 1
 				headerField = c.HT.HeaderFields[index]
 
 				if c.RS.Has(headerField) {
@@ -133,6 +132,8 @@ func (c *Context) Decode(wire []byte) {
 				/**
 				 * Header Table の中にある場合
 				 */
+				index = index - 1
+
 				name = c.HT.HeaderFields[index].Name
 			}
 
