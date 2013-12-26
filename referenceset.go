@@ -1,5 +1,10 @@
 package hpack
 
+const (
+	EMITTED     bool = true
+	NOT_EMITTED      = false
+)
+
 // Add Emitted Flag to HeaderField
 type ReferencedField struct {
 	*HeaderField
@@ -54,6 +59,6 @@ func (rs *ReferenceSet) Remove(hf *HeaderField) bool {
 // set all entry as "Not Emitted"
 func (rs *ReferenceSet) Reset() {
 	for _, rf := range *rs {
-		rf.Emitted = false
+		rf.Emitted = NOT_EMITTED
 	}
 }

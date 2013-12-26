@@ -89,7 +89,7 @@ func (c *Context) Decode(wire []byte) {
 
 					// その参照を RefSet に追加する
 					Debug(Blue("Add to RS"))
-					c.RS.Add(headerField, true)
+					c.RS.Add(headerField, EMITTED)
 
 					Debug(Red("== Indexed - Add =="))
 					Debug(fmt.Sprintf("  idx = %v", index))
@@ -122,7 +122,7 @@ func (c *Context) Decode(wire []byte) {
 
 					// その参照を RefSet に追加する
 					Debug(Blue("Add to RS"))
-					c.RS.Add(headerField, true)
+					c.RS.Add(headerField, EMITTED)
 
 					Debug(Red("== Indexed - Add =="))
 					Debug(fmt.Sprintf("  idx = %v", index))
@@ -170,7 +170,7 @@ func (c *Context) Decode(wire []byte) {
 
 				// その参照を RefSet に追加する
 				Debug(Blue("Add to RS"))
-				c.RS.Add(headerField, true)
+				c.RS.Add(headerField, EMITTED)
 
 			} else {
 				/**
@@ -205,7 +205,7 @@ func (c *Context) Decode(wire []byte) {
 
 				// その参照を RefSet に追加する
 				Debug(Blue("Add to RS"))
-				c.RS.Add(headerField, true)
+				c.RS.Add(headerField, EMITTED)
 
 			} else {
 				// HT に追加しない場合
