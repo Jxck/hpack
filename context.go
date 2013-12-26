@@ -90,6 +90,10 @@ func (c *Context) Decode(wire []byte) {
 				/**
 				 * Header Table の中にある場合
 				 */
+
+				// どこかで HT にデータが追加できていないっぽい
+				log.Println("HERE HAS A BUGGGG========", c.HT.HeaderFields, index)
+
 				headerField = c.HT.HeaderFields[index]
 
 				if c.RS.Has(headerField) {

@@ -55,9 +55,9 @@ func TestRequestWithoutHuffman(t *testing.T) {
 	}
 
 	// TOOD: test Reference Set
-	for i, hf := range *client.RS {
-		t.Log(i, hf)
-	}
+	// for i, hf := range *client.RS {
+	// 	t.Log(i, hf)
+	// }
 
 	/**
 	 * Second Request
@@ -99,9 +99,9 @@ func TestRequestWithoutHuffman(t *testing.T) {
 	}
 
 	// TOOD: test Reference Set
-	for i, hf := range *client.RS {
-		t.Log(i, hf)
-	}
+	// for i, hf := range *client.RS {
+	// 	t.Log(i, hf)
+	// }
 
 	/**
 	 * Third Request

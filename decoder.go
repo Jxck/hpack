@@ -7,6 +7,10 @@ import (
 	"log"
 )
 
+func init() {
+	log.SetFlags(log.Lshortfile)
+}
+
 // Decode Wire byte seq to Slice of Frames
 // TODO: make it return channel
 func Decode(wire []byte) (frames []Frame) {
