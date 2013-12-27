@@ -8,12 +8,12 @@ import (
 
 func TestEncode(t *testing.T) {
 	testcases := []struct {
-		expected, actual []byte
+		actual, expected []byte
 	}{
-		{[]byte{10}, Encode(10, 5)},
-		{[]byte{31, 9}, Encode(40, 5)},
-		{[]byte{31, 154, 10}, Encode(1337, 5)},
-		{[]byte{31, 161, 141, 183, 1}, Encode(3000000, 5)},
+		{Encode(10, 5), []byte{10}},
+		{Encode(40, 5), []byte{31, 9}},
+		{Encode(1337, 5), []byte{31, 154, 10}},
+		{Encode(3000000, 5), []byte{31, 161, 141, 183, 1}},
 	}
 
 	for _, testcase := range testcases {
@@ -29,10 +29,10 @@ func TestDecode(t *testing.T) {
 	testcases := []struct {
 		expected, actual uint64
 	}{
-		{10, Decode([]byte{10}, 5)},
-		{40, Decode([]byte{31, 9}, 5)},
-		{1337, Decode([]byte{31, 154, 10}, 5)},
-		{3000000, Decode([]byte{31, 161, 141, 183, 1}, 5)},
+		{Decode([]byte{10}, 5), 10},
+		{Decode([]byte{31, 9}, 5), 40},
+		{Decode([]byte{31, 154, 10}, 5), 1337},
+		{Decode([]byte{31, 161, 141, 183, 1}, 5), 3000000},
 	}
 
 	for _, testcase := range testcases {
