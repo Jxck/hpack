@@ -1,5 +1,9 @@
 package integer_representation
 
+import (
+	"github.com/jxck/swrap"
+)
+
 // Encode Integer to N bit prefix
 // Integer Representation
 //
@@ -12,15 +16,16 @@ package integer_representation
 //          Encode (I % 128 + 128) on 8 bits
 //          I = I / 128
 //     encode (I) on 8 bits
-func Encode(I uint64, N uint8) (buf []byte) {
+func Encode(I uint64, N uint8) swrap.SWrap {
+	buf := swrap.New([]byte{})
 	boundary := uint64(1<<N - 1) // 2^N-1
 
 	if I < boundary {
 		// If I < 2^N - 1, encode I on N bits
-		buf = append(buf, byte(I))
+		buf.Add(byte(I))
 	} else {
 		// encode 2^N - 1 on N bits
-		buf = append(buf, byte(boundary))
+		buf.Add(byte(boundary))
 
 		// I = I - (2^N - 1)
 		I = I - boundary
@@ -28,14 +33,14 @@ func Encode(I uint64, N uint8) (buf []byte) {
 		// While I >= 128
 		for I >= 128 {
 			// Encode (I % 128 + 128) on 8 bits
-			buf = append(buf, byte(I%128+128))
+			buf.Add(byte(I%128 + 128))
 
 			// I = I / 128
 			I = I / 128
 		}
 
 		// encode (I) on 8 bits
-		buf = append(buf, byte(I))
+		buf.Add(byte(I))
 	}
 	return buf
 }
@@ -52,13 +57,14 @@ func Encode(I uint64, N uint8) (buf []byte) {
 //     While b > 128
 //         I += (b - 128) * 128^(i-1)
 //         i++
-func Decode(buf []byte, N uint8) uint64 {
+func Decode(buf swrap.SWrap, N uint8) uint64 {
 	boundary := uint64(1<<N - 1) // 2^N-1
-	I := uint64(buf[0])          // Read N bit from first 1 byte as I
+	I := uint64(buf.Shift())     // Read N bit from first 1 byte as I
 	if I < boundary {            // less than 2^N-1
 		return I // as is
 	}
-	for i, b := range buf[1:] { // continue while follow bites are bigger than 128
+	for i := 0; ; i++ { // continue while follow bites are bigger than 128
+		b := buf.Shift()
 		shift := uint8(7 * i)
 		if b >= 128 { // if first bit is 1
 			// to 0 at first bit (- 128) and shift 7*i bit

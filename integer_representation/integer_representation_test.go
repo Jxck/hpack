@@ -2,13 +2,15 @@ package integer_representation
 
 import (
 	"bytes"
+	"github.com/jxck/swrap"
 	"testing"
 	"testing/quick"
 )
 
 func TestEncode(t *testing.T) {
 	testcases := []struct {
-		actual, expected []byte
+		actual   swrap.SWrap
+		expected []byte
 	}{
 		{Encode(10, 5), []byte{10}},
 		{Encode(40, 5), []byte{31, 9}},
@@ -17,7 +19,7 @@ func TestEncode(t *testing.T) {
 	}
 
 	for _, testcase := range testcases {
-		actual := testcase.actual
+		actual := testcase.actual.Bytes()
 		expected := testcase.expected
 		if !bytes.Equal(expected, actual) {
 			t.Errorf("got %v\nwant %v", actual, expected)
@@ -29,10 +31,10 @@ func TestDecode(t *testing.T) {
 	testcases := []struct {
 		expected, actual uint64
 	}{
-		{Decode([]byte{10}, 5), 10},
-		{Decode([]byte{31, 9}, 5), 40},
-		{Decode([]byte{31, 154, 10}, 5), 1337},
-		{Decode([]byte{31, 161, 141, 183, 1}, 5), 3000000},
+		{Decode(swrap.New([]byte{10}), 5), 10},
+		{Decode(swrap.New([]byte{31, 9}), 5), 40},
+		{Decode(swrap.New([]byte{31, 154, 10}), 5), 1337},
+		{Decode(swrap.New([]byte{31, 161, 141, 183, 1}), 5), 3000000},
 	}
 
 	for _, testcase := range testcases {
