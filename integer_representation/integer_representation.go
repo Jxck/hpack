@@ -1,11 +1,5 @@
 package integer_representation
 
-import (
-	"bytes"
-	"encoding/binary"
-	"log"
-)
-
 // Encode Integer to N bit prefix
 // Integer Representation
 //
@@ -18,22 +12,15 @@ import (
 //          Encode (I % 128 + 128) on 8 bits
 //          I = I / 128
 //     encode (I) on 8 bits
-func Encode(I uint64, N uint8) *bytes.Buffer {
-	buf := new(bytes.Buffer)
+func Encode(I uint64, N uint8) (buf []byte) {
 	boundary := uint64(1<<N - 1) // 2^N-1
 
 	if I < boundary {
 		// If I < 2^N - 1, encode I on N bits
-		err := binary.Write(buf, binary.BigEndian, uint8(I))
-		if err != nil {
-			log.Fatal("binary.Write failed:", err)
-		}
+		buf = append(buf, byte(I))
 	} else {
 		// encode 2^N - 1 on N bits
-		err := binary.Write(buf, binary.BigEndian, uint8(boundary))
-		if err != nil {
-			log.Fatal("binary.Write failed:", err)
-		}
+		buf = append(buf, byte(boundary))
 
 		// I = I - (2^N - 1)
 		I = I - boundary
@@ -41,19 +28,14 @@ func Encode(I uint64, N uint8) *bytes.Buffer {
 		// While I >= 128
 		for I >= 128 {
 			// Encode (I % 128 + 128) on 8 bits
-			err := binary.Write(buf, binary.BigEndian, uint8(I%128+128))
-			if err != nil {
-				log.Fatal("binary.Write failed:", err)
-			}
+			buf = append(buf, byte(I%128+128))
+
 			// I = I / 128
 			I = I / 128
 		}
 
 		// encode (I) on 8 bits
-		err = binary.Write(buf, binary.BigEndian, uint8(I))
-		if err != nil {
-			log.Fatal("binary.Write failed:", err)
-		}
+		buf = append(buf, byte(I))
 	}
 	return buf
 }
@@ -95,24 +77,23 @@ func Decode(buf []byte, N uint8) uint64 {
 // read prefixed N bytes from buffer
 // if N bit of first byte is 2^N-1 (ex 1111 in N=4)
 // read follow byte until it's smaller than 128
-func ReadPrefixedInteger(buf *bytes.Buffer, N uint8) *bytes.Buffer {
-	var tmp uint8
-	boundary := byte(1<<N - 1)               // 2^N-1
-	binary.Read(buf, binary.BigEndian, &tmp) // err
+func ReadPrefixedInteger(buf []byte, N uint8) []byte {
+	boundary := byte(1<<N - 1) // 2^N-1
+	first := buf[0]
 
-	tmp = tmp & boundary // mask N bit
-	prefix := bytes.NewBuffer([]byte{tmp})
+	first = first & boundary // mask N bit
+	prefix := []byte{first}
 
 	// if first byte is smaller than boundary
 	// it's end of the prefixed bytes
-	if tmp < boundary {
+	if first < boundary {
 		return prefix
 	}
 
 	// read bytes while bytes smaller than 128
-	for {
-		binary.Read(buf, binary.BigEndian, &tmp) // err
-		prefix.WriteByte(tmp)
+	for i := 1; ; i++ {
+		tmp := buf[i]
+		prefix = append(prefix, tmp)
 		if tmp < 128 {
 			break
 		}

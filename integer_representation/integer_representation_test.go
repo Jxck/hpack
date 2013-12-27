@@ -10,10 +10,10 @@ func TestEncode(t *testing.T) {
 	testcases := []struct {
 		expected, actual []byte
 	}{
-		{[]byte{10}, Encode(10, 5).Bytes()},
-		{[]byte{31, 9}, Encode(40, 5).Bytes()},
-		{[]byte{31, 154, 10}, Encode(1337, 5).Bytes()},
-		{[]byte{31, 161, 141, 183, 1}, Encode(3000000, 5).Bytes()},
+		{[]byte{10}, Encode(10, 5)},
+		{[]byte{31, 9}, Encode(40, 5)},
+		{[]byte{31, 154, 10}, Encode(1337, 5)},
+		{[]byte{31, 161, 141, 183, 1}, Encode(3000000, 5)},
 	}
 
 	for _, testcase := range testcases {
@@ -48,7 +48,7 @@ func TestEncodeDecodeQuickCheck(t *testing.T) {
 	f := func(I uint64) bool {
 		var N uint8 = 5
 		buf := Encode(I, N)
-		actual := Decode(buf.Bytes(), N)
+		actual := Decode(buf, N)
 		t.Log(I)
 		t.Log(actual)
 		return actual == I
@@ -66,9 +66,9 @@ func TestReadPrefixedInteger(t *testing.T) {
 	// 0x0A 0000 1010
 	// 0x06 0000 0110
 	var prefix uint8 = 5
-	buf := bytes.NewBuffer([]byte{0x1F, 0x95, 0x0A, 0x06})
+	buf := []byte{0x1F, 0x95, 0x0A, 0x06}
 	expected := []byte{0x1F, 0x95, 0xA}
-	actual := ReadPrefixedInteger(buf, prefix).Bytes()
+	actual := ReadPrefixedInteger(buf, prefix)
 	if !bytes.Equal(expected, actual) {
 		t.Errorf("got %v\nwant %v", actual, expected)
 	}
