@@ -38,7 +38,8 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		return frame
 	}
 	if types == 0 { // 0000 0000
-		// Literal Header Field with Incremental Indexing - New Name (F=0)
+		// StringLiteral (indexing = true)
+
 		indexing := true
 		nameLength := DecodePrefixedInteger(buf, 8)
 		name := DecodeString(buf, nameLength)
@@ -48,7 +49,7 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		return frame
 	}
 	if types == 0x40 { // 0100 0000
-		// Literal Header Field without Indexing - New Name (F=1)
+		// StringLiteral (indexing = false)
 
 		indexing := false
 		nameLength := DecodePrefixedInteger(buf, 8)
@@ -59,7 +60,7 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		return frame
 	}
 	if types&0xc0 == 0x40 { // 01xx xxxx & 1100 0000 == 0100 0000
-		// Literal Header Field without Indexing - Indexed Name (F=1)
+		// IndexedLiteral (indexing = false)
 
 		// unread first byte for parse frame
 		buf.UnreadByte()
@@ -72,12 +73,12 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		return frame
 	}
 	if types&0xc0 == 0 { // 00xx xxxx & 1100 0000 == 0000 0000
-		// Literal Header Field with Incremental Indexing - Indexed Name (F=0)
+		// IndexedLiteral (indexing = true)
+
 		// unread first byte for parse frame
 		buf.UnreadByte()
 
 		indexing := true
-
 		index := DecodePrefixedInteger(buf, 6)
 		valueLength := DecodePrefixedInteger(buf, 8)
 		value := DecodeString(buf, valueLength)

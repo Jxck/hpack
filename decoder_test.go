@@ -21,7 +21,7 @@ func TestIndexedHeaderDecode(t *testing.T) {
 	}
 }
 
-func TestIndexedLiteralDecode_NoIndexing(t *testing.T) {
+func TestIndexedLiteralDecode_NoIndexing_NoHuffman(t *testing.T) {
 	buf := bytes.NewBuffer([]byte{
 		0x44, 0x0c, 0x2f, 0x73,
 		0x61, 0x6d, 0x70, 0x6c,
@@ -54,7 +54,7 @@ value      = %v
 	}
 }
 
-func TestStringLiteralDecode_Indexing(t *testing.T) {
+func TestStringLiteralDecode_Indexing_NoHuffman(t *testing.T) {
 	buf := bytes.NewBuffer([]byte{
 		0x00, 0x0a, 0x63, 0x75,
 		0x73, 0x74, 0x6f, 0x6d,
