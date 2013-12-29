@@ -165,7 +165,7 @@ func TestRequestWithoutHuffman(t *testing.T) {
 	// TOOD: test Reference Set
 }
 
-func TestRequestWithHuffman(t *testing.T) {
+func TestResponseWithoutHuffman(t *testing.T) {
 	t.Skip()
 
 	client := NewContext()
