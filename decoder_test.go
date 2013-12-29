@@ -60,7 +60,6 @@ value      = %v
 	}
 }
 
-/*
 func TestStringLiteralDecode_Indexing_NoHuffman(t *testing.T) {
 	buf := swrap.New([]byte{
 		0x00, 0x0a, 0x63, 0x75,
@@ -76,7 +75,7 @@ func TestStringLiteralDecode_Indexing_NoHuffman(t *testing.T) {
 	var indexing bool = true
 	var name, value string = "custom-key", "custom-header"
 
-	decoded := DecodeHeader(buf)
+	decoded := DecodeHeader(&buf)
 	frame, ok := decoded.(*StringLiteral)
 	if !ok {
 		t.Errorf("Decoded to incorrect frame type: %T", frame)
@@ -99,4 +98,3 @@ value      = %v
 `, frame, indexing, 0, len(name), name, len(value), value)
 	}
 }
-*/
