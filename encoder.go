@@ -6,7 +6,7 @@ import (
 )
 
 func (frame *IndexedHeader) Encode() (buf *bytes.Buffer) {
-	index := integer.Encode(frame.Index, 7).Bytes()
+	index := integer.Encode(frame.Index, 7)
 	buf = bytes.NewBuffer([]byte{128 + index[0]})
 	index = index[1:]
 	if len(index) > 0 {
@@ -16,7 +16,7 @@ func (frame *IndexedHeader) Encode() (buf *bytes.Buffer) {
 }
 
 func (frame *IndexedLiteral) Encode() (buf *bytes.Buffer) {
-	index := integer.Encode(frame.Index, 6).Bytes()
+	index := integer.Encode(frame.Index, 6)
 	if frame.Indexing {
 		buf = bytes.NewBuffer([]byte{index[0]}) // 00xx xxxx
 	} else {
@@ -26,7 +26,7 @@ func (frame *IndexedLiteral) Encode() (buf *bytes.Buffer) {
 	if len(index) > 0 {
 		buf.Write(index)
 	}
-	buf.Write(integer.Encode(frame.ValueLength, 8).Bytes())
+	buf.Write(integer.Encode(frame.ValueLength, 8))
 	buf.WriteString(frame.ValueString)
 	return buf
 }
@@ -37,9 +37,9 @@ func (frame *StringLiteral) Encode() (buf *bytes.Buffer) {
 	} else {
 		buf = bytes.NewBuffer([]byte{64}) // 0100 0000
 	}
-	buf.Write(integer.Encode(frame.NameLength, 8).Bytes())
+	buf.Write(integer.Encode(frame.NameLength, 8))
 	buf.WriteString(frame.NameString)
-	buf.Write(integer.Encode(frame.ValueLength, 8).Bytes())
+	buf.Write(integer.Encode(frame.ValueLength, 8))
 	buf.WriteString(frame.ValueString)
 	return buf
 }

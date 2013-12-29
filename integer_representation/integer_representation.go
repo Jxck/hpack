@@ -2,6 +2,7 @@ package integer_representation
 
 import (
 	"github.com/jxck/swrap"
+	"log"
 )
 
 // Encode Integer to N bit prefix
@@ -83,12 +84,13 @@ func Decode(buf swrap.SWrap, N uint8) uint64 {
 // read prefixed N bytes from buffer
 // if N bit of first byte is 2^N-1 (ex 1111 in N=4)
 // read follow byte until it's smaller than 128
-func ReadPrefixedInteger(buf []byte, N uint8) []byte {
+func ReadPrefixedInteger(buf *swrap.SWrap, N uint8) swrap.SWrap {
 	boundary := byte(1<<N - 1) // 2^N-1
-	first := buf[0]
+	first := buf.Shift()
+	log.Println(buf)
 
 	first = first & boundary // mask N bit
-	prefix := []byte{first}
+	prefix := swrap.New([]byte{first})
 
 	// if first byte is smaller than boundary
 	// it's end of the prefixed bytes
@@ -97,9 +99,9 @@ func ReadPrefixedInteger(buf []byte, N uint8) []byte {
 	}
 
 	// read bytes while bytes smaller than 128
-	for i := 1; ; i++ {
-		tmp := buf[i]
-		prefix = append(prefix, tmp)
+	for {
+		tmp := buf.Shift()
+		prefix.Add(tmp)
 		if tmp < 128 {
 			break
 		}

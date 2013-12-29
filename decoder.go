@@ -1,9 +1,8 @@
 package hpack
 
 import (
-	"bytes"
-	"encoding/binary"
 	integer "github.com/jxck/hpack/integer_representation"
+	"github.com/jxck/swrap"
 	"log"
 )
 
@@ -14,7 +13,8 @@ func init() {
 // Decode Wire byte seq to Slice of Frames
 // TODO: make it return channel
 func Decode(wire []byte) (frames []Frame) {
-	buf := bytes.NewBuffer(wire)
+	sw := swrap.New(wire)
+	buf := &sw
 	for buf.Len() > 0 {
 		frames = append(frames, DecodeHeader(buf))
 	}
@@ -22,16 +22,13 @@ func Decode(wire []byte) (frames []Frame) {
 }
 
 // Decode single Frame from buffer and return it
-func DecodeHeader(buf *bytes.Buffer) Frame {
-	var types uint8
-	if err := binary.Read(buf, binary.BigEndian, &types); err != nil {
-		log.Println("binary.Read failed:", err)
-	}
+func DecodeHeader(buf *swrap.SWrap) Frame {
+	types := buf.Shift()
 	if types >= 0x80 { // 1xxx xxxx
 		// Indexed Header Representation
 
 		// unread first byte for parse frame
-		buf.UnreadByte()
+		buf.UnShift(types)
 
 		index := DecodePrefixedInteger(buf, 7)
 		frame := NewIndexedHeader(index)
@@ -63,11 +60,15 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		// IndexedLiteral (indexing = false)
 
 		// unread first byte for parse frame
-		buf.UnreadByte()
+		buf.UnShift(types)
 
 		indexing := false
 		index := DecodePrefixedInteger(buf, 6)
-		valueLength := DecodePrefixedInteger(buf, 8)
+
+		huff := DetectHuffman(buf)
+
+		log.Println(huff)
+		valueLength := DecodePrefixedInteger(buf, 7)
 		value := DecodeString(buf, valueLength)
 		frame := NewIndexedLiteral(indexing, index, value)
 		return frame
@@ -76,7 +77,7 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 		// IndexedLiteral (indexing = true)
 
 		// unread first byte for parse frame
-		buf.UnreadByte()
+		buf.UnShift(types)
 
 		indexing := true
 		index := DecodePrefixedInteger(buf, 6)
@@ -89,14 +90,29 @@ func DecodeHeader(buf *bytes.Buffer) Frame {
 }
 
 // read N prefixed Integer from buffer as uint64
-func DecodePrefixedInteger(buf *bytes.Buffer, N uint8) uint64 {
-	tmp := integer.ReadPrefixedInteger(buf, N).Bytes()
+func DecodePrefixedInteger(buf *swrap.SWrap, N uint8) uint64 {
+	tmp := integer.ReadPrefixedInteger(buf, N)
+	log.Println(tmp)
 	return integer.Decode(tmp, N)
 }
 
 // read n byte from buffer as string
-func DecodeString(buf *bytes.Buffer, n uint64) string {
-	valueBytes := make([]byte, n)
-	binary.Read(buf, binary.BigEndian, &valueBytes) // err
+func DecodeString(buf *swrap.SWrap, n uint64) string {
+	log.Println(buf, n)
+	valueBytes := make([]byte, 0, n)
+	for i := n; i > 0; i-- {
+		valueBytes = append(valueBytes, buf.Shift())
+	}
 	return string(valueBytes)
+}
+
+func DetectHuffman(buf *swrap.SWrap) bool {
+	b := buf.Shift()
+	huff := false
+	if b&0x80 == 0x80 {
+		huff = true
+		b = b & 127
+	}
+	buf.UnShift(b)
+	return huff
 }
