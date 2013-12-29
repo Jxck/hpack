@@ -97,3 +97,36 @@ value      = %v
 `, frame, indexing, 0, len(name), name, len(value), value)
 	}
 }
+
+func TestIndexedLiteralDecode_Indexing_Huffman(t *testing.T) {
+	buf := swrap.New([]byte{
+		0x04, 0x8b, 0xdb, 0x6d,
+		0x88, 0x3e, 0x68, 0xd1,
+		0xcb, 0x12, 0x25, 0xba,
+		0x7f,
+	})
+
+	// expected
+	var indexing bool = true
+	var index uint64 = 4
+	var value string = "www.example.com"
+
+	decoded := DecodeHeader(&buf)
+	frame, ok := decoded.(*IndexedLiteral)
+	if !ok {
+		t.Errorf("Decoded to incorrect frame type: %T", frame)
+	}
+	if frame.Indexing != indexing ||
+		frame.Index != index ||
+		frame.ValueLength != uint64(len(value)) ||
+		frame.ValueString != value {
+		t.Errorf(`
+frame      = %v
+---should---
+indexing   = %v
+index      = %v
+len(value) = %v
+value      = %v
+`, frame, indexing, index, len(value), value)
+	}
+}
