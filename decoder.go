@@ -1,6 +1,7 @@
 package hpack
 
 import (
+	"github.com/jxck/hpack/huffman"
 	integer "github.com/jxck/hpack/integer_representation"
 	"github.com/jxck/swrap"
 	"log"
@@ -65,12 +66,7 @@ func DecodeHeader(buf *swrap.SWrap) Frame {
 
 		indexing := false
 		index := DecodePrefixedInteger(buf, 6)
-
-		huff := DetectHuffman(buf)
-		log.Println(huff) // TODO: decode huffman
-
-		valueLength := DecodePrefixedInteger(buf, 7)
-		value := DecodeString(buf, valueLength)
+		value := DecodeValue(buf)
 		frame := NewIndexedLiteral(indexing, index, value)
 		return frame
 	}
@@ -79,8 +75,7 @@ func DecodeHeader(buf *swrap.SWrap) Frame {
 
 		indexing := true
 		index := DecodePrefixedInteger(buf, 6)
-		valueLength := DecodePrefixedInteger(buf, 8)
-		value := DecodeString(buf, valueLength)
+		value := DecodeValue(buf)
 		frame := NewIndexedLiteral(indexing, index, value)
 		return frame
 	}
@@ -102,13 +97,20 @@ func DecodeString(buf *swrap.SWrap, n uint64) string {
 	return string(valueBytes)
 }
 
-func DetectHuffman(buf *swrap.SWrap) bool {
-	b := buf.Shift()
-	huff := false
-	if b&0x80 == 0x80 {
-		huff = true
-		b = b & 127
+func DecodeValue(buf *swrap.SWrap) (value string) {
+	first := (*buf)[0]
+	huffmanEncoded := (first&0x80 == 0x80)
+	if huffmanEncoded {
+		buf.Shift()
+		b := first & 127
+		code := []byte{}
+		for ; b > 0; b-- {
+			code = append(code, buf.Shift())
+		}
+		value = string(huffman.DecodeRequest(code))
+	} else {
+		valueLength := DecodePrefixedInteger(buf, 8)
+		value = DecodeString(buf, valueLength)
 	}
-	buf.UnShift(b)
-	return huff
+	return value
 }
