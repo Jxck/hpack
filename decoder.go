@@ -23,12 +23,10 @@ func Decode(wire []byte) (frames []Frame) {
 
 // Decode single Frame from buffer and return it
 func DecodeHeader(buf *swrap.SWrap) Frame {
-	types := buf.Shift()
+	// check first byte
+	types := (*buf)[0]
 	if types >= 0x80 { // 1xxx xxxx
 		// Indexed Header Representation
-
-		// unread first byte for parse frame
-		buf.UnShift(types)
 
 		index := DecodePrefixedInteger(buf, 7)
 		frame := NewIndexedHeader(index)
@@ -36,6 +34,9 @@ func DecodeHeader(buf *swrap.SWrap) Frame {
 	}
 	if types == 0 { // 0000 0000
 		// StringLiteral (indexing = true)
+
+		// remove first byte defines type
+		buf.Shift()
 
 		indexing := true
 		nameLength := DecodePrefixedInteger(buf, 8)
@@ -48,6 +49,9 @@ func DecodeHeader(buf *swrap.SWrap) Frame {
 	if types == 0x40 { // 0100 0000
 		// StringLiteral (indexing = false)
 
+		// remove first byte defines type
+		buf.Shift()
+
 		indexing := false
 		nameLength := DecodePrefixedInteger(buf, 8)
 		name := DecodeString(buf, nameLength)
@@ -58,9 +62,6 @@ func DecodeHeader(buf *swrap.SWrap) Frame {
 	}
 	if types&0xc0 == 0x40 { // 01xx xxxx & 1100 0000 == 0100 0000
 		// IndexedLiteral (indexing = false)
-
-		// unread first byte for parse frame
-		buf.UnShift(types)
 
 		indexing := false
 		index := DecodePrefixedInteger(buf, 6)
@@ -75,9 +76,6 @@ func DecodeHeader(buf *swrap.SWrap) Frame {
 	}
 	if types&0xc0 == 0 { // 00xx xxxx & 1100 0000 == 0000 0000
 		// IndexedLiteral (indexing = true)
-
-		// unread first byte for parse frame
-		buf.UnShift(types)
 
 		indexing := true
 		index := DecodePrefixedInteger(buf, 6)
