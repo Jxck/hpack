@@ -6,6 +6,10 @@ import (
 	"testing"
 )
 
+func init() {
+	log.SetFlags(log.Lshortfile)
+}
+
 func TestIndexedHeaderDecode(t *testing.T) {
 	t.Skip()
 	buf := swrap.New([]byte{0x82})
@@ -31,7 +35,6 @@ func TestIndexedLiteralDecode_NoIndexing_NoHuffman(t *testing.T) {
 		0x74, 0x68,
 	})
 
-	log.Println(buf)
 	// expected
 	var indexing bool = false
 	var index uint64 = 4

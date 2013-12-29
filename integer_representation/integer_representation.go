@@ -5,6 +5,10 @@ import (
 	"log"
 )
 
+func init() {
+	log.SetFlags(log.Lshortfile)
+}
+
 // Encode Integer to N bit prefix
 // Integer Representation
 //
@@ -87,7 +91,6 @@ func Decode(buf swrap.SWrap, N uint8) uint64 {
 func ReadPrefixedInteger(buf *swrap.SWrap, N uint8) swrap.SWrap {
 	boundary := byte(1<<N - 1) // 2^N-1
 	first := buf.Shift()
-	log.Println(buf)
 
 	first = first & boundary // mask N bit
 	prefix := swrap.New([]byte{first})

@@ -66,8 +66,8 @@ func DecodeHeader(buf *swrap.SWrap) Frame {
 		index := DecodePrefixedInteger(buf, 6)
 
 		huff := DetectHuffman(buf)
+		log.Println(huff) // TODO: decode huffman
 
-		log.Println(huff)
 		valueLength := DecodePrefixedInteger(buf, 7)
 		value := DecodeString(buf, valueLength)
 		frame := NewIndexedLiteral(indexing, index, value)
@@ -92,13 +92,11 @@ func DecodeHeader(buf *swrap.SWrap) Frame {
 // read N prefixed Integer from buffer as uint64
 func DecodePrefixedInteger(buf *swrap.SWrap, N uint8) uint64 {
 	tmp := integer.ReadPrefixedInteger(buf, N)
-	log.Println(tmp)
 	return integer.Decode(tmp, N)
 }
 
 // read n byte from buffer as string
 func DecodeString(buf *swrap.SWrap, n uint64) string {
-	log.Println(buf, n)
 	valueBytes := make([]byte, 0, n)
 	for i := n; i > 0; i-- {
 		valueBytes = append(valueBytes, buf.Shift())
