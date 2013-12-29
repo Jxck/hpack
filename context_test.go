@@ -165,6 +165,161 @@ func TestRequestWithoutHuffman(t *testing.T) {
 	// TOOD: test Reference Set
 }
 
+func TestRequestWithHuffman(t *testing.T) {
+
+	client := NewContext()
+
+	/**
+	 * First Request
+	 */
+	log.Println("========== First Request ===============")
+
+	buf := []byte{
+		0x82, 0x87, 0x86, 0x04,
+		0x8b, 0xdb, 0x6d, 0x88,
+		0x3e, 0x68, 0xd1, 0xcb,
+		0x12, 0x25, 0xba, 0x7f,
+	}
+
+	expectedHeader := http.Header{
+		"Method":    []string{"GET"},
+		"Scheme":    []string{"http"},
+		"Path":      []string{"/"},
+		"Authority": []string{"www.example.com"},
+	}
+
+	expectedHeaderFields := []HeaderField{
+		HeaderField{":authority", "www.example.com"},
+		HeaderField{":path", "/"},
+		HeaderField{":scheme", "http"},
+		HeaderField{":method", "GET"},
+	}
+
+	client.Decode(buf)
+
+	// test Header Table
+	if client.HT.Size() != 180 {
+		t.Errorf("\n got %v\nwant %v", client.HT.Size(), 180)
+	}
+
+	// test Header Table
+	for i, hf := range expectedHeaderFields {
+		if !(*client.HT.HeaderFields[i] == hf) {
+			t.Errorf("\n got %v\nwant %v", *client.HT.HeaderFields[i], hf)
+		}
+	}
+
+	// test Emitted Set
+	if !reflect.DeepEqual(client.ES.Header, expectedHeader) {
+		log.Println(client.ES.Header)
+		t.Errorf("\n got %v\nwant %v", client.ES.Header, expectedHeader)
+	}
+
+	// TODO: test Reference Set
+
+	/**
+	 * Second Request
+	 */
+	log.Println("========== Second Request ===============")
+
+	buf = []byte{
+		0x1b, 0x86, 0x63, 0x65,
+		0x4a, 0x13, 0x98, 0xff,
+	}
+
+	client.Decode(buf)
+
+	expectedHeader = http.Header{
+		"Method":        []string{"GET"},
+		"Scheme":        []string{"http"},
+		"Path":          []string{"/"},
+		"Authority":     []string{"www.example.com"},
+		"Cache-Control": []string{"no-cache"},
+	}
+
+	expectedHeaderFields = []HeaderField{
+		HeaderField{"cache-control", "no-cache"},
+		HeaderField{":authority", "www.example.com"},
+		HeaderField{":path", "/"},
+		HeaderField{":scheme", "http"},
+		HeaderField{":method", "GET"},
+	}
+
+	// test Header Table
+	if client.HT.Size() != 233 {
+		t.Errorf("\n got %v\nwant %v", client.HT.Size(), 233)
+	}
+
+	// test Header Table
+	for i, hf := range expectedHeaderFields {
+		if !(*client.HT.HeaderFields[i] == hf) {
+			t.Errorf("\n got %v\nwant %v", *client.HT.HeaderFields[i], hf)
+		}
+	}
+
+	// test Emitted Set
+	if !reflect.DeepEqual(client.ES.Header, expectedHeader) {
+		t.Errorf("\n got %v\nwant %v", client.ES.Header, expectedHeader)
+	}
+
+	// TOOD: test Reference Set
+
+	/**
+	 * Third Request
+	 */
+	log.Println("========== Third Request ===============")
+
+	buf = []byte{
+		0x80, 0x85, 0x8c, 0x8b,
+		0x84, 0x00, 0x88, 0x4e,
+		0xb0, 0x8b, 0x74, 0x97,
+		0x90, 0xfa, 0x7f, 0x89,
+		0x4e, 0xb0, 0x8b, 0x74,
+		0x97, 0x9a, 0x17, 0xa8,
+		0xff,
+	}
+
+	client.Decode(buf)
+
+	expectedHeader = http.Header{
+		"Method":     []string{"GET"},
+		"Scheme":     []string{"https"},
+		"Path":       []string{"/index.html"},
+		"Authority":  []string{"www.example.com"},
+		"Custom-Key": []string{"custom-value"},
+	}
+
+	expectedHeaderFields = []HeaderField{
+		HeaderField{"custom-key", "custom-value"},
+		HeaderField{":path", "/index.html"},
+		HeaderField{":scheme", "https"},
+		HeaderField{"cache-control", "no-cache"},
+		HeaderField{":authority", "www.example.com"},
+		HeaderField{":path", "/"},
+		HeaderField{":scheme", "http"},
+		HeaderField{":method", "GET"},
+	}
+
+	// test Header Table
+	if client.HT.Size() != 379 {
+		t.Errorf("\n got %v\nwant %v", client.HT.Size(), 379)
+	}
+
+	// test Header Table
+	for i, hf := range expectedHeaderFields {
+		if !(*client.HT.HeaderFields[i] == hf) {
+			t.Errorf("\n got %v\nwant %v", *client.HT.HeaderFields[i], hf)
+		}
+	}
+
+	// test Emitted Set
+	if !reflect.DeepEqual(client.ES.Header, expectedHeader) {
+		t.Errorf("\n got %v\nwant %v", client.ES.Header, expectedHeader)
+	}
+
+	// TOOD: test Reference Set
+}
+
 func TestResponseWithoutHuffman(t *testing.T) {
 	t.Skip()
 

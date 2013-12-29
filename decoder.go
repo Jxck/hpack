@@ -40,10 +40,8 @@ func DecodeHeader(buf *swrap.SWrap) Frame {
 		buf.Shift()
 
 		indexing := true
-		nameLength := DecodePrefixedInteger(buf, 8)
-		name := DecodeString(buf, nameLength)
-		valueLength := DecodePrefixedInteger(buf, 8)
-		value := DecodeString(buf, valueLength)
+		name := DecodeValue(buf)
+		value := DecodeValue(buf)
 		frame := NewStringLiteral(indexing, name, value)
 		return frame
 	}
@@ -54,10 +52,8 @@ func DecodeHeader(buf *swrap.SWrap) Frame {
 		buf.Shift()
 
 		indexing := false
-		nameLength := DecodePrefixedInteger(buf, 8)
-		name := DecodeString(buf, nameLength)
-		valueLength := DecodePrefixedInteger(buf, 8)
-		value := DecodeString(buf, valueLength)
+		name := DecodeValue(buf)
+		value := DecodeValue(buf)
 		frame := NewStringLiteral(indexing, name, value)
 		return frame
 	}
