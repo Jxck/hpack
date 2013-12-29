@@ -11,7 +11,6 @@ func init() {
 }
 
 func TestIndexedHeaderDecode(t *testing.T) {
-	t.Skip()
 	buf := swrap.New([]byte{0x82})
 
 	// expected
