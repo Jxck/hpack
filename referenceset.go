@@ -68,10 +68,10 @@ func (rs *ReferenceSet) Reset() {
 }
 
 func (rs *ReferenceSet) Dump() (str string) {
-	str += "\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> RS\n"
+	str += "\n-------------- RS --------------\n"
 	for i, v := range *rs {
 		str += fmt.Sprintln(i, *v.HeaderField, v.Emitted)
 	}
-	str += "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< RS"
+	str += "--------------------------------\n"
 	return str
 }

@@ -63,6 +63,16 @@ func (ht *HeaderTable) AllocSpace(size int) (removed int) {
 	return
 }
 
+func (ht *HeaderTable) Dump() (str string) {
+	str += "\n-------------- HT --------------\n"
+	for i, v := range ht.HeaderFields {
+		str += fmt.Sprintln(i, v)
+	}
+	str += "--------------------------------\n"
+	return str
+}
+
+/*
 // remove all entry from HeaderTable
 func (ht *HeaderTable) DeleteAll() {
 	ht.Headers = Headers{}

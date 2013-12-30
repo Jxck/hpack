@@ -1,6 +1,7 @@
 package hpack
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 )
@@ -27,4 +28,13 @@ func (e *EmittedSet) Emit(hf *HeaderField) {
 	name := RemovePrefix(hf.Name)
 	e.Add(name, hf.Value)
 	log.Println(e)
+}
+
+func (e *EmittedSet) Dump() (str string) {
+	str += "\n-------------- ES --------------\n"
+	for i, v := range e.Header {
+		str += fmt.Sprintln(i, v)
+	}
+	str += "--------------------------------\n"
+	return str
 }
