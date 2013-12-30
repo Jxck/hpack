@@ -349,8 +349,8 @@ func TestResponseWithoutHuffman(t *testing.T) {
 	expectedHeader := http.Header{
 		"Status":        []string{"302"},
 		"Cache-Control": []string{"private"},
-		"Date":          []string{"Mon: []string{ 21 Oct 2013 201321 GMT"},
-		"Location":      []string{"https//www.example.com"},
+		"Date":          []string{"Mon, 21 Oct 2013 20:13:21 GMT"},
+		"Location":      []string{"https://www.example.com"},
 	}
 
 	expectedHeaderFields := []HeaderField{
