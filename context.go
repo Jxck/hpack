@@ -35,9 +35,9 @@ type Context struct {
 	ES *EmittedSet
 }
 
-func NewContext(context CXT) Context {
+func NewContext(context CXT, SETTINGS_HEADER_TABLE_SIZE int) Context {
 	return Context{
-		HT:  NewHeaderTable(),
+		HT:  NewHeaderTable(SETTINGS_HEADER_TABLE_SIZE),
 		RS:  NewReferenceSet(),
 		ES:  NewEmittedSet(),
 		CXT: context,

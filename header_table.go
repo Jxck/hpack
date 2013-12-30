@@ -13,9 +13,9 @@ type HeaderTable struct {
 	HeaderFields      []*HeaderField
 }
 
-func NewHeaderTable() *HeaderTable {
+func NewHeaderTable(SETTINGS_HEADER_TABLE_SIZE int) *HeaderTable {
 	return &HeaderTable{
-		DEFAULT_HEADER_TABLE_SIZE,
+		SETTINGS_HEADER_TABLE_SIZE,
 		[]*HeaderField{},
 	}
 }

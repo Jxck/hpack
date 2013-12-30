@@ -9,7 +9,7 @@ import (
 
 func TestRequestWithoutHuffman(t *testing.T) {
 
-	client := NewContext(REQUEST)
+	client := NewContext(REQUEST, DEFAULT_HEADER_TABLE_SIZE)
 
 	/**
 	 * First Request
@@ -167,7 +167,7 @@ func TestRequestWithoutHuffman(t *testing.T) {
 
 func TestRequestWithHuffman(t *testing.T) {
 
-	client := NewContext(REQUEST)
+	client := NewContext(REQUEST, DEFAULT_HEADER_TABLE_SIZE)
 
 	/**
 	 * First Request
@@ -322,7 +322,8 @@ func TestRequestWithHuffman(t *testing.T) {
 
 func TestResponseWithoutHuffman(t *testing.T) {
 
-	client := NewContext(RESPONSE)
+	var HeaderTableSize int = 256
+	client := NewContext(RESPONSE, HeaderTableSize)
 
 	/**
 	 * First Response
@@ -386,7 +387,7 @@ func TestResponseWithoutHuffman(t *testing.T) {
 
 func TestResponseWithHuffman(t *testing.T) {
 
-	client := NewContext(RESPONSE)
+	client := NewContext(RESPONSE, DEFAULT_HEADER_TABLE_SIZE)
 
 	/**
 	 * First Request
