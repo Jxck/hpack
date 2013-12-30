@@ -322,7 +322,7 @@ func TestRequestWithHuffman(t *testing.T) {
 
 func TestResponseWithoutHuffman(t *testing.T) {
 
-	client := NewContext(REQUEST)
+	client := NewContext(RESPONSE)
 
 	/**
 	 * First Request

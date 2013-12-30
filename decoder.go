@@ -13,17 +13,17 @@ func init() {
 
 // Decode Wire byte seq to Slice of Frames
 // TODO: make it return channel
-func Decode(wire []byte) (frames []Frame) {
+func Decode(wire []byte, cxt CXT) (frames []Frame) {
 	sw := swrap.New(wire)
 	buf := &sw
 	for buf.Len() > 0 {
-		frames = append(frames, DecodeHeader(buf))
+		frames = append(frames, DecodeHeader(buf, cxt))
 	}
 	return frames
 }
 
 // Decode single Frame from buffer and return it
-func DecodeHeader(buf *swrap.SWrap) Frame {
+func DecodeHeader(buf *swrap.SWrap, cxt CXT) Frame {
 	// check first byte
 	types := (*buf)[0]
 	if types >= 0x80 { // 1xxx xxxx
@@ -40,8 +40,8 @@ func DecodeHeader(buf *swrap.SWrap) Frame {
 		buf.Shift()
 
 		indexing := true
-		name := DecodeValue(buf)
-		value := DecodeValue(buf)
+		name := DecodeValue(buf, cxt)
+		value := DecodeValue(buf, cxt)
 		frame := NewStringLiteral(indexing, name, value)
 		return frame
 	}
@@ -52,8 +52,8 @@ func DecodeHeader(buf *swrap.SWrap) Frame {
 		buf.Shift()
 
 		indexing := false
-		name := DecodeValue(buf)
-		value := DecodeValue(buf)
+		name := DecodeValue(buf, cxt)
+		value := DecodeValue(buf, cxt)
 		frame := NewStringLiteral(indexing, name, value)
 		return frame
 	}
@@ -62,7 +62,7 @@ func DecodeHeader(buf *swrap.SWrap) Frame {
 
 		indexing := false
 		index := DecodePrefixedInteger(buf, 6)
-		value := DecodeValue(buf)
+		value := DecodeValue(buf, cxt)
 		frame := NewIndexedLiteral(indexing, index, value)
 		return frame
 	}
@@ -71,7 +71,7 @@ func DecodeHeader(buf *swrap.SWrap) Frame {
 
 		indexing := true
 		index := DecodePrefixedInteger(buf, 6)
-		value := DecodeValue(buf)
+		value := DecodeValue(buf, cxt)
 		frame := NewIndexedLiteral(indexing, index, value)
 		return frame
 	}
@@ -93,7 +93,7 @@ func DecodeString(buf *swrap.SWrap, n uint64) string {
 	return string(valueBytes)
 }
 
-func DecodeValue(buf *swrap.SWrap) (value string) {
+func DecodeValue(buf *swrap.SWrap, cxt CXT) (value string) {
 	first := (*buf)[0]
 	huffmanEncoded := (first&0x80 == 0x80)
 	if huffmanEncoded {
@@ -103,7 +103,11 @@ func DecodeValue(buf *swrap.SWrap) (value string) {
 		for ; b > 0; b-- {
 			code = append(code, buf.Shift())
 		}
-		value = string(huffman.DecodeRequest(code))
+		if cxt == REQUEST {
+			value = string(huffman.DecodeRequest(code))
+		} else if cxt == RESPONSE {
+			value = string(huffman.DecodeResponse(code))
+		}
 	} else {
 		valueLength := DecodePrefixedInteger(buf, 8)
 		value = DecodeString(buf, valueLength)

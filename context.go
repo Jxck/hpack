@@ -50,7 +50,7 @@ func (c *Context) Decode(wire []byte) {
 	c.RS.Reset()
 	log.Println("clean Emitted Set")
 
-	frames := Decode(wire)
+	frames := Decode(wire, c.CXT)
 	for _, frame := range frames {
 		switch f := frame.(type) {
 		case *IndexedHeader:
