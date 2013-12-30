@@ -9,7 +9,7 @@ import (
 
 func TestRequestWithoutHuffman(t *testing.T) {
 
-	client := NewContext()
+	client := NewContext(REQUEST)
 
 	/**
 	 * First Request
@@ -167,7 +167,7 @@ func TestRequestWithoutHuffman(t *testing.T) {
 
 func TestRequestWithHuffman(t *testing.T) {
 
-	client := NewContext()
+	client := NewContext(REQUEST)
 
 	/**
 	 * First Request
@@ -321,9 +321,8 @@ func TestRequestWithHuffman(t *testing.T) {
 }
 
 func TestResponseWithoutHuffman(t *testing.T) {
-	t.Skip()
 
-	client := NewContext()
+	client := NewContext(REQUEST)
 
 	/**
 	 * First Request

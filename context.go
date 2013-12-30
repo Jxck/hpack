@@ -11,6 +11,14 @@ import (
 var verbose bool
 var loglevel int
 
+// Request or Response
+type CXT bool
+
+const (
+	REQUEST  CXT = true
+	RESPONSE     = false
+)
+
 func init() {
 	flag.BoolVar(&verbose, "v", false, "verbose out")
 	flag.IntVar(&loglevel, "l", 0, "log level (1 ERR, 2 WARNING, 3 INFO, 4 DEBUG)")
@@ -21,16 +29,18 @@ func init() {
 }
 
 type Context struct {
+	CXT
 	HT *HeaderTable
 	RS *ReferenceSet
 	ES *EmittedSet
 }
 
-func NewContext() Context {
+func NewContext(context CXT) Context {
 	return Context{
-		HT: NewHeaderTable(),
-		RS: NewReferenceSet(),
-		ES: NewEmittedSet(),
+		HT:  NewHeaderTable(),
+		RS:  NewReferenceSet(),
+		ES:  NewEmittedSet(),
+		CXT: context,
 	}
 }
 
