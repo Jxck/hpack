@@ -1,5 +1,9 @@
 package hpack
 
+import (
+	"fmt"
+)
+
 const (
 	EMITTED     bool = true
 	NOT_EMITTED      = false
@@ -61,4 +65,13 @@ func (rs *ReferenceSet) Reset() {
 	for _, rf := range *rs {
 		rf.Emitted = NOT_EMITTED
 	}
+}
+
+func (rs *ReferenceSet) Dump() (str string) {
+	str += "\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> RS\n"
+	for i, v := range *rs {
+		str += fmt.Sprintln(i, *v.HeaderField, v.Emitted)
+	}
+	str += "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< RS"
+	return str
 }
