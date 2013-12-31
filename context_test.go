@@ -9,15 +9,22 @@ import (
 )
 
 func TestRequestWithoutHuffman(t *testing.T) {
+	var (
+		context              Context
+		buf                  []byte
+		expectedHeader       http.Header
+		expectedHT           *HeaderTable
+		expectedHeaderFields []HeaderField
+	)
 
-	context := NewContext(REQUEST, DEFAULT_HEADER_TABLE_SIZE)
+	context = NewContext(REQUEST, DEFAULT_HEADER_TABLE_SIZE)
 
 	/**
 	 * First Request
 	 */
 	Debug(Pink("\n========== First Request ==============="))
 
-	buf := []byte{
+	buf = []byte{
 		0x82, 0x87, 0x86, 0x04,
 		0x0f, 0x77, 0x77, 0x77,
 		0x2e, 0x65, 0x78, 0x61,
@@ -25,31 +32,32 @@ func TestRequestWithoutHuffman(t *testing.T) {
 		0x2e, 0x63, 0x6f, 0x6d,
 	}
 
-	expectedHeader := http.Header{
+	expectedHeader = http.Header{
 		"Method":    []string{"GET"},
 		"Scheme":    []string{"http"},
 		"Path":      []string{"/"},
 		"Authority": []string{"www.example.com"},
 	}
 
-	expectedHeaderFields := []HeaderField{
-		HeaderField{":authority", "www.example.com"},
-		HeaderField{":path", "/"},
-		HeaderField{":scheme", "http"},
-		HeaderField{":method", "GET"},
+	expectedHT = NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
+	expectedHT.HeaderFields = []*HeaderField{
+		&HeaderField{":authority", "www.example.com"},
+		&HeaderField{":path", "/"},
+		&HeaderField{":scheme", "http"},
+		&HeaderField{":method", "GET"},
 	}
 
 	context.Decode(buf)
 
 	// test Header Table
-	if context.HT.Size() != 180 {
-		t.Errorf("\n got %v\nwant %v", context.HT.Size(), 180)
+	if context.HT.Size() != expectedHT.Size() {
+		t.Errorf("\n got %v\nwant %v", context.HT.Size(), expectedHT.Size())
 	}
 
 	// test Header Table
-	for i, hf := range expectedHeaderFields {
-		if !(*context.HT.HeaderFields[i] == hf) {
-			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], hf)
+	for i, hf := range expectedHT.HeaderFields {
+		if !(*context.HT.HeaderFields[i] == *hf) {
+			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], *hf)
 		}
 	}
 
@@ -71,8 +79,6 @@ func TestRequestWithoutHuffman(t *testing.T) {
 		0x68, 0x65,
 	}
 
-	context.Decode(buf)
-
 	expectedHeader = http.Header{
 		"Method":        []string{"GET"},
 		"Scheme":        []string{"http"},
@@ -81,17 +87,20 @@ func TestRequestWithoutHuffman(t *testing.T) {
 		"Cache-Control": []string{"no-cache"},
 	}
 
-	expectedHeaderFields = []HeaderField{
-		HeaderField{"cache-control", "no-cache"},
-		HeaderField{":authority", "www.example.com"},
-		HeaderField{":path", "/"},
-		HeaderField{":scheme", "http"},
-		HeaderField{":method", "GET"},
+	expectedHT = NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
+	expectedHT.HeaderFields = []*HeaderField{
+		&HeaderField{"cache-control", "no-cache"},
+		&HeaderField{":authority", "www.example.com"},
+		&HeaderField{":path", "/"},
+		&HeaderField{":scheme", "http"},
+		&HeaderField{":method", "GET"},
 	}
 
+	context.Decode(buf)
+
 	// test Header Table
-	if context.HT.Size() != 233 {
-		t.Errorf("\n got %v\nwant %v", context.HT.Size(), 233)
+	if context.HT.Size() != expectedHT.Size() {
+		t.Errorf("\n got %v\nwant %v", context.HT.Size(), expectedHT.Size())
 	}
 
 	// test Header Table
@@ -124,8 +133,6 @@ func TestRequestWithoutHuffman(t *testing.T) {
 		0x75, 0x65,
 	}
 
-	context.Decode(buf)
-
 	expectedHeader = http.Header{
 		"Method":     []string{"GET"},
 		"Scheme":     []string{"https"},
@@ -134,20 +141,23 @@ func TestRequestWithoutHuffman(t *testing.T) {
 		"Custom-Key": []string{"custom-value"},
 	}
 
-	expectedHeaderFields = []HeaderField{
-		HeaderField{"custom-key", "custom-value"},
-		HeaderField{":path", "/index.html"},
-		HeaderField{":scheme", "https"},
-		HeaderField{"cache-control", "no-cache"},
-		HeaderField{":authority", "www.example.com"},
-		HeaderField{":path", "/"},
-		HeaderField{":scheme", "http"},
-		HeaderField{":method", "GET"},
+	expectedHT = NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
+	expectedHT.HeaderFields = []*HeaderField{
+		&HeaderField{"custom-key", "custom-value"},
+		&HeaderField{":path", "/index.html"},
+		&HeaderField{":scheme", "https"},
+		&HeaderField{"cache-control", "no-cache"},
+		&HeaderField{":authority", "www.example.com"},
+		&HeaderField{":path", "/"},
+		&HeaderField{":scheme", "http"},
+		&HeaderField{":method", "GET"},
 	}
 
+	context.Decode(buf)
+
 	// test Header Table
-	if context.HT.Size() != 379 {
-		t.Errorf("\n got %v\nwant %v", context.HT.Size(), 379)
+	if context.HT.Size() != expectedHT.Size() {
+		t.Errorf("\n got %v\nwant %v", context.HT.Size(), expectedHT.Size())
 	}
 
 	// test Header Table
@@ -166,40 +176,48 @@ func TestRequestWithoutHuffman(t *testing.T) {
 }
 
 func TestRequestWithHuffman(t *testing.T) {
+	var (
+		context              Context
+		buf                  []byte
+		expectedHeader       http.Header
+		expectedHT           *HeaderTable
+		expectedHeaderFields []HeaderField
+	)
 
-	context := NewContext(REQUEST, DEFAULT_HEADER_TABLE_SIZE)
+	context = NewContext(REQUEST, DEFAULT_HEADER_TABLE_SIZE)
 
 	/**
 	 * First Request
 	 */
 	Debug(Pink("\n========== First Request ==============="))
 
-	buf := []byte{
+	buf = []byte{
 		0x82, 0x87, 0x86, 0x04,
 		0x8b, 0xdb, 0x6d, 0x88,
 		0x3e, 0x68, 0xd1, 0xcb,
 		0x12, 0x25, 0xba, 0x7f,
 	}
 
-	expectedHeader := http.Header{
+	expectedHeader = http.Header{
 		"Method":    []string{"GET"},
 		"Scheme":    []string{"http"},
 		"Path":      []string{"/"},
 		"Authority": []string{"www.example.com"},
 	}
 
-	expectedHeaderFields := []HeaderField{
-		HeaderField{":authority", "www.example.com"},
-		HeaderField{":path", "/"},
-		HeaderField{":scheme", "http"},
-		HeaderField{":method", "GET"},
+	expectedHT = NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
+	expectedHT.HeaderFields = []*HeaderField{
+		&HeaderField{":authority", "www.example.com"},
+		&HeaderField{":path", "/"},
+		&HeaderField{":scheme", "http"},
+		&HeaderField{":method", "GET"},
 	}
 
 	context.Decode(buf)
 
 	// test Header Table
-	if context.HT.Size() != 180 {
-		t.Errorf("\n got %v\nwant %v", context.HT.Size(), 180)
+	if context.HT.Size() != expectedHT.Size() {
+		t.Errorf("\n got %v\nwant %v", context.HT.Size(), expectedHT.Size())
 	}
 
 	// test Header Table
@@ -226,8 +244,6 @@ func TestRequestWithHuffman(t *testing.T) {
 		0x4a, 0x13, 0x98, 0xff,
 	}
 
-	context.Decode(buf)
-
 	expectedHeader = http.Header{
 		"Method":        []string{"GET"},
 		"Scheme":        []string{"http"},
@@ -243,6 +259,8 @@ func TestRequestWithHuffman(t *testing.T) {
 		HeaderField{":scheme", "http"},
 		HeaderField{":method", "GET"},
 	}
+
+	context.Decode(buf)
 
 	// test Header Table
 	if context.HT.Size() != 233 {
