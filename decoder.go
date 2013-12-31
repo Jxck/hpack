@@ -40,8 +40,8 @@ func DecodeHeader(buf *swrap.SWrap, cxt CXT) Frame {
 		buf.Shift()
 
 		indexing := true
-		name := DecodeValue(buf, cxt)
-		value := DecodeValue(buf, cxt)
+		name := DecodeLiteral(buf, cxt)
+		value := DecodeLiteral(buf, cxt)
 		frame := NewStringLiteral(indexing, name, value)
 		return frame
 	}
@@ -52,8 +52,8 @@ func DecodeHeader(buf *swrap.SWrap, cxt CXT) Frame {
 		buf.Shift()
 
 		indexing := false
-		name := DecodeValue(buf, cxt)
-		value := DecodeValue(buf, cxt)
+		name := DecodeLiteral(buf, cxt)
+		value := DecodeLiteral(buf, cxt)
 		frame := NewStringLiteral(indexing, name, value)
 		return frame
 	}
@@ -62,7 +62,7 @@ func DecodeHeader(buf *swrap.SWrap, cxt CXT) Frame {
 
 		indexing := false
 		index := DecodePrefixedInteger(buf, 6)
-		value := DecodeValue(buf, cxt)
+		value := DecodeLiteral(buf, cxt)
 		frame := NewIndexedLiteral(indexing, index, value)
 		return frame
 	}
@@ -71,7 +71,7 @@ func DecodeHeader(buf *swrap.SWrap, cxt CXT) Frame {
 
 		indexing := true
 		index := DecodePrefixedInteger(buf, 6)
-		value := DecodeValue(buf, cxt)
+		value := DecodeLiteral(buf, cxt)
 		frame := NewIndexedLiteral(indexing, index, value)
 		return frame
 	}
@@ -93,7 +93,7 @@ func DecodeString(buf *swrap.SWrap, n uint64) string {
 	return string(valueBytes)
 }
 
-func DecodeValue(buf *swrap.SWrap, cxt CXT) (value string) {
+func DecodeLiteral(buf *swrap.SWrap, cxt CXT) (value string) {
 	// 最初のバイトを取り出す
 	first := (*buf)[0]
 
