@@ -1,7 +1,6 @@
 package hpack
 
 import (
-	"log"
 	"net/http"
 	"reflect"
 	"testing"
@@ -14,7 +13,7 @@ func TestRequestWithoutHuffman(t *testing.T) {
 	/**
 	 * First Request
 	 */
-	log.Println("========== First Request ===============")
+	t.Log("========== First Request ===============")
 
 	buf := []byte{
 		0x82, 0x87, 0x86, 0x04,
@@ -54,7 +53,6 @@ func TestRequestWithoutHuffman(t *testing.T) {
 
 	// test Emitted Set
 	if !reflect.DeepEqual(client.ES.Header, expectedHeader) {
-		log.Println(client.ES.Header)
 		t.Errorf("\n got %v\nwant %v", client.ES.Header, expectedHeader)
 	}
 
@@ -63,7 +61,7 @@ func TestRequestWithoutHuffman(t *testing.T) {
 	/**
 	 * Second Request
 	 */
-	log.Println("========== Second Request ===============")
+	t.Log("========== Second Request ===============")
 
 	buf = []byte{
 		0x1b, 0x08, 0x6e, 0x6f,
@@ -111,7 +109,7 @@ func TestRequestWithoutHuffman(t *testing.T) {
 	/**
 	 * Third Request
 	 */
-	log.Println("========== Third Request ===============")
+	t.Log("========== Third Request ===============")
 
 	buf = []byte{
 		0x80, 0x85, 0x8c, 0x8b,
@@ -172,7 +170,7 @@ func TestRequestWithHuffman(t *testing.T) {
 	/**
 	 * First Request
 	 */
-	log.Println("========== First Request ===============")
+	t.Log("========== First Request ===============")
 
 	buf := []byte{
 		0x82, 0x87, 0x86, 0x04,
@@ -211,7 +209,6 @@ func TestRequestWithHuffman(t *testing.T) {
 
 	// test Emitted Set
 	if !reflect.DeepEqual(client.ES.Header, expectedHeader) {
-		log.Println(client.ES.Header)
 		t.Errorf("\n got %v\nwant %v", client.ES.Header, expectedHeader)
 	}
 
@@ -220,7 +217,7 @@ func TestRequestWithHuffman(t *testing.T) {
 	/**
 	 * Second Request
 	 */
-	log.Println("========== Second Request ===============")
+	t.Log("========== Second Request ===============")
 
 	buf = []byte{
 		0x1b, 0x86, 0x63, 0x65,
@@ -267,7 +264,7 @@ func TestRequestWithHuffman(t *testing.T) {
 	/**
 	 * Third Request
 	 */
-	log.Println("========== Third Request ===============")
+	t.Log("========== Third Request ===============")
 
 	buf = []byte{
 		0x80, 0x85, 0x8c, 0x8b,
@@ -328,7 +325,7 @@ func TestResponseWithoutHuffman(t *testing.T) {
 	/**
 	 * First Response
 	 */
-	log.Println("========== First Response ===============")
+	t.Log("========== First Response ===============")
 
 	buf := []byte{
 		0x08, 0x82, 0x40, 0x9f,
@@ -377,7 +374,6 @@ func TestResponseWithoutHuffman(t *testing.T) {
 
 	// test Emitted Set
 	if !reflect.DeepEqual(client.ES.Header, expectedHeader) {
-		log.Println(client.ES.Header)
 		t.Errorf("\n got %v\nwant %v", client.ES.Header, expectedHeader)
 	}
 
@@ -386,7 +382,7 @@ func TestResponseWithoutHuffman(t *testing.T) {
 	/**
 	 * Second Response
 	 */
-	log.Println("========== Second Response ===============")
+	t.Log("========== Second Response ===============")
 
 	buf = []byte{
 		0x84, 0x8c,
@@ -422,7 +418,6 @@ func TestResponseWithoutHuffman(t *testing.T) {
 
 	// test Emitted Set
 	if !reflect.DeepEqual(client.ES.Header, expectedHeader) {
-		log.Println(client.ES.Header)
 		t.Errorf("\n got %v\nwant %v", client.ES.Header, expectedHeader)
 	}
 
@@ -437,7 +432,7 @@ func TestResponseWithHuffman(t *testing.T) {
 	/**
 	 * First Request
 	 */
-	log.Println("========== First Request ===============")
+	t.Log("========== First Request ===============")
 
 	buf := []byte{
 		0x08, 0x82, 0x40, 0x9f,
@@ -486,7 +481,6 @@ func TestResponseWithHuffman(t *testing.T) {
 
 	// test Emitted Set
 	if !reflect.DeepEqual(client.ES.Header, expectedHeader) {
-		log.Println(client.ES.Header)
 		t.Errorf("\n got %v\nwant %v", client.ES.Header, expectedHeader)
 	}
 
@@ -546,7 +540,6 @@ func TestResponseWithoutHuffman_Eviction(t *testing.T) {
 
 	// test Emitted Set
 	if !reflect.DeepEqual(client.ES.Header, expectedHeader) {
-		log.Println(client.ES.Header)
 		t.Errorf("\n got %v\nwant %v", client.ES.Header, expectedHeader)
 	}
 }

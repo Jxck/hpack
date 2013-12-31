@@ -145,7 +145,6 @@ func (c *Context) Decode(wire []byte) {
 			// Index 先の Name と Literal Value から HeaderField を生成
 			index := int(f.Index)
 			var name, value string
-			log.Printf("IndexLiteral index=%v", index)
 
 			if index > c.HT.Len() {
 				/**
@@ -199,7 +198,6 @@ func (c *Context) Decode(wire []byte) {
 			Debug(fmt.Sprintf("  Literal value (len = %v)", f.ValueLength))
 			Debug(fmt.Sprintf("  %v", f.ValueString))
 		case *StringLiteral:
-			log.Printf("%v", f)
 			Debug(Red(fmt.Sprintf("== String Literal (%v) ==", f)))
 
 			headerField := NewHeaderField(f.NameString, f.ValueString)
@@ -235,7 +233,7 @@ func (c *Context) Decode(wire []byte) {
 	for _, referencedField := range *c.RS {
 		if !referencedField.Emitted {
 			headerField := referencedField.HeaderField
-			Debug(Blue("Emit rest entries"))
+			Debug(Blue("Emit rest entries ")+"%v", *headerField)
 			c.ES.Emit(headerField)
 		}
 	}

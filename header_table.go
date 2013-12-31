@@ -2,6 +2,8 @@ package hpack
 
 import (
 	"fmt"
+	. "github.com/jxck/color"
+	. "github.com/jxck/logger"
 	"log"
 )
 
@@ -63,7 +65,7 @@ func (ht *HeaderTable) Remove(index int) {
 // until make space of size in Header Table
 func (ht *HeaderTable) Eviction() (removed int) {
 	for ht.Size() > ht.HEADER_TABLE_SIZE {
-		log.Println("Eviction")
+		Debug(Red("Eviction"))
 		ht.Remove(len(ht.HeaderFields) - 1)
 		removed++
 	}
@@ -71,7 +73,8 @@ func (ht *HeaderTable) Eviction() (removed int) {
 }
 
 func (ht *HeaderTable) Dump() (str string) {
-	str += "\n-------------- HT --------------\n"
+	str += fmt.Sprintf("\n--------- HT(%v/%v) ---------\n",
+		ht.Size(), ht.HEADER_TABLE_SIZE)
 	for i, v := range ht.HeaderFields {
 		str += fmt.Sprintln(i, v)
 	}
