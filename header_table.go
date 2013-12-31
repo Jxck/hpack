@@ -1,6 +1,13 @@
 package hpack
 
-import ()
+import (
+	"fmt"
+	"log"
+)
+
+func init() {
+	log.SetFlags(log.Lshortfile)
+}
 
 // TODO: what is default ?
 const DEFAULT_HEADER_TABLE_SIZE int = 4096
@@ -34,30 +41,30 @@ func (ht *HeaderTable) Len() int {
 	return len(ht.HeaderFields)
 }
 
-// push new Header Field to the of HeaderTable
+// push new Header Field to top of HeaderTable
 // with eviction
 // :TODO (check & test eviction more)
 func (ht *HeaderTable) Push(hf *HeaderField) {
 	tmp := []*HeaderField{hf}
 	ht.HeaderFields = append(tmp, ht.HeaderFields...)
+	ht.Eviction()
 }
 
-/*
 // remove Header at index i
 func (ht *HeaderTable) Remove(index int) {
 	// https://code.google.com/p/go-wiki/wiki/SliceTricks
-	copy(ht.Headers[index:], ht.Headers[index+1:])
+	copy(ht.HeaderFields[index:], ht.HeaderFields[index+1:])
 	// avoid memory leak
-	ht.Headers[len(ht.Headers)-1] = Header{}
-	ht.Headers = ht.Headers[:len(ht.Headers)-1]
+	ht.HeaderFields[len(ht.HeaderFields)-1] = &HeaderField{}
+	ht.HeaderFields = ht.HeaderFields[:len(ht.HeaderFields)-1]
 }
 
 // removing entry from top
 // until make space of size in Header Table
-func (ht *HeaderTable) AllocSpace(size int) (removed int) {
-	adjustSize := ht.HEADER_TABLE_SIZE - size
-	for ht.Size() > adjustSize {
-		ht.Remove(0)
+func (ht *HeaderTable) Eviction() (removed int) {
+	for ht.Size() > ht.HEADER_TABLE_SIZE {
+		log.Println("Eviction")
+		ht.Remove(len(ht.HeaderFields) - 1)
 		removed++
 	}
 	return

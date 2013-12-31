@@ -48,14 +48,16 @@ func (c *Context) Decode(wire []byte) {
 	// 各デコードごとに前回のをリセットする。
 	c.ES = NewEmittedSet()
 	c.RS.Reset()
-	log.Println("clean Emitted Set")
+	Debug(Red("clean Emitted Set"))
+	Debug(
+		Green("\n===== Before Decode =====")+"%v%v"+Green("==========================="),
+		c.HT.Dump(), c.RS.Dump())
 
 	frames := Decode(wire, c.CXT)
 	for _, frame := range frames {
 		switch f := frame.(type) {
 		case *IndexedHeader:
 			index := int(f.Index)
-			log.Printf("IndexHeader index=%v", index)
 
 			/**
 			 * idx=0 の場合 Reference Set を空にする
@@ -89,6 +91,10 @@ func (c *Context) Decode(wire []byte) {
 					* 該当のエントリを取り出す
 					 */
 
+					Debug(Red("== Indexed - Add =="))
+					Debug(fmt.Sprintf("  idx = %v", index))
+					Debug(fmt.Sprintf("  -> ST[%v] = %v", index, headerField))
+
 					// Emit
 					Debug(Blue("Emit"))
 					c.ES.Emit(headerField)
@@ -100,10 +106,6 @@ func (c *Context) Decode(wire []byte) {
 					// その参照を RefSet に追加する
 					Debug(Blue("Add to RS"))
 					c.RS.Add(headerField, EMITTED)
-
-					Debug(Red("== Indexed - Add =="))
-					Debug(fmt.Sprintf("  idx = %v", index))
-					Debug(fmt.Sprintf("  -> ST[%v] = %v", index, headerField))
 				}
 			} else {
 				/**
@@ -125,6 +127,9 @@ func (c *Context) Decode(wire []byte) {
 					/**
 					* 参照が Reference Set に無い場合
 					 */
+					Debug(Red("== Indexed - Add =="))
+					Debug(fmt.Sprintf("  idx = %v", index))
+					Debug(fmt.Sprintf("  -> HT[%v] = %v", index, headerField))
 
 					// Emit
 					Debug(Blue("Emit"))
@@ -133,10 +138,6 @@ func (c *Context) Decode(wire []byte) {
 					// その参照を RefSet に追加する
 					Debug(Blue("Add to RS"))
 					c.RS.Add(headerField, EMITTED)
-
-					Debug(Red("== Indexed - Add =="))
-					Debug(fmt.Sprintf("  idx = %v", index))
-					Debug(fmt.Sprintf("  -> HT[%v] = %v", index, headerField))
 				}
 			}
 		case *IndexedLiteral:
@@ -232,10 +233,8 @@ func (c *Context) Decode(wire []byte) {
 
 	// reference set の残りを全て emit する
 	for _, referencedField := range *c.RS {
-		log.Println(referencedField)
 		if !referencedField.Emitted {
 			headerField := referencedField.HeaderField
-			log.Println(headerField)
 			Debug(Blue("Emit rest entries"))
 			c.ES.Emit(headerField)
 		}

@@ -2,7 +2,6 @@ package hpack
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 )
 
@@ -27,7 +26,6 @@ func NewEmittedSet() *EmittedSet {
 func (e *EmittedSet) Emit(hf *HeaderField) {
 	name := RemovePrefix(hf.Name)
 	e.Add(name, hf.Value)
-	log.Println(e)
 }
 
 func (e *EmittedSet) Dump() (str string) {

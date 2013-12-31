@@ -383,6 +383,51 @@ func TestResponseWithoutHuffman(t *testing.T) {
 
 	// TODO: test Reference Set
 
+	/**
+	 * Second Response
+	 */
+	log.Println("========== Second Response ===============")
+
+	buf = []byte{
+		0x84, 0x8c,
+	}
+
+	expectedHeader = http.Header{
+		"Status":        []string{"200"},
+		"Cache-Control": []string{"private"},
+		"Date":          []string{"Mon, 21 Oct 2013 20:13:21 GMT"},
+		"Location":      []string{"https://www.example.com"},
+	}
+
+	expectedHeaderFields = []HeaderField{
+		HeaderField{":status", "200"},
+		HeaderField{"location", "https://www.example.com"},
+		HeaderField{"date", "Mon, 21 Oct 2013 20:13:21 GMT"},
+		HeaderField{"cache-control", "private"},
+	}
+
+	client.Decode(buf)
+
+	// test Header Table
+	if client.HT.Size() != 222 {
+		t.Errorf("\n got %v\nwant %v", client.HT.Size(), 222)
+	}
+
+	// test Header Table
+	for i, hf := range expectedHeaderFields {
+		if !(*client.HT.HeaderFields[i] == hf) {
+			t.Errorf("\n got %v\nwant %v", *client.HT.HeaderFields[i], hf)
+		}
+	}
+
+	// test Emitted Set
+	if !reflect.DeepEqual(client.ES.Header, expectedHeader) {
+		log.Println(client.ES.Header)
+		t.Errorf("\n got %v\nwant %v", client.ES.Header, expectedHeader)
+	}
+
+	// TODO: test Reference Set
+
 }
 
 func TestResponseWithHuffman(t *testing.T) {
@@ -446,4 +491,62 @@ func TestResponseWithHuffman(t *testing.T) {
 	}
 
 	// TODO: test Reference Set
+}
+
+func TestResponseWithoutHuffman_Eviction(t *testing.T) {
+
+	client := NewContext(RESPONSE, 256)
+
+	header := []struct {
+		name, value string
+	}{
+		{"status", "302"},
+		{"cache-control", "private"},
+		{"date", "Mon, 21 Oct 2013 20:13:21 GMT"},
+		{"location", "https://www.example.com"},
+	}
+
+	for _, h := range header {
+		hf := NewHeaderField(h.name, h.value)
+		client.HT.Push(hf)
+		client.RS.Add(hf, false)
+	}
+
+	buf := []byte{
+		0x84, 0x8c,
+	}
+
+	expectedHeader := http.Header{
+		"Status":        []string{"200"},
+		"Cache-Control": []string{"private"},
+		"Date":          []string{"Mon, 21 Oct 2013 20:13:21 GMT"},
+		"Location":      []string{"https://www.example.com"},
+	}
+
+	expectedHeaderFields := []HeaderField{
+		HeaderField{":status", "200"},
+		HeaderField{"location", "https://www.example.com"},
+		HeaderField{"date", "Mon, 21 Oct 2013 20:13:21 GMT"},
+		HeaderField{"cache-control", "private"},
+	}
+
+	client.Decode(buf)
+
+	// test Header Table
+	if client.HT.Size() != 222 {
+		t.Errorf("\n got %v\nwant %v", client.HT.Size(), 222)
+	}
+
+	// test Header Table
+	for i, hf := range expectedHeaderFields {
+		if !(*client.HT.HeaderFields[i] == hf) {
+			t.Errorf("\n got %v\nwant %v", *client.HT.HeaderFields[i], hf)
+		}
+	}
+
+	// test Emitted Set
+	if !reflect.DeepEqual(client.ES.Header, expectedHeader) {
+		log.Println(client.ES.Header)
+		t.Errorf("\n got %v\nwant %v", client.ES.Header, expectedHeader)
+	}
 }
