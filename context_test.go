@@ -1,6 +1,8 @@
 package hpack
 
 import (
+	. "github.com/jxck/color"
+	. "github.com/jxck/logger"
 	"net/http"
 	"reflect"
 	"testing"
@@ -13,7 +15,7 @@ func TestRequestWithoutHuffman(t *testing.T) {
 	/**
 	 * First Request
 	 */
-	t.Log("========== First Request ===============")
+	Debug(Pink("\n========== First Request ==============="))
 
 	buf := []byte{
 		0x82, 0x87, 0x86, 0x04,
@@ -61,7 +63,7 @@ func TestRequestWithoutHuffman(t *testing.T) {
 	/**
 	 * Second Request
 	 */
-	t.Log("========== Second Request ===============")
+	Debug(Pink("\n========== Second Request ==============="))
 
 	buf = []byte{
 		0x1b, 0x08, 0x6e, 0x6f,
@@ -109,7 +111,7 @@ func TestRequestWithoutHuffman(t *testing.T) {
 	/**
 	 * Third Request
 	 */
-	t.Log("========== Third Request ===============")
+	Debug(Pink("\n========== Third Request ==============="))
 
 	buf = []byte{
 		0x80, 0x85, 0x8c, 0x8b,
@@ -170,7 +172,7 @@ func TestRequestWithHuffman(t *testing.T) {
 	/**
 	 * First Request
 	 */
-	t.Log("========== First Request ===============")
+	Debug(Pink("\n========== First Request ==============="))
 
 	buf := []byte{
 		0x82, 0x87, 0x86, 0x04,
@@ -217,7 +219,7 @@ func TestRequestWithHuffman(t *testing.T) {
 	/**
 	 * Second Request
 	 */
-	t.Log("========== Second Request ===============")
+	Debug(Pink("\n========== Second Request ==============="))
 
 	buf = []byte{
 		0x1b, 0x86, 0x63, 0x65,
@@ -264,7 +266,7 @@ func TestRequestWithHuffman(t *testing.T) {
 	/**
 	 * Third Request
 	 */
-	t.Log("========== Third Request ===============")
+	Debug(Pink("\n========== Third Request ==============="))
 
 	buf = []byte{
 		0x80, 0x85, 0x8c, 0x8b,
@@ -325,7 +327,7 @@ func TestResponseWithoutHuffman(t *testing.T) {
 	/**
 	 * First Response
 	 */
-	t.Log("========== First Response ===============")
+	Debug(Pink("\n========== First Response ==============="))
 
 	buf := []byte{
 		0x08, 0x82, 0x40, 0x9f,
@@ -382,7 +384,7 @@ func TestResponseWithoutHuffman(t *testing.T) {
 	/**
 	 * Second Response
 	 */
-	t.Log("========== Second Response ===============")
+	Debug(Pink("\n========== Second Response ==============="))
 
 	buf = []byte{
 		0x84, 0x8c,
@@ -423,6 +425,80 @@ func TestResponseWithoutHuffman(t *testing.T) {
 
 	// TODO: test Reference Set
 
+	/**
+	 * Third Response
+	 */
+	Debug(Pink("\n========== Third Response ==============="))
+
+	buf = []byte{
+		0x83, 0x84, 0x84, 0x03,
+		0x1d, 0x4d, 0x6f, 0x6e,
+		0x2c, 0x20, 0x32, 0x31,
+		0x20, 0x4f, 0x63, 0x74,
+		0x20, 0x32, 0x30, 0x31,
+		0x33, 0x20, 0x32, 0x30,
+		0x3a, 0x31, 0x33, 0x3a,
+		0x32, 0x32, 0x20, 0x47,
+		0x4d, 0x54, 0x1d, 0x04,
+		0x67, 0x7a, 0x69, 0x70,
+		0x84, 0x84, 0x83, 0x83,
+		0x3a, 0x38, 0x66, 0x6f,
+		0x6f, 0x3d, 0x41, 0x53,
+		0x44, 0x4a, 0x4b, 0x48,
+		0x51, 0x4b, 0x42, 0x5a,
+		0x58, 0x4f, 0x51, 0x57,
+		0x45, 0x4f, 0x50, 0x49,
+		0x55, 0x41, 0x58, 0x51,
+		0x57, 0x45, 0x4f, 0x49,
+		0x55, 0x3b, 0x20, 0x6d,
+		0x61, 0x78, 0x2d, 0x61,
+		0x67, 0x65, 0x3d, 0x33,
+		0x36, 0x30, 0x30, 0x3b,
+		0x20, 0x76, 0x65, 0x72,
+		0x73, 0x69, 0x6f, 0x6e,
+		0x3d, 0x31,
+	}
+
+	expectedHeader = http.Header{
+		"Status":           []string{"200"},
+		"Cache-Control":    []string{"private"},
+		"Date":             []string{"Mon, 21 Oct 2013 20:13:22 GMT"},
+		"Location":         []string{"https://www.example.com"},
+		"Content-Encoding": []string{"gzip"},
+		"Set-Cookie":       []string{"foo=ASDJKHQKBZXOQWEOPIUAXQWEOIU; max-age=3600; version=1"},
+	}
+
+	expectedHeaderFields = []HeaderField{
+		HeaderField{"set-cookie", "foo=ASDJKHQKBZXOQWEOPIUAXQWEOIU; max-age=3600; version=1"},
+		HeaderField{"content-encoding", "gzip"},
+		HeaderField{"date", "Mon, 21 Oct 2013 20:13:22 GMT"},
+	}
+
+	client.Decode(buf)
+
+	t.Log(client.HT.Dump())
+	t.Log(client.RS.Dump())
+	t.Log(client.ES.Dump())
+
+	// test Header Table
+	if client.HT.Size() != 215 {
+		t.Errorf("\n got %v\nwant %v", client.HT.Size(), 215)
+	}
+
+	// test Header Table
+	for i, hf := range expectedHeaderFields {
+		if !(*client.HT.HeaderFields[i] == hf) {
+			t.Errorf("\n got %v\nwant %v", *client.HT.HeaderFields[i], hf)
+		}
+	}
+
+	// test Emitted Set
+	if !reflect.DeepEqual(client.ES.Header, expectedHeader) {
+		t.Errorf("\n got %v\nwant %v", client.ES.Header, expectedHeader)
+	}
+
+	// TODO: test Reference Set
+
 }
 
 func TestResponseWithHuffman(t *testing.T) {
@@ -432,7 +508,7 @@ func TestResponseWithHuffman(t *testing.T) {
 	/**
 	 * First Request
 	 */
-	t.Log("========== First Request ===============")
+	Debug(Pink("\n========== First Request ==============="))
 
 	buf := []byte{
 		0x08, 0x82, 0x40, 0x9f,

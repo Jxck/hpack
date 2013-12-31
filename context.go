@@ -50,7 +50,7 @@ func (c *Context) Decode(wire []byte) {
 	c.RS.Reset()
 	Debug(Red("clean Emitted Set"))
 	Debug(
-		Green("\n===== Before Decode =====")+"%v%v"+Green("==========================="),
+		Cyan("\n===== Before Decode =====")+"%v%v"+Cyan("==========================="),
 		c.HT.Dump(), c.RS.Dump())
 
 	frames := Decode(wire, c.CXT)
@@ -74,8 +74,8 @@ func (c *Context) Decode(wire []byte) {
 				/**
 				 * Static Header Table の中にある場合
 				 */
-				index = index - c.HT.Len() - 1
-				headerField = StaticHeaderTable[index]
+				i := index - c.HT.Len() - 1
+				headerField = StaticHeaderTable[i]
 
 				if c.RS.Has(headerField) {
 					/**
@@ -113,15 +113,17 @@ func (c *Context) Decode(wire []byte) {
 				 */
 
 				// 実態は配列なので 0 オリジン
-				index = index - 1
-				headerField = c.HT.HeaderFields[index]
+				i := index - 1
+				headerField = c.HT.HeaderFields[i]
 
 				if c.RS.Has(headerField) {
 					/**
 					 * 参照が Reference Set にあった場合
 					 * Reference Set から消す
 					 */
-					Debug(Red(fmt.Sprintf("Remove %v from ReferenceSet", headerField)))
+					Debug(Red(fmt.Sprintf("== Indexed - Remove ==")))
+					Debug(fmt.Sprintf("  idx = %v", index))
+					Debug(fmt.Sprintf("  -> HT[%v] = %v", index, headerField))
 					c.RS.Remove(headerField)
 				} else {
 					/**
@@ -150,20 +152,26 @@ func (c *Context) Decode(wire []byte) {
 				/**
 				 * Static Header Table の中にある場合
 				 */
-				index = index - c.HT.Len() - 1
-				name = StaticHeaderTable[index].Name
+				i := index - c.HT.Len() - 1
+				name = StaticHeaderTable[i].Name
 			} else {
 				/**
 				 * Header Table の中にある場合
 				 */
-				index = index - 1
-				name = c.HT.HeaderFields[index].Name
+				i := index - 1
+				name = c.HT.HeaderFields[i].Name
 			}
 
 			value = f.ValueString
 
 			// Header Field 生成
 			headerField := NewHeaderField(name, value)
+
+			Debug(Red("== Indexed Literal =="))
+			Debug(fmt.Sprintf("  Indexed name (idx = %v)", index))
+			Debug(fmt.Sprintf("  -> ST[%v].Name = %v", index, name))
+			Debug(fmt.Sprintf("  Literal value (len = %v)", f.ValueLength))
+			Debug(fmt.Sprintf("  %v", f.ValueString))
 
 			if f.Indexing {
 				/**
@@ -192,11 +200,6 @@ func (c *Context) Decode(wire []byte) {
 				c.ES.Emit(headerField)
 			}
 
-			Debug(Red("== Indexed Literal =="))
-			Debug(fmt.Sprintf("  Indexed name (idx = %v)", index))
-			Debug(fmt.Sprintf("  -> ST[%v].Name = %v", index, name))
-			Debug(fmt.Sprintf("  Literal value (len = %v)", f.ValueLength))
-			Debug(fmt.Sprintf("  %v", f.ValueString))
 		case *StringLiteral:
 			Debug(Red(fmt.Sprintf("== String Literal (%v) ==", f)))
 

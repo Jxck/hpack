@@ -65,7 +65,7 @@ func (ht *HeaderTable) Remove(index int) {
 // until make space of size in Header Table
 func (ht *HeaderTable) Eviction() (removed int) {
 	for ht.Size() > ht.HEADER_TABLE_SIZE {
-		Debug(Red("Eviction"))
+		Debug(Red("Eviction") + " %v", ht.HeaderFields[len(ht.HeaderFields) - 1])
 		ht.Remove(len(ht.HeaderFields) - 1)
 		removed++
 	}
