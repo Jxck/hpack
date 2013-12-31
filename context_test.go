@@ -10,7 +10,7 @@ import (
 
 func TestRequestWithoutHuffman(t *testing.T) {
 
-	client := NewContext(REQUEST, DEFAULT_HEADER_TABLE_SIZE)
+	context := NewContext(REQUEST, DEFAULT_HEADER_TABLE_SIZE)
 
 	/**
 	 * First Request
@@ -39,23 +39,23 @@ func TestRequestWithoutHuffman(t *testing.T) {
 		HeaderField{":method", "GET"},
 	}
 
-	client.Decode(buf)
+	context.Decode(buf)
 
 	// test Header Table
-	if client.HT.Size() != 180 {
-		t.Errorf("\n got %v\nwant %v", client.HT.Size(), 180)
+	if context.HT.Size() != 180 {
+		t.Errorf("\n got %v\nwant %v", context.HT.Size(), 180)
 	}
 
 	// test Header Table
 	for i, hf := range expectedHeaderFields {
-		if !(*client.HT.HeaderFields[i] == hf) {
-			t.Errorf("\n got %v\nwant %v", *client.HT.HeaderFields[i], hf)
+		if !(*context.HT.HeaderFields[i] == hf) {
+			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], hf)
 		}
 	}
 
 	// test Emitted Set
-	if !reflect.DeepEqual(client.ES.Header, expectedHeader) {
-		t.Errorf("\n got %v\nwant %v", client.ES.Header, expectedHeader)
+	if !reflect.DeepEqual(context.ES.Header, expectedHeader) {
+		t.Errorf("\n got %v\nwant %v", context.ES.Header, expectedHeader)
 	}
 
 	// TODO: test Reference Set
@@ -71,7 +71,7 @@ func TestRequestWithoutHuffman(t *testing.T) {
 		0x68, 0x65,
 	}
 
-	client.Decode(buf)
+	context.Decode(buf)
 
 	expectedHeader = http.Header{
 		"Method":        []string{"GET"},
@@ -90,20 +90,20 @@ func TestRequestWithoutHuffman(t *testing.T) {
 	}
 
 	// test Header Table
-	if client.HT.Size() != 233 {
-		t.Errorf("\n got %v\nwant %v", client.HT.Size(), 233)
+	if context.HT.Size() != 233 {
+		t.Errorf("\n got %v\nwant %v", context.HT.Size(), 233)
 	}
 
 	// test Header Table
 	for i, hf := range expectedHeaderFields {
-		if !(*client.HT.HeaderFields[i] == hf) {
-			t.Errorf("\n got %v\nwant %v", *client.HT.HeaderFields[i], hf)
+		if !(*context.HT.HeaderFields[i] == hf) {
+			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], hf)
 		}
 	}
 
 	// test Emitted Set
-	if !reflect.DeepEqual(client.ES.Header, expectedHeader) {
-		t.Errorf("\n got %v\nwant %v", client.ES.Header, expectedHeader)
+	if !reflect.DeepEqual(context.ES.Header, expectedHeader) {
+		t.Errorf("\n got %v\nwant %v", context.ES.Header, expectedHeader)
 	}
 
 	// TOOD: test Reference Set
@@ -124,7 +124,7 @@ func TestRequestWithoutHuffman(t *testing.T) {
 		0x75, 0x65,
 	}
 
-	client.Decode(buf)
+	context.Decode(buf)
 
 	expectedHeader = http.Header{
 		"Method":     []string{"GET"},
@@ -146,20 +146,20 @@ func TestRequestWithoutHuffman(t *testing.T) {
 	}
 
 	// test Header Table
-	if client.HT.Size() != 379 {
-		t.Errorf("\n got %v\nwant %v", client.HT.Size(), 379)
+	if context.HT.Size() != 379 {
+		t.Errorf("\n got %v\nwant %v", context.HT.Size(), 379)
 	}
 
 	// test Header Table
 	for i, hf := range expectedHeaderFields {
-		if !(*client.HT.HeaderFields[i] == hf) {
-			t.Errorf("\n got %v\nwant %v", *client.HT.HeaderFields[i], hf)
+		if !(*context.HT.HeaderFields[i] == hf) {
+			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], hf)
 		}
 	}
 
 	// test Emitted Set
-	if !reflect.DeepEqual(client.ES.Header, expectedHeader) {
-		t.Errorf("\n got %v\nwant %v", client.ES.Header, expectedHeader)
+	if !reflect.DeepEqual(context.ES.Header, expectedHeader) {
+		t.Errorf("\n got %v\nwant %v", context.ES.Header, expectedHeader)
 	}
 
 	// TOOD: test Reference Set
@@ -167,7 +167,7 @@ func TestRequestWithoutHuffman(t *testing.T) {
 
 func TestRequestWithHuffman(t *testing.T) {
 
-	client := NewContext(REQUEST, DEFAULT_HEADER_TABLE_SIZE)
+	context := NewContext(REQUEST, DEFAULT_HEADER_TABLE_SIZE)
 
 	/**
 	 * First Request
@@ -195,23 +195,23 @@ func TestRequestWithHuffman(t *testing.T) {
 		HeaderField{":method", "GET"},
 	}
 
-	client.Decode(buf)
+	context.Decode(buf)
 
 	// test Header Table
-	if client.HT.Size() != 180 {
-		t.Errorf("\n got %v\nwant %v", client.HT.Size(), 180)
+	if context.HT.Size() != 180 {
+		t.Errorf("\n got %v\nwant %v", context.HT.Size(), 180)
 	}
 
 	// test Header Table
 	for i, hf := range expectedHeaderFields {
-		if !(*client.HT.HeaderFields[i] == hf) {
-			t.Errorf("\n got %v\nwant %v", *client.HT.HeaderFields[i], hf)
+		if !(*context.HT.HeaderFields[i] == hf) {
+			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], hf)
 		}
 	}
 
 	// test Emitted Set
-	if !reflect.DeepEqual(client.ES.Header, expectedHeader) {
-		t.Errorf("\n got %v\nwant %v", client.ES.Header, expectedHeader)
+	if !reflect.DeepEqual(context.ES.Header, expectedHeader) {
+		t.Errorf("\n got %v\nwant %v", context.ES.Header, expectedHeader)
 	}
 
 	// TODO: test Reference Set
@@ -226,7 +226,7 @@ func TestRequestWithHuffman(t *testing.T) {
 		0x4a, 0x13, 0x98, 0xff,
 	}
 
-	client.Decode(buf)
+	context.Decode(buf)
 
 	expectedHeader = http.Header{
 		"Method":        []string{"GET"},
@@ -245,20 +245,20 @@ func TestRequestWithHuffman(t *testing.T) {
 	}
 
 	// test Header Table
-	if client.HT.Size() != 233 {
-		t.Errorf("\n got %v\nwant %v", client.HT.Size(), 233)
+	if context.HT.Size() != 233 {
+		t.Errorf("\n got %v\nwant %v", context.HT.Size(), 233)
 	}
 
 	// test Header Table
 	for i, hf := range expectedHeaderFields {
-		if !(*client.HT.HeaderFields[i] == hf) {
-			t.Errorf("\n got %v\nwant %v", *client.HT.HeaderFields[i], hf)
+		if !(*context.HT.HeaderFields[i] == hf) {
+			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], hf)
 		}
 	}
 
 	// test Emitted Set
-	if !reflect.DeepEqual(client.ES.Header, expectedHeader) {
-		t.Errorf("\n got %v\nwant %v", client.ES.Header, expectedHeader)
+	if !reflect.DeepEqual(context.ES.Header, expectedHeader) {
+		t.Errorf("\n got %v\nwant %v", context.ES.Header, expectedHeader)
 	}
 
 	// TOOD: test Reference Set
@@ -278,7 +278,7 @@ func TestRequestWithHuffman(t *testing.T) {
 		0xff,
 	}
 
-	client.Decode(buf)
+	context.Decode(buf)
 
 	expectedHeader = http.Header{
 		"Method":     []string{"GET"},
@@ -300,20 +300,20 @@ func TestRequestWithHuffman(t *testing.T) {
 	}
 
 	// test Header Table
-	if client.HT.Size() != 379 {
-		t.Errorf("\n got %v\nwant %v", client.HT.Size(), 379)
+	if context.HT.Size() != 379 {
+		t.Errorf("\n got %v\nwant %v", context.HT.Size(), 379)
 	}
 
 	// test Header Table
 	for i, hf := range expectedHeaderFields {
-		if !(*client.HT.HeaderFields[i] == hf) {
-			t.Errorf("\n got %v\nwant %v", *client.HT.HeaderFields[i], hf)
+		if !(*context.HT.HeaderFields[i] == hf) {
+			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], hf)
 		}
 	}
 
 	// test Emitted Set
-	if !reflect.DeepEqual(client.ES.Header, expectedHeader) {
-		t.Errorf("\n got %v\nwant %v", client.ES.Header, expectedHeader)
+	if !reflect.DeepEqual(context.ES.Header, expectedHeader) {
+		t.Errorf("\n got %v\nwant %v", context.ES.Header, expectedHeader)
 	}
 
 	// TOOD: test Reference Set
@@ -322,7 +322,7 @@ func TestRequestWithHuffman(t *testing.T) {
 func TestResponseWithoutHuffman(t *testing.T) {
 
 	var HeaderTableSize int = 256
-	client := NewContext(RESPONSE, HeaderTableSize)
+	context := NewContext(RESPONSE, HeaderTableSize)
 
 	/**
 	 * First Response
@@ -360,23 +360,23 @@ func TestResponseWithoutHuffman(t *testing.T) {
 		HeaderField{":status", "302"},
 	}
 
-	client.Decode(buf)
+	context.Decode(buf)
 
 	// test Header Table
-	if client.HT.Size() != 222 {
-		t.Errorf("\n got %v\nwant %v", client.HT.Size(), 222)
+	if context.HT.Size() != 222 {
+		t.Errorf("\n got %v\nwant %v", context.HT.Size(), 222)
 	}
 
 	// test Header Table
 	for i, hf := range expectedHeaderFields {
-		if !(*client.HT.HeaderFields[i] == hf) {
-			t.Errorf("\n got %v\nwant %v", *client.HT.HeaderFields[i], hf)
+		if !(*context.HT.HeaderFields[i] == hf) {
+			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], hf)
 		}
 	}
 
 	// test Emitted Set
-	if !reflect.DeepEqual(client.ES.Header, expectedHeader) {
-		t.Errorf("\n got %v\nwant %v", client.ES.Header, expectedHeader)
+	if !reflect.DeepEqual(context.ES.Header, expectedHeader) {
+		t.Errorf("\n got %v\nwant %v", context.ES.Header, expectedHeader)
 	}
 
 	// TODO: test Reference Set
@@ -404,23 +404,23 @@ func TestResponseWithoutHuffman(t *testing.T) {
 		HeaderField{"cache-control", "private"},
 	}
 
-	client.Decode(buf)
+	context.Decode(buf)
 
 	// test Header Table
-	if client.HT.Size() != 222 {
-		t.Errorf("\n got %v\nwant %v", client.HT.Size(), 222)
+	if context.HT.Size() != 222 {
+		t.Errorf("\n got %v\nwant %v", context.HT.Size(), 222)
 	}
 
 	// test Header Table
 	for i, hf := range expectedHeaderFields {
-		if !(*client.HT.HeaderFields[i] == hf) {
-			t.Errorf("\n got %v\nwant %v", *client.HT.HeaderFields[i], hf)
+		if !(*context.HT.HeaderFields[i] == hf) {
+			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], hf)
 		}
 	}
 
 	// test Emitted Set
-	if !reflect.DeepEqual(client.ES.Header, expectedHeader) {
-		t.Errorf("\n got %v\nwant %v", client.ES.Header, expectedHeader)
+	if !reflect.DeepEqual(context.ES.Header, expectedHeader) {
+		t.Errorf("\n got %v\nwant %v", context.ES.Header, expectedHeader)
 	}
 
 	// TODO: test Reference Set
@@ -474,23 +474,23 @@ func TestResponseWithoutHuffman(t *testing.T) {
 		HeaderField{"date", "Mon, 21 Oct 2013 20:13:22 GMT"},
 	}
 
-	client.Decode(buf)
+	context.Decode(buf)
 
 	// test Header Table
-	if client.HT.Size() != 215 {
-		t.Errorf("\n got %v\nwant %v", client.HT.Size(), 215)
+	if context.HT.Size() != 215 {
+		t.Errorf("\n got %v\nwant %v", context.HT.Size(), 215)
 	}
 
 	// test Header Table
 	for i, hf := range expectedHeaderFields {
-		if !(*client.HT.HeaderFields[i] == hf) {
-			t.Errorf("\n got %v\nwant %v", *client.HT.HeaderFields[i], hf)
+		if !(*context.HT.HeaderFields[i] == hf) {
+			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], hf)
 		}
 	}
 
 	// test Emitted Set
-	if !reflect.DeepEqual(client.ES.Header, expectedHeader) {
-		t.Errorf("\n got %v\nwant %v", client.ES.Header, expectedHeader)
+	if !reflect.DeepEqual(context.ES.Header, expectedHeader) {
+		t.Errorf("\n got %v\nwant %v", context.ES.Header, expectedHeader)
 	}
 
 	// TODO: test Reference Set
@@ -499,7 +499,7 @@ func TestResponseWithoutHuffman(t *testing.T) {
 
 func TestResponseWithHuffman(t *testing.T) {
 
-	client := NewContext(RESPONSE, 256)
+	context := NewContext(RESPONSE, 256)
 
 	/**
 	 * First Response
@@ -537,23 +537,23 @@ func TestResponseWithHuffman(t *testing.T) {
 		HeaderField{":status", "302"},
 	}
 
-	client.Decode(buf)
+	context.Decode(buf)
 
 	// test Header Table
-	if client.HT.Size() != 222 {
-		t.Errorf("\n got %v\nwant %v", client.HT.Size(), 222)
+	if context.HT.Size() != 222 {
+		t.Errorf("\n got %v\nwant %v", context.HT.Size(), 222)
 	}
 
 	// test Header Table
 	for i, hf := range expectedHeaderFields {
-		if !(*client.HT.HeaderFields[i] == hf) {
-			t.Errorf("\n got %v\nwant %v", *client.HT.HeaderFields[i], hf)
+		if !(*context.HT.HeaderFields[i] == hf) {
+			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], hf)
 		}
 	}
 
 	// test Emitted Set
-	if !reflect.DeepEqual(client.ES.Header, expectedHeader) {
-		t.Errorf("\n got %v\nwant %v", client.ES.Header, expectedHeader)
+	if !reflect.DeepEqual(context.ES.Header, expectedHeader) {
+		t.Errorf("\n got %v\nwant %v", context.ES.Header, expectedHeader)
 	}
 
 	// TODO: test Reference Set
@@ -581,23 +581,23 @@ func TestResponseWithHuffman(t *testing.T) {
 		HeaderField{"cache-control", "private"},
 	}
 
-	client.Decode(buf)
+	context.Decode(buf)
 
 	// test Header Table
-	if client.HT.Size() != 222 {
-		t.Errorf("\n got %v\nwant %v", client.HT.Size(), 222)
+	if context.HT.Size() != 222 {
+		t.Errorf("\n got %v\nwant %v", context.HT.Size(), 222)
 	}
 
 	// test Header Table
 	for i, hf := range expectedHeaderFields {
-		if !(*client.HT.HeaderFields[i] == hf) {
-			t.Errorf("\n got %v\nwant %v", *client.HT.HeaderFields[i], hf)
+		if !(*context.HT.HeaderFields[i] == hf) {
+			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], hf)
 		}
 	}
 
 	// test Emitted Set
-	if !reflect.DeepEqual(client.ES.Header, expectedHeader) {
-		t.Errorf("\n got %v\nwant %v", client.ES.Header, expectedHeader)
+	if !reflect.DeepEqual(context.ES.Header, expectedHeader) {
+		t.Errorf("\n got %v\nwant %v", context.ES.Header, expectedHeader)
 	}
 
 	// TODO: test Reference Set
@@ -647,23 +647,23 @@ func TestResponseWithHuffman(t *testing.T) {
 		HeaderField{"date", "Mon, 21 Oct 2013 20:13:22 GMT"},
 	}
 
-	client.Decode(buf)
+	context.Decode(buf)
 
 	// test Header Table
-	if client.HT.Size() != 215 {
-		t.Errorf("\n got %v\nwant %v", client.HT.Size(), 215)
+	if context.HT.Size() != 215 {
+		t.Errorf("\n got %v\nwant %v", context.HT.Size(), 215)
 	}
 
 	// test Header Table
 	for i, hf := range expectedHeaderFields {
-		if !(*client.HT.HeaderFields[i] == hf) {
-			t.Errorf("\n got %v\nwant %v", *client.HT.HeaderFields[i], hf)
+		if !(*context.HT.HeaderFields[i] == hf) {
+			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], hf)
 		}
 	}
 
 	// test Emitted Set
-	if !reflect.DeepEqual(client.ES.Header, expectedHeader) {
-		t.Errorf("\n got %v\nwant %v", client.ES.Header, expectedHeader)
+	if !reflect.DeepEqual(context.ES.Header, expectedHeader) {
+		t.Errorf("\n got %v\nwant %v", context.ES.Header, expectedHeader)
 	}
 
 	// TODO: test Reference Set
@@ -672,7 +672,7 @@ func TestResponseWithHuffman(t *testing.T) {
 
 func TestResponseWithoutHuffman_Eviction(t *testing.T) {
 
-	client := NewContext(RESPONSE, 256)
+	context := NewContext(RESPONSE, 256)
 
 	header := []struct {
 		name, value string
@@ -685,8 +685,8 @@ func TestResponseWithoutHuffman_Eviction(t *testing.T) {
 
 	for _, h := range header {
 		hf := NewHeaderField(h.name, h.value)
-		client.HT.Push(hf)
-		client.RS.Add(hf, false)
+		context.HT.Push(hf)
+		context.RS.Add(hf, false)
 	}
 
 	buf := []byte{
@@ -707,22 +707,22 @@ func TestResponseWithoutHuffman_Eviction(t *testing.T) {
 		HeaderField{"cache-control", "private"},
 	}
 
-	client.Decode(buf)
+	context.Decode(buf)
 
 	// test Header Table
-	if client.HT.Size() != 222 {
-		t.Errorf("\n got %v\nwant %v", client.HT.Size(), 222)
+	if context.HT.Size() != 222 {
+		t.Errorf("\n got %v\nwant %v", context.HT.Size(), 222)
 	}
 
 	// test Header Table
 	for i, hf := range expectedHeaderFields {
-		if !(*client.HT.HeaderFields[i] == hf) {
-			t.Errorf("\n got %v\nwant %v", *client.HT.HeaderFields[i], hf)
+		if !(*context.HT.HeaderFields[i] == hf) {
+			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], hf)
 		}
 	}
 
 	// test Emitted Set
-	if !reflect.DeepEqual(client.ES.Header, expectedHeader) {
-		t.Errorf("\n got %v\nwant %v", client.ES.Header, expectedHeader)
+	if !reflect.DeepEqual(context.ES.Header, expectedHeader) {
+		t.Errorf("\n got %v\nwant %v", context.ES.Header, expectedHeader)
 	}
 }
