@@ -49,8 +49,10 @@ func (c *Context) Decode(wire []byte) {
 	c.ES = NewEmittedSet()
 	c.RS.Reset()
 	Debug(Red("clean Emitted Set"))
-	Debug(
-		Cyan("\n===== Before Decode =====")+"%v%v"+Cyan("==========================="),
+	Debug(Cyan(
+		"\n===== Before Decode =====")+
+		"%v%v"+Cyan(
+		"==========================="),
 		c.HT.Dump(), c.RS.Dump())
 
 	frames := Decode(wire, c.CXT)
@@ -82,9 +84,10 @@ func (c *Context) Decode(wire []byte) {
 					 * 参照が Reference Set にあった場合
 					 * Reference Set から消す
 					 */
-					Debug(Red(fmt.Sprintf("Remove %v from ReferenceSet", headerField)))
+					Debug(Red(fmt.Sprintf("== Indexed - Remove ==")))
+					Debug(fmt.Sprintf("  idx = %v", index))
+					Debug(fmt.Sprintf("  -> HT[%v] = %v", index, headerField))
 					c.RS.Remove(headerField)
-					continue
 				} else {
 					/**
 					* 参照が Reference Set に無い場合
@@ -96,15 +99,15 @@ func (c *Context) Decode(wire []byte) {
 					Debug(fmt.Sprintf("  -> ST[%v] = %v", index, headerField))
 
 					// Emit
-					Debug(Blue("Emit"))
+					Debug(Blue("\tEmit"))
 					c.ES.Emit(headerField)
 
 					// ヘッダテーブルにコピーする
-					Debug(Blue("Add to HT"))
+					Debug(Blue("\tAdd to HT"))
 					c.HT.Push(headerField)
 
 					// その参照を RefSet に追加する
-					Debug(Blue("Add to RS"))
+					Debug(Blue("\tAdd to RS"))
 					c.RS.Add(headerField, EMITTED)
 				}
 			} else {
@@ -134,11 +137,11 @@ func (c *Context) Decode(wire []byte) {
 					Debug(fmt.Sprintf("  -> HT[%v] = %v", index, headerField))
 
 					// Emit
-					Debug(Blue("Emit"))
+					Debug(Blue("\tEmit"))
 					c.ES.Emit(headerField)
 
 					// その参照を RefSet に追加する
-					Debug(Blue("Add to RS"))
+					Debug(Blue("\tAdd to RS"))
 					c.RS.Add(headerField, EMITTED)
 				}
 			}
@@ -179,15 +182,15 @@ func (c *Context) Decode(wire []byte) {
 				 */
 
 				// Emit
-				Debug(Blue("Emit"))
+				Debug(Blue("\tEmit"))
 				c.ES.Emit(headerField)
 
 				// ヘッダテーブルにコピーする
-				Debug(Blue("Add to HT"))
+				Debug(Blue("\tAdd to HT"))
 				c.HT.Push(headerField)
 
 				// その参照を RefSet に追加する
-				Debug(Blue("Add to RS"))
+				Debug(Blue("\tAdd to RS"))
 				c.RS.Add(headerField, EMITTED)
 
 			} else {
@@ -196,7 +199,7 @@ func (c *Context) Decode(wire []byte) {
 				 */
 
 				// Emit
-				Debug(Blue("Emit"))
+				Debug(Blue("\tEmit"))
 				c.ES.Emit(headerField)
 			}
 
@@ -208,22 +211,22 @@ func (c *Context) Decode(wire []byte) {
 				// HT に追加する場合
 
 				// Emit
-				Debug(Blue("Emit"))
+				Debug(Blue("\tEmit"))
 				c.ES.Emit(headerField)
 
 				// ヘッダテーブルにコピーする
-				Debug(Blue("Add to HT"))
+				Debug(Blue("\tAdd to HT"))
 				c.HT.Push(headerField)
 
 				// その参照を RefSet に追加する
-				Debug(Blue("Add to RS"))
+				Debug(Blue("\tAdd to RS"))
 				c.RS.Add(headerField, EMITTED)
 
 			} else {
 				// HT に追加しない場合
 
 				// Emit
-				Debug(Blue("Emit"))
+				Debug(Blue("\tEmit"))
 				c.ES.Emit(headerField)
 			}
 
@@ -236,7 +239,7 @@ func (c *Context) Decode(wire []byte) {
 	for _, referencedField := range *c.RS {
 		if !referencedField.Emitted {
 			headerField := referencedField.HeaderField
-			Debug(Blue("Emit rest entries ")+"%v", *headerField)
+			Debug(Blue("\tEmit rest entries ")+"%v", *headerField)
 			c.ES.Emit(headerField)
 		}
 	}
