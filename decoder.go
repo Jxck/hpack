@@ -94,15 +94,26 @@ func DecodeString(buf *swrap.SWrap, n uint64) string {
 }
 
 func DecodeValue(buf *swrap.SWrap, cxt CXT) (value string) {
+	// 最初のバイトを取り出す
 	first := (*buf)[0]
+
+	// 最初の 1bit をみて huffman かどうか取得
 	huffmanEncoded := (first&0x80 == 0x80)
+
 	if huffmanEncoded {
+		// そのバイトを捨てる
 		buf.Shift()
+
+		// キャッシュした最初のバイトから 1 bit 目を消す
 		b := first & 127
+
+		// その長さの分だけバイト値を取り出す
 		code := []byte{}
 		for ; b > 0; b-- {
 			code = append(code, buf.Shift())
 		}
+
+		// コンテキストに合わせてデコード
 		if cxt == REQUEST {
 			value = string(huffman.DecodeRequest(code))
 		} else if cxt == RESPONSE {
