@@ -532,7 +532,8 @@ func TestResponseWithHuffman(t *testing.T) {
 		expectedHT           *HeaderTable
 	)
 
-	context = NewContext(RESPONSE, 256)
+	var HeaderTableSize int = 256
+	context = NewContext(RESPONSE, HeaderTableSize)
 
 	/**
 	 * First Response
@@ -708,7 +709,8 @@ func TestResponseWithHuffman(t *testing.T) {
 
 func TestResponseWithoutHuffman_Eviction(t *testing.T) {
 
-	context := NewContext(RESPONSE, 256)
+	var HeaderTableSize int = 256
+	context := NewContext(RESPONSE, HeaderTableSize)
 
 	header := []struct {
 		name, value string
