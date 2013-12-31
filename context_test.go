@@ -503,12 +503,12 @@ func TestResponseWithoutHuffman(t *testing.T) {
 
 func TestResponseWithHuffman(t *testing.T) {
 
-	client := NewContext(RESPONSE, DEFAULT_HEADER_TABLE_SIZE)
+	client := NewContext(RESPONSE, 256)
 
 	/**
-	 * First Request
+	 * First Response
 	 */
-	Debug(Pink("\n========== First Request ==============="))
+	Debug(Pink("\n========== First Response ==============="))
 
 	buf := []byte{
 		0x08, 0x82, 0x40, 0x9f,
@@ -561,6 +561,142 @@ func TestResponseWithHuffman(t *testing.T) {
 	}
 
 	// TODO: test Reference Set
+
+	/**
+	 * Second Response
+	 */
+	Debug(Pink("\n========== Second Response ==============="))
+
+	buf = []byte{
+		0x84, 0x8c,
+	}
+
+	expectedHeader = http.Header{
+		"Status":        []string{"200"},
+		"Cache-Control": []string{"private"},
+		"Date":          []string{"Mon, 21 Oct 2013 20:13:21 GMT"},
+		"Location":      []string{"https://www.example.com"},
+	}
+
+	expectedHeaderFields = []HeaderField{
+		HeaderField{":status", "200"},
+		HeaderField{"location", "https://www.example.com"},
+		HeaderField{"date", "Mon, 21 Oct 2013 20:13:21 GMT"},
+		HeaderField{"cache-control", "private"},
+	}
+
+	client.Decode(buf)
+
+	// test Header Table
+	if client.HT.Size() != 222 {
+		t.Errorf("\n got %v\nwant %v", client.HT.Size(), 222)
+	}
+
+	// test Header Table
+	for i, hf := range expectedHeaderFields {
+		if !(*client.HT.HeaderFields[i] == hf) {
+			t.Errorf("\n got %v\nwant %v", *client.HT.HeaderFields[i], hf)
+		}
+	}
+
+	// test Emitted Set
+	if !reflect.DeepEqual(client.ES.Header, expectedHeader) {
+		t.Errorf("\n got %v\nwant %v", client.ES.Header, expectedHeader)
+	}
+
+	// TODO: test Reference Set
+
+	/**
+	 * Third Response
+	 */
+	Debug(Pink("\n========== Third Response ==============="))
+
+	buf = []byte{
+		0x83, 0x84,
+		0x84, 0x03,
+		0x92, 0xa2,
+		0xfb, 0xa2,
+		0x03, 0x20,
+		0xf2, 0xab,
+		0x30, 0x31,
+		0x24, 0x01,
+		0x8b, 0x49,
+		0x0d, 0x33,
+		0x09, 0xe8,
+		0x77, 0x1d,
+		0x84, 0xe1,
+		0xfb, 0xb3,
+		0x0f, 0x84,
+		0x84, 0x83,
+		0x83, 0x3a,
+		0xb3, 0xdf,
+		0x7d, 0xfb,
+		0x36, 0xd3,
+		0xd9, 0xe1,
+		0xfc, 0xfc,
+		0x3f, 0xaf,
+		0xe7, 0xab,
+		0xfc, 0xfe,
+		0xfc, 0xbf,
+		0xaf, 0x3e,
+		0xdf, 0x2f,
+		0x97, 0x7f,
+		0xd3, 0x6f,
+		0xf7, 0xfd,
+		0x79, 0xf6,
+		0xf9, 0x77,
+		0xfd, 0x3d,
+		0xe1, 0x6b,
+		0xfa, 0x46,
+		0xfe, 0x10,
+		0xd8, 0x89,
+		0x44, 0x7d,
+		0xe1, 0xce,
+		0x18, 0xe5,
+		0x65, 0xf7,
+		0x6c, 0x2f,
+	}
+
+	expectedHeader = http.Header{
+		"Status":           []string{"200"},
+		"Cache-Control":    []string{"private"},
+		"Date":             []string{"Mon, 21 Oct 2013 20:13:22 GMT"},
+		"Location":         []string{"https://www.example.com"},
+		"Content-Encoding": []string{"gzip"},
+		"Set-Cookie":       []string{"foo=ASDJKHQKBZXOQWEOPIUAXQWEOIU; max-age=3600; version=1"},
+	}
+
+	expectedHeaderFields = []HeaderField{
+		HeaderField{"set-cookie", "foo=ASDJKHQKBZXOQWEOPIUAXQWEOIU; max-age=3600; version=1"},
+		HeaderField{"content-encoding", "gzip"},
+		HeaderField{"date", "Mon, 21 Oct 2013 20:13:22 GMT"},
+	}
+
+	client.Decode(buf)
+
+	t.Log(client.HT.Dump())
+	t.Log(client.RS.Dump())
+	t.Log(client.ES.Dump())
+
+	// test Header Table
+	if client.HT.Size() != 215 {
+		t.Errorf("\n got %v\nwant %v", client.HT.Size(), 215)
+	}
+
+	// test Header Table
+	for i, hf := range expectedHeaderFields {
+		if !(*client.HT.HeaderFields[i] == hf) {
+			t.Errorf("\n got %v\nwant %v", *client.HT.HeaderFields[i], hf)
+		}
+	}
+
+	// test Emitted Set
+	if !reflect.DeepEqual(client.ES.Header, expectedHeader) {
+		t.Errorf("\n got %v\nwant %v", client.ES.Header, expectedHeader)
+	}
+
+	// TODO: test Reference Set
+
 }
 
 func TestResponseWithoutHuffman_Eviction(t *testing.T) {
