@@ -10,11 +10,10 @@ import (
 
 func TestRequestWithoutHuffman(t *testing.T) {
 	var (
-		context              Context
-		buf                  []byte
-		expectedHeader       http.Header
-		expectedHT           *HeaderTable
-		expectedHeaderFields []HeaderField
+		context        Context
+		buf            []byte
+		expectedHeader http.Header
+		expectedHT     *HeaderTable
 	)
 
 	context = NewContext(REQUEST, DEFAULT_HEADER_TABLE_SIZE)
@@ -104,9 +103,9 @@ func TestRequestWithoutHuffman(t *testing.T) {
 	}
 
 	// test Header Table
-	for i, hf := range expectedHeaderFields {
-		if !(*context.HT.HeaderFields[i] == hf) {
-			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], hf)
+	for i, hf := range expectedHT.HeaderFields {
+		if !(*context.HT.HeaderFields[i] == *hf) {
+			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], *hf)
 		}
 	}
 
@@ -161,9 +160,9 @@ func TestRequestWithoutHuffman(t *testing.T) {
 	}
 
 	// test Header Table
-	for i, hf := range expectedHeaderFields {
-		if !(*context.HT.HeaderFields[i] == hf) {
-			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], hf)
+	for i, hf := range expectedHT.HeaderFields {
+		if !(*context.HT.HeaderFields[i] == *hf) {
+			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], *hf)
 		}
 	}
 
@@ -181,7 +180,6 @@ func TestRequestWithHuffman(t *testing.T) {
 		buf                  []byte
 		expectedHeader       http.Header
 		expectedHT           *HeaderTable
-		expectedHeaderFields []HeaderField
 	)
 
 	context = NewContext(REQUEST, DEFAULT_HEADER_TABLE_SIZE)
@@ -221,9 +219,9 @@ func TestRequestWithHuffman(t *testing.T) {
 	}
 
 	// test Header Table
-	for i, hf := range expectedHeaderFields {
-		if !(*context.HT.HeaderFields[i] == hf) {
-			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], hf)
+	for i, hf := range expectedHT.HeaderFields {
+		if !(*context.HT.HeaderFields[i] == *hf) {
+			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], *hf)
 		}
 	}
 
@@ -252,25 +250,26 @@ func TestRequestWithHuffman(t *testing.T) {
 		"Cache-Control": []string{"no-cache"},
 	}
 
-	expectedHeaderFields = []HeaderField{
-		HeaderField{"cache-control", "no-cache"},
-		HeaderField{":authority", "www.example.com"},
-		HeaderField{":path", "/"},
-		HeaderField{":scheme", "http"},
-		HeaderField{":method", "GET"},
+	expectedHT = NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
+	expectedHT.HeaderFields = []*HeaderField{
+		&HeaderField{"cache-control", "no-cache"},
+		&HeaderField{":authority", "www.example.com"},
+		&HeaderField{":path", "/"},
+		&HeaderField{":scheme", "http"},
+		&HeaderField{":method", "GET"},
 	}
 
 	context.Decode(buf)
 
 	// test Header Table
-	if context.HT.Size() != 233 {
-		t.Errorf("\n got %v\nwant %v", context.HT.Size(), 233)
+	if context.HT.Size() != expectedHT.Size() {
+		t.Errorf("\n got %v\nwant %v", context.HT.Size(), expectedHT.Size())
 	}
 
 	// test Header Table
-	for i, hf := range expectedHeaderFields {
-		if !(*context.HT.HeaderFields[i] == hf) {
-			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], hf)
+	for i, hf := range expectedHT.HeaderFields {
+		if !(*context.HT.HeaderFields[i] == *hf) {
+			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], *hf)
 		}
 	}
 
@@ -296,8 +295,6 @@ func TestRequestWithHuffman(t *testing.T) {
 		0xff,
 	}
 
-	context.Decode(buf)
-
 	expectedHeader = http.Header{
 		"Method":     []string{"GET"},
 		"Scheme":     []string{"https"},
@@ -306,26 +303,29 @@ func TestRequestWithHuffman(t *testing.T) {
 		"Custom-Key": []string{"custom-value"},
 	}
 
-	expectedHeaderFields = []HeaderField{
-		HeaderField{"custom-key", "custom-value"},
-		HeaderField{":path", "/index.html"},
-		HeaderField{":scheme", "https"},
-		HeaderField{"cache-control", "no-cache"},
-		HeaderField{":authority", "www.example.com"},
-		HeaderField{":path", "/"},
-		HeaderField{":scheme", "http"},
-		HeaderField{":method", "GET"},
+	expectedHT = NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
+	expectedHT.HeaderFields = []*HeaderField{
+		&HeaderField{"custom-key", "custom-value"},
+		&HeaderField{":path", "/index.html"},
+		&HeaderField{":scheme", "https"},
+		&HeaderField{"cache-control", "no-cache"},
+		&HeaderField{":authority", "www.example.com"},
+		&HeaderField{":path", "/"},
+		&HeaderField{":scheme", "http"},
+		&HeaderField{":method", "GET"},
+	}
+
+	context.Decode(buf)
+
+	// test Header Table
+	if context.HT.Size() != expectedHT.Size() {
+		t.Errorf("\n got %v\nwant %v", context.HT.Size(), expectedHT.Size())
 	}
 
 	// test Header Table
-	if context.HT.Size() != 379 {
-		t.Errorf("\n got %v\nwant %v", context.HT.Size(), 379)
-	}
-
-	// test Header Table
-	for i, hf := range expectedHeaderFields {
-		if !(*context.HT.HeaderFields[i] == hf) {
-			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], hf)
+	for i, hf := range expectedHT.HeaderFields {
+		if !(*context.HT.HeaderFields[i] == *hf) {
+			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], *hf)
 		}
 	}
 
@@ -338,16 +338,22 @@ func TestRequestWithHuffman(t *testing.T) {
 }
 
 func TestResponseWithoutHuffman(t *testing.T) {
+	var (
+		context              Context
+		buf                  []byte
+		expectedHeader       http.Header
+		expectedHT           *HeaderTable
+	)
 
 	var HeaderTableSize int = 256
-	context := NewContext(RESPONSE, HeaderTableSize)
+	context = NewContext(RESPONSE, HeaderTableSize)
 
 	/**
 	 * First Response
 	 */
 	Debug(Pink("\n========== First Response ==============="))
 
-	buf := []byte{
+	buf = []byte{
 		0x08, 0x82, 0x40, 0x9f,
 		0x18, 0x86, 0xc3, 0x1b,
 		0x39, 0xbf, 0x38, 0x7f,
@@ -364,31 +370,32 @@ func TestResponseWithoutHuffman(t *testing.T) {
 		0xff,
 	}
 
-	expectedHeader := http.Header{
+	expectedHeader = http.Header{
 		"Status":        []string{"302"},
 		"Cache-Control": []string{"private"},
 		"Date":          []string{"Mon, 21 Oct 2013 20:13:21 GMT"},
 		"Location":      []string{"https://www.example.com"},
 	}
 
-	expectedHeaderFields := []HeaderField{
-		HeaderField{"location", "https://www.example.com"},
-		HeaderField{"date", "Mon, 21 Oct 2013 20:13:21 GMT"},
-		HeaderField{"cache-control", "private"},
-		HeaderField{":status", "302"},
+	expectedHT = NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
+	expectedHT.HeaderFields = []*HeaderField{
+		&HeaderField{"location", "https://www.example.com"},
+		&HeaderField{"date", "Mon, 21 Oct 2013 20:13:21 GMT"},
+		&HeaderField{"cache-control", "private"},
+		&HeaderField{":status", "302"},
 	}
 
 	context.Decode(buf)
 
 	// test Header Table
-	if context.HT.Size() != 222 {
-		t.Errorf("\n got %v\nwant %v", context.HT.Size(), 222)
+	if context.HT.Size() != expectedHT.Size() {
+		t.Errorf("\n got %v\nwant %v", context.HT.Size(), expectedHT.Size())
 	}
 
 	// test Header Table
-	for i, hf := range expectedHeaderFields {
-		if !(*context.HT.HeaderFields[i] == hf) {
-			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], hf)
+	for i, hf := range expectedHT.HeaderFields {
+		if !(*context.HT.HeaderFields[i] == *hf) {
+			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], *hf)
 		}
 	}
 
@@ -415,24 +422,25 @@ func TestResponseWithoutHuffman(t *testing.T) {
 		"Location":      []string{"https://www.example.com"},
 	}
 
-	expectedHeaderFields = []HeaderField{
-		HeaderField{":status", "200"},
-		HeaderField{"location", "https://www.example.com"},
-		HeaderField{"date", "Mon, 21 Oct 2013 20:13:21 GMT"},
-		HeaderField{"cache-control", "private"},
+	expectedHT = NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
+	expectedHT.HeaderFields = []*HeaderField{
+		&HeaderField{":status", "200"},
+		&HeaderField{"location", "https://www.example.com"},
+		&HeaderField{"date", "Mon, 21 Oct 2013 20:13:21 GMT"},
+		&HeaderField{"cache-control", "private"},
 	}
 
 	context.Decode(buf)
 
 	// test Header Table
-	if context.HT.Size() != 222 {
-		t.Errorf("\n got %v\nwant %v", context.HT.Size(), 222)
+	if context.HT.Size() != expectedHT.Size() {
+		t.Errorf("\n got %v\nwant %v", context.HT.Size(), expectedHT.Size())
 	}
 
 	// test Header Table
-	for i, hf := range expectedHeaderFields {
-		if !(*context.HT.HeaderFields[i] == hf) {
-			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], hf)
+	for i, hf := range expectedHT.HeaderFields {
+		if !(*context.HT.HeaderFields[i] == *hf) {
+			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], *hf)
 		}
 	}
 
@@ -486,23 +494,24 @@ func TestResponseWithoutHuffman(t *testing.T) {
 		"Set-Cookie":       []string{"foo=ASDJKHQKBZXOQWEOPIUAXQWEOIU; max-age=3600; version=1"},
 	}
 
-	expectedHeaderFields = []HeaderField{
-		HeaderField{"set-cookie", "foo=ASDJKHQKBZXOQWEOPIUAXQWEOIU; max-age=3600; version=1"},
-		HeaderField{"content-encoding", "gzip"},
-		HeaderField{"date", "Mon, 21 Oct 2013 20:13:22 GMT"},
+	expectedHT = NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
+	expectedHT.HeaderFields = []*HeaderField{
+		&HeaderField{"set-cookie", "foo=ASDJKHQKBZXOQWEOPIUAXQWEOIU; max-age=3600; version=1"},
+		&HeaderField{"content-encoding", "gzip"},
+		&HeaderField{"date", "Mon, 21 Oct 2013 20:13:22 GMT"},
 	}
 
 	context.Decode(buf)
 
 	// test Header Table
-	if context.HT.Size() != 215 {
-		t.Errorf("\n got %v\nwant %v", context.HT.Size(), 215)
+	if context.HT.Size() != expectedHT.Size() {
+		t.Errorf("\n got %v\nwant %v", context.HT.Size(), expectedHT.Size())
 	}
 
 	// test Header Table
-	for i, hf := range expectedHeaderFields {
-		if !(*context.HT.HeaderFields[i] == hf) {
-			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], hf)
+	for i, hf := range expectedHT.HeaderFields {
+		if !(*context.HT.HeaderFields[i] == *hf) {
+			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], *hf)
 		}
 	}
 
@@ -516,15 +525,21 @@ func TestResponseWithoutHuffman(t *testing.T) {
 }
 
 func TestResponseWithHuffman(t *testing.T) {
+	var (
+		context              Context
+		buf                  []byte
+		expectedHeader       http.Header
+		expectedHT           *HeaderTable
+	)
 
-	context := NewContext(RESPONSE, 256)
+	context = NewContext(RESPONSE, 256)
 
 	/**
 	 * First Response
 	 */
 	Debug(Pink("\n========== First Response ==============="))
 
-	buf := []byte{
+	buf = []byte{
 		0x08, 0x82, 0x40, 0x9f,
 		0x18, 0x86, 0xc3, 0x1b,
 		0x39, 0xbf, 0x38, 0x7f,
@@ -541,31 +556,32 @@ func TestResponseWithHuffman(t *testing.T) {
 		0xff,
 	}
 
-	expectedHeader := http.Header{
+	expectedHeader = http.Header{
 		"Status":        []string{"302"},
 		"Cache-Control": []string{"private"},
 		"Date":          []string{"Mon, 21 Oct 2013 20:13:21 GMT"},
 		"Location":      []string{"https://www.example.com"},
 	}
 
-	expectedHeaderFields := []HeaderField{
-		HeaderField{"location", "https://www.example.com"},
-		HeaderField{"date", "Mon, 21 Oct 2013 20:13:21 GMT"},
-		HeaderField{"cache-control", "private"},
-		HeaderField{":status", "302"},
+	expectedHT = NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
+	expectedHT.HeaderFields = []*HeaderField{
+		&HeaderField{"location", "https://www.example.com"},
+		&HeaderField{"date", "Mon, 21 Oct 2013 20:13:21 GMT"},
+		&HeaderField{"cache-control", "private"},
+		&HeaderField{":status", "302"},
 	}
 
 	context.Decode(buf)
 
 	// test Header Table
-	if context.HT.Size() != 222 {
-		t.Errorf("\n got %v\nwant %v", context.HT.Size(), 222)
+	if context.HT.Size() != expectedHT.Size() {
+		t.Errorf("\n got %v\nwant %v", context.HT.Size(), expectedHT.Size())
 	}
 
 	// test Header Table
-	for i, hf := range expectedHeaderFields {
-		if !(*context.HT.HeaderFields[i] == hf) {
-			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], hf)
+	for i, hf := range expectedHT.HeaderFields {
+		if !(*context.HT.HeaderFields[i] == *hf) {
+			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], *hf)
 		}
 	}
 
@@ -592,24 +608,25 @@ func TestResponseWithHuffman(t *testing.T) {
 		"Location":      []string{"https://www.example.com"},
 	}
 
-	expectedHeaderFields = []HeaderField{
-		HeaderField{":status", "200"},
-		HeaderField{"location", "https://www.example.com"},
-		HeaderField{"date", "Mon, 21 Oct 2013 20:13:21 GMT"},
-		HeaderField{"cache-control", "private"},
+	expectedHT = NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
+	expectedHT.HeaderFields = []*HeaderField{
+		&HeaderField{":status", "200"},
+		&HeaderField{"location", "https://www.example.com"},
+		&HeaderField{"date", "Mon, 21 Oct 2013 20:13:21 GMT"},
+		&HeaderField{"cache-control", "private"},
 	}
 
 	context.Decode(buf)
 
 	// test Header Table
-	if context.HT.Size() != 222 {
-		t.Errorf("\n got %v\nwant %v", context.HT.Size(), 222)
+	if context.HT.Size() != expectedHT.Size() {
+		t.Errorf("\n got %v\nwant %v", context.HT.Size(), expectedHT.Size())
 	}
 
 	// test Header Table
-	for i, hf := range expectedHeaderFields {
-		if !(*context.HT.HeaderFields[i] == hf) {
-			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], hf)
+	for i, hf := range expectedHT.HeaderFields {
+		if !(*context.HT.HeaderFields[i] == *hf) {
+			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], *hf)
 		}
 	}
 
@@ -659,23 +676,24 @@ func TestResponseWithHuffman(t *testing.T) {
 		"Set-Cookie":       []string{"foo=ASDJKHQKBZXOQWEOPIUAXQWEOIU; max-age=3600; version=1"},
 	}
 
-	expectedHeaderFields = []HeaderField{
-		HeaderField{"set-cookie", "foo=ASDJKHQKBZXOQWEOPIUAXQWEOIU; max-age=3600; version=1"},
-		HeaderField{"content-encoding", "gzip"},
-		HeaderField{"date", "Mon, 21 Oct 2013 20:13:22 GMT"},
+	expectedHT = NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
+	expectedHT.HeaderFields = []*HeaderField{
+		&HeaderField{"set-cookie", "foo=ASDJKHQKBZXOQWEOPIUAXQWEOIU; max-age=3600; version=1"},
+		&HeaderField{"content-encoding", "gzip"},
+		&HeaderField{"date", "Mon, 21 Oct 2013 20:13:22 GMT"},
 	}
 
 	context.Decode(buf)
 
 	// test Header Table
-	if context.HT.Size() != 215 {
-		t.Errorf("\n got %v\nwant %v", context.HT.Size(), 215)
+	if context.HT.Size() != expectedHT.Size() {
+		t.Errorf("\n got %v\nwant %v", context.HT.Size(), expectedHT.Size())
 	}
 
 	// test Header Table
-	for i, hf := range expectedHeaderFields {
-		if !(*context.HT.HeaderFields[i] == hf) {
-			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], hf)
+	for i, hf := range expectedHT.HeaderFields {
+		if !(*context.HT.HeaderFields[i] == *hf) {
+			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], *hf)
 		}
 	}
 
@@ -718,24 +736,25 @@ func TestResponseWithoutHuffman_Eviction(t *testing.T) {
 		"Location":      []string{"https://www.example.com"},
 	}
 
-	expectedHeaderFields := []HeaderField{
-		HeaderField{":status", "200"},
-		HeaderField{"location", "https://www.example.com"},
-		HeaderField{"date", "Mon, 21 Oct 2013 20:13:21 GMT"},
-		HeaderField{"cache-control", "private"},
+	expectedHT := NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
+	expectedHT.HeaderFields = []*HeaderField{
+		&HeaderField{":status", "200"},
+		&HeaderField{"location", "https://www.example.com"},
+		&HeaderField{"date", "Mon, 21 Oct 2013 20:13:21 GMT"},
+		&HeaderField{"cache-control", "private"},
 	}
 
 	context.Decode(buf)
 
 	// test Header Table
-	if context.HT.Size() != 222 {
-		t.Errorf("\n got %v\nwant %v", context.HT.Size(), 222)
+	if context.HT.Size() != expectedHT.Size() {
+		t.Errorf("\n got %v\nwant %v", context.HT.Size(), expectedHT.Size())
 	}
 
 	// test Header Table
-	for i, hf := range expectedHeaderFields {
-		if !(*context.HT.HeaderFields[i] == hf) {
-			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], hf)
+	for i, hf := range expectedHT.HeaderFields {
+		if !(*context.HT.HeaderFields[i] == *hf) {
+			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], *hf)
 		}
 	}
 
