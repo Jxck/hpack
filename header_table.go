@@ -11,7 +11,6 @@ func init() {
 	log.SetFlags(log.Lshortfile)
 }
 
-// TODO: what is default ?
 const DEFAULT_HEADER_TABLE_SIZE int = 4096
 
 // The header table is a component used to associate stored header
@@ -65,7 +64,7 @@ func (ht *HeaderTable) Remove(index int) {
 // until make space of size in Header Table
 func (ht *HeaderTable) Eviction() (removed int) {
 	for ht.Size() > ht.HEADER_TABLE_SIZE {
-		Debug(Red("Eviction") + " %v", ht.HeaderFields[len(ht.HeaderFields) - 1])
+		Debug(Red("Eviction")+" %v", ht.HeaderFields[len(ht.HeaderFields)-1])
 		ht.Remove(len(ht.HeaderFields) - 1)
 		removed++
 	}
