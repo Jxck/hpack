@@ -51,9 +51,9 @@ func (c *Context) Decode(wire []byte) {
 	Debug(Red("clean Emitted Set"))
 	Debug(Cyan(
 		"\n===== Before Decode =====")+
-		"%v%v"+Cyan(
+		"%v"+Cyan(
 		"==========================="),
-		c.HT.Dump(), c.RS.Dump())
+		c.Dump())
 
 	frames := Decode(wire, c.CXT)
 	for _, frame := range frames {
