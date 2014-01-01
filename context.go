@@ -257,6 +257,8 @@ func (c *Context) Eviction() (count int) {
 	return
 }
 
+// Push new enctory to Header Table
+// and Eviction
 func (c *Context) Push(hf *HeaderField) {
 	c.HT.Push(hf)
 	c.Eviction()
