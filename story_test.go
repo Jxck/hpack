@@ -65,22 +65,22 @@ func readJsonFile(path string) TestFile {
 
 func RunStory(testfile TestFile, t *testing.T) {
 	context := NewContext(testfile.Context == "request", DEFAULT_HEADER_TABLE_SIZE)
-	for _, v := range testfile.Cases {
-		wire, err := hex.DecodeString(v.Wire)
+	for _, cases := range testfile.Cases {
+		wire, err := hex.DecodeString(cases.Wire)
 		if err != nil {
 			log.Fatal(err)
 		}
-		t.Log("Decode Wire", v.Wire)
 		context.Decode(wire)
 
 		expectedHeader := make(http.Header)
-		for _, v := range v.Headers {
+		for _, v := range cases.Headers {
 			for v, k := range v {
 				expectedHeader.Add(RemovePrefix(v), k)
 			}
 		}
 		if !reflect.DeepEqual(context.ES.Header, expectedHeader) {
-			t.Errorf("\n got %v\nwant %v", context.ES.Header, expectedHeader)
+			e := EmittedSet{expectedHeader}
+			t.Fatalf("actual %v expected %v", context.ES.Dump(), e.Dump())
 		}
 	}
 }
@@ -88,7 +88,7 @@ func RunStory(testfile TestFile, t *testing.T) {
 const dir string = "./hpack-test-case/node-http2-hpack/"
 
 func TestSingleStory(t *testing.T) {
-	testcases := readJsonFile(dir + "story_06.json")
+	testcases := readJsonFile(dir + "story_29.json")
 	RunStory(testcases, t)
 }
 
