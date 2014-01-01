@@ -3,10 +3,11 @@ package hpack
 import (
 	"encoding/hex"
 	"encoding/json"
+	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"reflect"
-	"strings"
 	"testing"
 )
 
@@ -48,9 +49,14 @@ type TestFile struct {
 	Cases       []TestCase
 }
 
-func toJSON(jsoncase string) TestFile {
+func readJsonFile(path string) TestFile {
+	file, err := os.Open(path)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	var test TestFile
-	err := json.NewDecoder(strings.NewReader(jsoncase)).Decode(&test)
+	err = json.NewDecoder(file).Decode(&test)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -59,7 +65,6 @@ func toJSON(jsoncase string) TestFile {
 
 func RunStory(testfile TestFile, t *testing.T) {
 	context := NewContext(testfile.Context == "request", DEFAULT_HEADER_TABLE_SIZE)
-
 	for _, v := range testfile.Cases {
 		wire, err := hex.DecodeString(v.Wire)
 		if err != nil {
@@ -80,70 +85,11 @@ func RunStory(testfile TestFile, t *testing.T) {
 }
 
 func TestStory(t *testing.T) {
-	// story_06 faild
-	jsoncase := `
-{
-  "context": "request", 
-  "cases": [
-    {
-      "header_table_size": 4096, 
-      "wire": "82870388f4466d6912d2717787", 
-      "headers": [
-        {
-          ":method": "GET"
-        }, 
-        {
-          ":scheme": "http"
-        }, 
-        {
-          ":authority": "yahoo.co.jp"
-        }, 
-        {
-          ":path": "/"
-        }
-      ]
-    }, 
-    {
-      "header_table_size": 4096, 
-      "wire": "028bdb6d89e88cdad225a4e2ef83", 
-      "headers": [
-        {
-          ":method": "GET"
-        }, 
-        {
-          ":scheme": "http"
-        }, 
-        {
-          ":authority": "www.yahoo.co.jp"
-        }, 
-        {
-          ":path": "/"
-        }
-      ]
-    }, 
-    {
-      "header_table_size": 4096, 
-      "wire": "0187e44f45699138bb439905688c860116b820e38274602db9365642534c5a0f591cccbf8283", 
-      "headers": [
-        {
-          ":method": "GET"
-        }, 
-        {
-          ":scheme": "http"
-        }, 
-        {
-          ":authority": "k.yimg.jp"
-        }, 
-        {
-          ":path": "/images/top/sp2/cmn/logo-ns-130528.png"
-        }
-      ]
-    }
-  ], 
-  "description": "Encoded by nghttp2. The basic encoding strategy is described in http://lists.w3.org/Archives/Public/ietf-http-wg/2013JulSep/1135.html We use huffman encoding only if it produces strictly shorter byte string than original. We make some headers not indexing at all, but this does not always result in less bits on the wire.", 
-  "draft": 5
-}
-	`
-	testcases := toJSON(jsoncase)
-	RunStory(testcases, t)
+	const dir string = "./hpack-test-case/nghttp2/"
+	files, _ := ioutil.ReadDir(dir)
+	for _, f := range files {
+		t.Log("==== test", dir+f.Name())
+		testcases := readJsonFile(dir + f.Name())
+		RunStory(testcases, t)
+	}
 }
