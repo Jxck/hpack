@@ -704,7 +704,6 @@ func TestResponseWithHuffman(t *testing.T) {
 	}
 
 	// TODO: test Reference Set
-
 }
 
 func TestResponseWithoutHuffman_Eviction(t *testing.T) {

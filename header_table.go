@@ -2,8 +2,6 @@ package hpack
 
 import (
 	"fmt"
-	. "github.com/jxck/color"
-	. "github.com/jxck/logger"
 	"log"
 )
 
@@ -48,27 +46,17 @@ func (ht *HeaderTable) Len() int {
 func (ht *HeaderTable) Push(hf *HeaderField) {
 	tmp := []*HeaderField{hf}
 	ht.HeaderFields = append(tmp, ht.HeaderFields...)
-	ht.Eviction()
 }
 
 // remove Header at index i
-func (ht *HeaderTable) Remove(index int) {
+func (ht *HeaderTable) Remove(index int) *HeaderField {
 	// https://code.google.com/p/go-wiki/wiki/SliceTricks
 	copy(ht.HeaderFields[index:], ht.HeaderFields[index+1:])
 	// avoid memory leak
-	ht.HeaderFields[len(ht.HeaderFields)-1] = &HeaderField{}
+	removed := ht.HeaderFields[len(ht.HeaderFields)-1]
+	ht.HeaderFields[len(ht.HeaderFields)-1] = &HeaderField{} // GC
 	ht.HeaderFields = ht.HeaderFields[:len(ht.HeaderFields)-1]
-}
-
-// removing entry from top
-// until make space of size in Header Table
-func (ht *HeaderTable) Eviction() (removed int) {
-	for ht.Size() > ht.HEADER_TABLE_SIZE {
-		Debug(Red("Eviction")+" %v", ht.HeaderFields[len(ht.HeaderFields)-1])
-		ht.Remove(len(ht.HeaderFields) - 1)
-		removed++
-	}
-	return
+	return removed
 }
 
 func (ht *HeaderTable) Dump() (str string) {

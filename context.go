@@ -104,7 +104,7 @@ func (c *Context) Decode(wire []byte) {
 
 					// ヘッダテーブルにコピーする
 					Debug(Blue("\tAdd to HT"))
-					c.HT.Push(headerField)
+					c.Push(headerField)
 
 					// その参照を RefSet に追加する
 					Debug(Blue("\tAdd to RS"))
@@ -187,7 +187,7 @@ func (c *Context) Decode(wire []byte) {
 
 				// ヘッダテーブルにコピーする
 				Debug(Blue("\tAdd to HT"))
-				c.HT.Push(headerField)
+				c.Push(headerField)
 
 				// その参照を RefSet に追加する
 				Debug(Blue("\tAdd to RS"))
@@ -216,7 +216,7 @@ func (c *Context) Decode(wire []byte) {
 
 				// ヘッダテーブルにコピーする
 				Debug(Blue("\tAdd to HT"))
-				c.HT.Push(headerField)
+				c.Push(headerField)
 
 				// その参照を RefSet に追加する
 				Debug(Blue("\tAdd to RS"))
@@ -243,6 +243,23 @@ func (c *Context) Decode(wire []byte) {
 			c.ES.Emit(headerField)
 		}
 	}
+}
+
+// removing entry from top
+// until make space of size in Header Table
+func (c *Context) Eviction() (count int) {
+	for c.HT.Size() > c.HT.HEADER_TABLE_SIZE {
+		Debug(Red("Eviction")+" %v", c.HT.HeaderFields[len(c.HT.HeaderFields)-1])
+		removed := c.HT.Remove(len(c.HT.HeaderFields) - 1)
+		c.RS.Remove(removed)
+		count++
+	}
+	return
+}
+
+func (c *Context) Push(hf *HeaderField) {
+	c.HT.Push(hf)
+	c.Eviction()
 }
 
 func (c *Context) Dump() string {
