@@ -63,21 +63,30 @@ func TestHeaderTablePush(t *testing.T) {
 	}
 }
 
-/*
 func TestHeaderTableAddBigEntry(t *testing.T) {
 	ht := HeaderTable{
 		40,
-		Headers{
+		[]*HeaderField{
 			{"1234", "1234"}, // 40
 		},
 	}
-	ht.Add("12345", "12345") // over 40
+
+	hf := NewHeaderField("12345", "12345") // over 40
+	ht.Push(hf)                            // 42byte
+
 	size := ht.Size()
+	length := ht.Len()
+
 	if size != 0 {
 		t.Errorf("got %v\nwant %v", size, 0)
 	}
+
+	if length != 0 {
+		t.Errorf("got %v\nwant %v", length, 0)
+	}
 }
 
+/*
 func TestHeaderTableReplace(t *testing.T) {
 	ht := HeaderTable{
 		200,
