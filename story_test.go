@@ -84,8 +84,14 @@ func RunStory(testfile TestFile, t *testing.T) {
 	}
 }
 
+const dir string = "./hpack-test-case/node-http2-hpack/"
+
+func TestSingleStory(t *testing.T) {
+	testcases := readJsonFile(dir + "story_06.json")
+	RunStory(testcases, t)
+}
+
 func TestStory(t *testing.T) {
-	const dir string = "./hpack-test-case/nghttp2/"
 	files, _ := ioutil.ReadDir(dir)
 	for _, f := range files {
 		t.Log("==== test", dir+f.Name())
