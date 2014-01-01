@@ -49,6 +49,12 @@ func TestHeaderTablePush(t *testing.T) {
 		t.Errorf("got %v\nwant %v", size, expected)
 	}
 
+	length := ht.Len()
+	expected = 4
+	if length != expected {
+		t.Errorf("got %v\nwant %v", length, expected)
+	}
+
 	h := ht.HeaderFields[0]
 	if h.Name != "hello" || h.Value != "world" {
 		t.Errorf("\ngot %v\nwant %v", h, hf)
