@@ -28,11 +28,10 @@ func TestHeaderTableSizeLen(t *testing.T) {
 	}
 }
 
-/*
-func TestHeaderTableAdd(t *testing.T) {
+func TestHeaderTablePush(t *testing.T) {
 	ht := HeaderTable{
 		200,
-		Headers{ // 200byte
+		[]*HeaderField{ // 200byte
 			{"1234", "1234"},
 			{"1234", "1234"},
 			{"1234", "1234"},
@@ -42,19 +41,21 @@ func TestHeaderTableAdd(t *testing.T) {
 	}
 
 	// should remove 2 entry before add
-	ht.Add("Hello", "World") // 42byte
+	hf := NewHeaderField("hello", "world")
+	ht.Push(hf) // 42byte
 	size := ht.Size()
 	expected := 200 - 40 - 40 + 42
 	if size != expected {
 		t.Errorf("got %v\nwant %v", size, expected)
 	}
 
-	h := ht.Headers[len(ht.Headers)-1]
-	if h.Name != "Hello" || h.Value != "World" {
-		t.Errorf("got %v\nwant %v", h, Header{"Hello", "World"})
+	h := ht.HeaderFields[0]
+	if h.Name != "hello" || h.Value != "world" {
+		t.Errorf("\ngot %v\nwant %v", h, hf)
 	}
 }
 
+/*
 func TestHeaderTableAddBigEntry(t *testing.T) {
 	ht := HeaderTable{
 		40,
