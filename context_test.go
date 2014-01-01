@@ -176,10 +176,10 @@ func TestRequestWithoutHuffman(t *testing.T) {
 
 func TestRequestWithHuffman(t *testing.T) {
 	var (
-		context              Context
-		buf                  []byte
-		expectedHeader       http.Header
-		expectedHT           *HeaderTable
+		context        Context
+		buf            []byte
+		expectedHeader http.Header
+		expectedHT     *HeaderTable
 	)
 
 	context = NewContext(REQUEST, DEFAULT_HEADER_TABLE_SIZE)
@@ -339,10 +339,10 @@ func TestRequestWithHuffman(t *testing.T) {
 
 func TestResponseWithoutHuffman(t *testing.T) {
 	var (
-		context              Context
-		buf                  []byte
-		expectedHeader       http.Header
-		expectedHT           *HeaderTable
+		context        Context
+		buf            []byte
+		expectedHeader http.Header
+		expectedHT     *HeaderTable
 	)
 
 	var HeaderTableSize int = 256
@@ -526,10 +526,10 @@ func TestResponseWithoutHuffman(t *testing.T) {
 
 func TestResponseWithHuffman(t *testing.T) {
 	var (
-		context              Context
-		buf                  []byte
-		expectedHeader       http.Header
-		expectedHT           *HeaderTable
+		context        Context
+		buf            []byte
+		expectedHeader http.Header
+		expectedHT     *HeaderTable
 	)
 
 	var HeaderTableSize int = 256
