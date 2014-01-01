@@ -28,7 +28,7 @@ func TestHeaderTableSizeLen(t *testing.T) {
 	}
 }
 
-func TestHeaderTablePush(t *testing.T) {
+func TestHeaderTablePushEviction(t *testing.T) {
 	ht := HeaderTable{
 		200,
 		[]*HeaderField{ // 200byte
@@ -63,7 +63,7 @@ func TestHeaderTablePush(t *testing.T) {
 	}
 }
 
-func TestHeaderTableAddBigEntry(t *testing.T) {
+func TestHeaderTableAddBigEntryEviction(t *testing.T) {
 	ht := HeaderTable{
 		40,
 		[]*HeaderField{
@@ -101,34 +101,12 @@ func TestHeaderTableRemove(t *testing.T) {
 	ht.Remove(3)
 
 	hf := ht.HeaderFields[3]
-	if hf.Name != "5555" || hf.Value != "5554" {
+	if hf.Name != "5555" || hf.Value != "5555" {
 		t.Errorf("ht[%v] of %v shoud %v", 3, ht.Dump(), HeaderField{"5555", "5555"})
 	}
 }
 
 /*
-func TestHeaderTableAllocSpace(t *testing.T) {
-	ht := HeaderTable{
-		200,
-		Headers{ // 200byte
-			{"1234", "1234"},
-			{"1234", "1234"},
-			{"1234", "1234"},
-			{"1234", "1234"},
-			{"1234", "1234"},
-		},
-	}
-	removed := ht.AllocSpace(20) // remove 1 entry (40byte)
-	if removed != 1 {
-		t.Errorf("got %v\nwant %v", removed, 1)
-	}
-
-	size := ht.Size()
-	if size != 160 {
-		t.Errorf("got %v\nwant %v", size, 160)
-	}
-}
-
 func TestHeaderTableDeleteAll(t *testing.T) {
 	ht := HeaderTable{
 		200,
