@@ -4,6 +4,8 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"log"
+	"net/http"
+	"reflect"
 	"strings"
 	"testing"
 )
@@ -64,7 +66,16 @@ func RunStory(testfile TestFile, t *testing.T) {
 			log.Fatal(err)
 		}
 		context.Decode(wire)
-		log.Println(context.ES.Dump())
+
+		expectedHeader := make(http.Header)
+		for _, v := range v.Headers {
+			for v, k := range v {
+				expectedHeader.Add(RemovePrefix(v), k)
+			}
+		}
+		if !reflect.DeepEqual(context.ES.Header, expectedHeader) {
+			t.Errorf("\n got %v\nwant %v", context.ES.Header, expectedHeader)
+		}
 	}
 }
 
