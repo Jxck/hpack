@@ -115,15 +115,11 @@ func DecodeLiteral(buf *swrap.SWrap, cxt CXT) (value string) {
 	log.Println("buf.Len()", buf.Len())
 
 	if huffmanEncoded {
-		// そのバイトを捨てる
-		buf.Shift()
+		// 最初のバイトから 1 bit 目を消す
+		(*buf)[0] = first & 127
 
-		// キャッシュした最初のバイトから 1 bit 目を消す
-		b := first & 127
-
-		log.Printf("b %b %v", b, b)
-
-		// TODO: ここで prefixed Integer 7 で読む。
+		// ここで prefixed Integer 7 で読む。
+		b := DecodePrefixedInteger(buf, 7)
 
 		// その長さの分だけバイト値を取り出す
 		code := []byte{}
