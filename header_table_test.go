@@ -40,21 +40,23 @@ func TestHeaderTablePush(t *testing.T) {
 		},
 	}
 
-	// should remove 2 entry before add
+	// should evict 2 entry before add
 	hf := NewHeaderField("hello", "world")
 	ht.Push(hf) // 42byte
+
+	// should reduce size 2 * 40byte
 	size := ht.Size()
-	expected := 200 - 40 - 40 + 42
-	if size != expected {
-		t.Errorf("got %v\nwant %v", size, expected)
+	if size != 200-40-40+42 {
+		t.Errorf("got %v\nwant %v", size, 200-40-40+42)
 	}
 
+	// should reduce length 2
 	length := ht.Len()
-	expected = 4
-	if length != expected {
-		t.Errorf("got %v\nwant %v", length, expected)
+	if length != 4 {
+		t.Errorf("got %v\nwant %v", length, 4)
 	}
 
+	// first field should added hf
 	h := ht.HeaderFields[0]
 	if h.Name != "hello" || h.Value != "world" {
 		t.Errorf("\ngot %v\nwant %v", h, hf)
