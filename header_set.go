@@ -16,7 +16,7 @@ type HeaderSet []*HeaderField
 func (headerSet HeaderSet) ToHeader() http.Header {
 	headers := make(http.Header, len(headerSet))
 	for _, headerField := range headerSet {
-		name := RemovePrefix(headerField.Name)
+		name := headerField.Name
 		value := headerField.Value
 		headers.Add(name, value)
 	}

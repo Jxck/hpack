@@ -75,7 +75,7 @@ func RunStory(testfile TestFile, t *testing.T) {
 		expectedHeader := make(http.Header)
 		for _, v := range cases.Headers {
 			for v, k := range v {
-				expectedHeader.Add(RemovePrefix(v), k)
+				expectedHeader.Add(v, k)
 			}
 		}
 		if !reflect.DeepEqual(context.ES.Header, expectedHeader) {
