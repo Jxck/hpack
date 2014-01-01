@@ -86,94 +86,27 @@ func TestHeaderTableAddBigEntry(t *testing.T) {
 	}
 }
 
-/*
-func TestHeaderTableReplace(t *testing.T) {
-	ht := HeaderTable{
-		200,
-		Headers{ // 200byte
-			{"0000", "0000"},
-			{"1111", "1111"},
-			{"2222", "2222"},
-			{"3333", "3333"},
-			{"4444", "4444"}, // 40byte
-		},
-	}
-	ht.Replace("xxxx", "yyyy", 4)
-
-	h := ht.Headers[4]
-	if h.Name != "xxxx" || h.Value != "yyyy" {
-		t.Errorf("got %v\nwant %v", h, Header{"xxxx", "yyyy"})
-	}
-}
-
-func TestHeaderTableReplaceWithAlloc(t *testing.T) {
-	ht := HeaderTable{
-		200,
-		Headers{ // 200byte
-			{"0000", "0000"},
-			{"1111", "1111"},
-			{"2222", "2222"},
-			{"3333", "3333"},
-			{"4444", "4444"}, // 40byte
-		},
-	}
-	ht.Replace("xxxxx", "yyyyy", 3)
-
-	h := ht.Headers[2]
-	if h.Name != "xxxxx" || h.Value != "yyyyy" {
-		t.Errorf("got %v\nwant %v", h, Header{"xxxxx", "yyyyy"})
-	}
-
-	ht = HeaderTable{
-		200,
-		Headers{ // 200byte
-			{"0000", "0000"},
-			{"1111", "1111"},
-			{"2222", "2222"},
-			{"3333", "3333"},
-			{"4444", "4444"}, // 40byte
-		},
-	}
-	ht.Replace("xxxxx", "yyyyy", 0)
-
-	h = ht.Headers[0]
-	if h.Name != "xxxxx" || h.Value != "yyyyy" {
-		t.Errorf("got %v\nwant %v", h, Header{"xxxxx", "yyyyy"})
-	}
-}
-
-func TestHeaderTableReplaceBigEntry(t *testing.T) {
-	ht := HeaderTable{
-		40,
-		Headers{
-			{"1234", "1234"}, // 40
-		},
-	}
-	ht.Replace("12345", "12345", 0) // over 40
-	size := ht.Size()
-	if size != 0 {
-		t.Errorf("got %v\nwant %v", size, 0)
-	}
-}
-
 func TestHeaderTableRemove(t *testing.T) {
-	reqHT := NewRequestHeaderTable()
-	reqHT.Remove(3)
-
-	h := reqHT.Headers[3]
-	if h.Name != ":method" || h.Value != "GET" {
-		t.Errorf("got %v\nwant %v", h, Header{":method", "GET"})
+	ht := HeaderTable{
+		DEFAULT_HEADER_TABLE_SIZE,
+		[]*HeaderField{ // 200byte
+			{"1111", "1111"},
+			{"2222", "2222"},
+			{"3333", "3333"},
+			{"4444", "4444"},
+			{"5555", "5555"}, // 40byte
+		},
 	}
 
-	reqHT = NewRequestHeaderTable()
-	reqHT.Remove(0)
+	ht.Remove(3)
 
-	h = reqHT.Headers[0]
-	if h.Name != ":scheme" || h.Value != "https" {
-		t.Errorf("got %v\nwant %v", h, Header{":scheme", "https"})
+	hf := ht.HeaderFields[3]
+	if hf.Name != "5555" || hf.Value != "5554" {
+		t.Errorf("ht[%v] of %v shoud %v", 3, ht.Dump(), HeaderField{"5555", "5555"})
 	}
 }
 
+/*
 func TestHeaderTableAllocSpace(t *testing.T) {
 	ht := HeaderTable{
 		200,
