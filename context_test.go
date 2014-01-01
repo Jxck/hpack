@@ -708,7 +708,7 @@ func TestResponseWithHuffman(t *testing.T) {
 }
 
 func TestResponseWithoutHuffman_Eviction(t *testing.T) {
-
+	// :TODO remove from referenceset
 	var HeaderTableSize int = 256
 	context := NewContext(RESPONSE, HeaderTableSize)
 

@@ -245,6 +245,10 @@ func (c *Context) Decode(wire []byte) {
 	}
 }
 
+func (c *Context) Dump() string {
+	return fmt.Sprintf("%v%v%v", c.HT.Dump(), c.RS.Dump(), c.ES.Dump())
+}
+
 /*
 func (c *Context) Encode(header http.Header) []byte {
 	var buf bytes.Buffer
