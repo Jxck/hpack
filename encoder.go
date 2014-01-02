@@ -1,45 +1,40 @@
 package hpack
 
 import (
-	"bytes"
 	integer "github.com/jxck/hpack/integer_representation"
+	"github.com/jxck/swrap"
 )
 
-func (frame *IndexedHeader) Encode() (buf *bytes.Buffer) {
+func (frame *IndexedHeader) Encode() (buf *swrap.SWrap) {
 	index := integer.Encode(frame.Index, 7)
-	buf = bytes.NewBuffer([]byte{128 + index[0]})
-	index = index[1:]
-	if len(index) > 0 {
-		buf.Write(index)
-	}
-	return buf
+	index[0] += 0x80
+	return &index
 }
 
-func (frame *IndexedLiteral) Encode() (buf *bytes.Buffer) {
+func (frame *IndexedLiteral) Encode() (buf *swrap.SWrap) {
+	// TODO: support huff encode
 	index := integer.Encode(frame.Index, 6)
-	if frame.Indexing {
-		buf = bytes.NewBuffer([]byte{index[0]}) // 00xx xxxx
-	} else {
-		buf = bytes.NewBuffer([]byte{64 + index[0]}) // 01xx xxxx
+	if !frame.Indexing {
+		index[0] += 0x40
 	}
-	index = index[1:]
-	if len(index) > 0 {
-		buf.Write(index)
-	}
-	buf.Write(integer.Encode(frame.ValueLength, 8))
-	buf.WriteString(frame.ValueString)
+	buf = &index
+	buf.Merge(integer.Encode(frame.ValueLength, 8))
+	buf.Merge([]byte(frame.ValueString))
 	return buf
 }
 
-func (frame *StringLiteral) Encode() (buf *bytes.Buffer) {
+func (frame *StringLiteral) Encode() (buf *swrap.SWrap) {
+	// TODO: support huff encode
+	sw := swrap.SWrap{}
 	if frame.Indexing {
-		buf = bytes.NewBuffer([]byte{0}) // 0000 0000
+		sw.Add(0) // 0000 0000
 	} else {
-		buf = bytes.NewBuffer([]byte{64}) // 0100 0000
+		sw.Add(0x40) // 0100 0000
 	}
-	buf.Write(integer.Encode(frame.NameLength, 8))
-	buf.WriteString(frame.NameString)
-	buf.Write(integer.Encode(frame.ValueLength, 8))
-	buf.WriteString(frame.ValueString)
+	buf = &sw
+	buf.Merge(integer.Encode(frame.NameLength, 8))
+	buf.Merge([]byte(frame.NameString))
+	buf.Merge(integer.Encode(frame.ValueLength, 8))
+	buf.Merge([]byte(frame.ValueString))
 	return buf
 }

@@ -1,11 +1,11 @@
 package hpack
 
 import (
-	"bytes"
+	"github.com/jxck/swrap"
 )
 
 type Frame interface {
-	Encode() *bytes.Buffer
+	Encode() *swrap.SWrap
 }
 
 // Indexed Header Field
