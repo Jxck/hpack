@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"log"
-	"net/http"
 	"os"
 	"reflect"
 	"testing"
@@ -39,7 +38,7 @@ const TestCaseDir string = "./hpack-test-case"
 type TestCase struct {
 	HeaderTableSize int `json:"header_table_size"`
 	Wire            string
-	Headers         []map[string]string
+	Headers         EmittedSet // []map[string]string
 }
 
 type TestFile struct {
@@ -72,15 +71,8 @@ func RunStory(testfile TestFile, t *testing.T) {
 		}
 		context.Decode(wire)
 
-		expectedHeader := make(http.Header)
-		for _, v := range cases.Headers {
-			for v, k := range v {
-				expectedHeader.Add(v, k)
-			}
-		}
-		if !reflect.DeepEqual(context.ES.Header, expectedHeader) {
-			e := EmittedSet{expectedHeader}
-			t.Fatalf("actual %v expected %v", context.ES.Dump(), e.Dump())
+		if !reflect.DeepEqual(context.ES, cases.Headers) {
+			t.Fatalf("actual %v expected %v", context.ES.Dump(), cases.Headers)
 		}
 	}
 }
@@ -93,7 +85,6 @@ func TestSingleStory(t *testing.T) {
 }
 
 func TestStory(t *testing.T) {
-	t.Skip()
 	files, _ := ioutil.ReadDir(dir)
 	for _, f := range files {
 		t.Log("==== test", dir+f.Name())

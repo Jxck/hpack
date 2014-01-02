@@ -2,34 +2,39 @@ package hpack
 
 import (
 	"fmt"
-	"net/http"
 )
 
-// Wrapper Type of http.Header
-// if you want to user range like http.Header
-// you need call range like this
-//
-// es := NewEmittedSet()
-// for name, value := range es.Header {
-//    log.Println(name, value)
-// }
-type EmittedSet struct {
-	http.Header
-}
+// List of Emitted Header
+// This will pass to Application
+type EmittedSet []HeaderField
 
 func NewEmittedSet() *EmittedSet {
-	return &EmittedSet{http.Header{}}
+	return &EmittedSet{}
 }
 
-// TODO: 重複したキーを登録した場合
-// e.Header["Hoge"] しないと map が取れない問題
 func (e *EmittedSet) Emit(hf *HeaderField) {
-	e.Add(hf.Name, hf.Value)
+	*e = append(*e, *hf)
 }
 
+func (e *EmittedSet) Len() int {
+	return len(*e)
+}
+
+// Sort Interface
+func (e *EmittedSet) Swap(i, j int) {
+	es := *e
+	es[i], es[j] = es[j], es[i]
+}
+
+func (e *EmittedSet) Less(i, j int) bool {
+	es := *e
+	return es[i].Name < es[j].Name
+}
+
+// Dump for Debug
 func (e *EmittedSet) Dump() (str string) {
 	str += "\n-------------- ES --------------\n"
-	for i, v := range e.Header {
+	for i, v := range *e {
 		str += fmt.Sprintln(i, v)
 	}
 	str += "--------------------------------\n"

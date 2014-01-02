@@ -3,18 +3,18 @@ package hpack
 import (
 	. "github.com/jxck/color"
 	. "github.com/jxck/logger"
-	"net/http"
 	"reflect"
+	"sort"
 	"testing"
 )
 
 func TestRequestWithoutHuffman(t *testing.T) {
 	var (
-		context        Context
-		buf            []byte
-		expectedHeader http.Header
-		expectedHT     *HeaderTable
-		expectedRS     ReferenceSet
+		context    Context
+		buf        []byte
+		expectedES *EmittedSet
+		expectedHT *HeaderTable
+		expectedRS ReferenceSet
 	)
 
 	context = NewContext(REQUEST, DEFAULT_HEADER_TABLE_SIZE)
@@ -32,11 +32,11 @@ func TestRequestWithoutHuffman(t *testing.T) {
 		0x2e, 0x63, 0x6f, 0x6d,
 	}
 
-	expectedHeader = http.Header{
-		":method":    []string{"GET"},
-		":scheme":    []string{"http"},
-		":path":      []string{"/"},
-		":authority": []string{"www.example.com"},
+	expectedES = &EmittedSet{
+		HeaderField{":method", "GET"},
+		HeaderField{":scheme", "http"},
+		HeaderField{":path", "/"},
+		HeaderField{":authority", "www.example.com"},
 	}
 
 	expectedHT = NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
@@ -69,8 +69,10 @@ func TestRequestWithoutHuffman(t *testing.T) {
 	}
 
 	// test Emitted Set
-	if !reflect.DeepEqual(context.ES.Header, expectedHeader) {
-		t.Errorf("\n got %v\nwant %v", context.ES.Header, expectedHeader)
+	sort.Sort(context.ES)
+	sort.Sort(expectedES)
+	if !reflect.DeepEqual(context.ES, expectedES) {
+		t.Errorf("\n got %v\nwant %v", context.ES, expectedES)
 	}
 
 	// test Reference Set
@@ -96,12 +98,12 @@ func TestRequestWithoutHuffman(t *testing.T) {
 		0x68, 0x65,
 	}
 
-	expectedHeader = http.Header{
-		":method":       []string{"GET"},
-		":scheme":       []string{"http"},
-		":path":         []string{"/"},
-		":authority":    []string{"www.example.com"},
-		"Cache-Control": []string{"no-cache"},
+	expectedES = &EmittedSet{
+		HeaderField{":method", "GET"},
+		HeaderField{":scheme", "http"},
+		HeaderField{":path", "/"},
+		HeaderField{":authority", "www.example.com"},
+		HeaderField{"cache-control", "no-cache"},
 	}
 
 	expectedHT = NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
@@ -136,8 +138,10 @@ func TestRequestWithoutHuffman(t *testing.T) {
 	}
 
 	// test Emitted Set
-	if !reflect.DeepEqual(context.ES.Header, expectedHeader) {
-		t.Errorf("\n got %v\nwant %v", context.ES.Header, expectedHeader)
+	sort.Sort(context.ES)
+	sort.Sort(expectedES)
+	if !reflect.DeepEqual(context.ES, expectedES) {
+		t.Errorf("\n got %v\nwant %v", context.ES, expectedES)
 	}
 
 	// test Reference Set
@@ -168,12 +172,12 @@ func TestRequestWithoutHuffman(t *testing.T) {
 		0x75, 0x65,
 	}
 
-	expectedHeader = http.Header{
-		":method":    []string{"GET"},
-		":scheme":    []string{"https"},
-		":path":      []string{"/index.html"},
-		":authority": []string{"www.example.com"},
-		"Custom-Key": []string{"custom-value"},
+	expectedES = &EmittedSet{
+		HeaderField{":method", "GET"},
+		HeaderField{":scheme", "https"},
+		HeaderField{":path", "/index.html"},
+		HeaderField{":authority", "www.example.com"},
+		HeaderField{"custom-key", "custom-value"},
 	}
 
 	expectedHT = NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
@@ -211,8 +215,10 @@ func TestRequestWithoutHuffman(t *testing.T) {
 	}
 
 	// test Emitted Set
-	if !reflect.DeepEqual(context.ES.Header, expectedHeader) {
-		t.Errorf("\n got %v\nwant %v", context.ES.Header, expectedHeader)
+	sort.Sort(context.ES)
+	sort.Sort(expectedES)
+	if !reflect.DeepEqual(context.ES, expectedES) {
+		t.Errorf("\n got %v\nwant %v", context.ES, expectedES)
 	}
 
 	// test Reference Set
@@ -230,11 +236,11 @@ func TestRequestWithoutHuffman(t *testing.T) {
 
 func TestRequestWithHuffman(t *testing.T) {
 	var (
-		context        Context
-		buf            []byte
-		expectedHeader http.Header
-		expectedHT     *HeaderTable
-		expectedRS     ReferenceSet
+		context    Context
+		buf        []byte
+		expectedES *EmittedSet
+		expectedHT *HeaderTable
+		expectedRS ReferenceSet
 	)
 
 	context = NewContext(REQUEST, DEFAULT_HEADER_TABLE_SIZE)
@@ -251,11 +257,11 @@ func TestRequestWithHuffman(t *testing.T) {
 		0x12, 0x25, 0xba, 0x7f,
 	}
 
-	expectedHeader = http.Header{
-		":method":    []string{"GET"},
-		":scheme":    []string{"http"},
-		":path":      []string{"/"},
-		":authority": []string{"www.example.com"},
+	expectedES = &EmittedSet{
+		HeaderField{":method", "GET"},
+		HeaderField{":scheme", "http"},
+		HeaderField{":path", "/"},
+		HeaderField{":authority", "www.example.com"},
 	}
 
 	expectedHT = NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
@@ -288,8 +294,10 @@ func TestRequestWithHuffman(t *testing.T) {
 	}
 
 	// test Emitted Set
-	if !reflect.DeepEqual(context.ES.Header, expectedHeader) {
-		t.Errorf("\n got %v\nwant %v", context.ES.Header, expectedHeader)
+	sort.Sort(context.ES)
+	sort.Sort(expectedES)
+	if !reflect.DeepEqual(context.ES, expectedES) {
+		t.Errorf("\n got %v\nwant %v", context.ES, expectedES)
 	}
 
 	// test Reference Set
@@ -314,12 +322,12 @@ func TestRequestWithHuffman(t *testing.T) {
 		0x4a, 0x13, 0x98, 0xff,
 	}
 
-	expectedHeader = http.Header{
-		":method":       []string{"GET"},
-		":scheme":       []string{"http"},
-		":path":         []string{"/"},
-		":authority":    []string{"www.example.com"},
-		"Cache-Control": []string{"no-cache"},
+	expectedES = &EmittedSet{
+		HeaderField{":method", "GET"},
+		HeaderField{":scheme", "http"},
+		HeaderField{":path", "/"},
+		HeaderField{":authority", "www.example.com"},
+		HeaderField{"cache-control", "no-cache"},
 	}
 
 	expectedHT = NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
@@ -354,8 +362,10 @@ func TestRequestWithHuffman(t *testing.T) {
 	}
 
 	// test Emitted Set
-	if !reflect.DeepEqual(context.ES.Header, expectedHeader) {
-		t.Errorf("\n got %v\nwant %v", context.ES.Header, expectedHeader)
+	sort.Sort(context.ES)
+	sort.Sort(expectedES)
+	if !reflect.DeepEqual(context.ES, expectedES) {
+		t.Errorf("\n got %v\nwant %v", context.ES, expectedES)
 	}
 
 	// test Reference Set
@@ -385,12 +395,12 @@ func TestRequestWithHuffman(t *testing.T) {
 		0xff,
 	}
 
-	expectedHeader = http.Header{
-		":method":    []string{"GET"},
-		":scheme":    []string{"https"},
-		":path":      []string{"/index.html"},
-		":authority": []string{"www.example.com"},
-		"Custom-Key": []string{"custom-value"},
+	expectedES = &EmittedSet{
+		HeaderField{":method", "GET"},
+		HeaderField{":scheme", "https"},
+		HeaderField{":path", "/index.html"},
+		HeaderField{":authority", "www.example.com"},
+		HeaderField{"custom-key", "custom-value"},
 	}
 
 	expectedHT = NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
@@ -428,8 +438,10 @@ func TestRequestWithHuffman(t *testing.T) {
 	}
 
 	// test Emitted Set
-	if !reflect.DeepEqual(context.ES.Header, expectedHeader) {
-		t.Errorf("\n got %v\nwant %v", context.ES.Header, expectedHeader)
+	sort.Sort(context.ES)
+	sort.Sort(expectedES)
+	if !reflect.DeepEqual(context.ES, expectedES) {
+		t.Errorf("\n got %v\nwant %v", context.ES, expectedES)
 	}
 
 	// test Reference Set
@@ -447,11 +459,11 @@ func TestRequestWithHuffman(t *testing.T) {
 
 func TestResponseWithoutHuffman(t *testing.T) {
 	var (
-		context        Context
-		buf            []byte
-		expectedHeader http.Header
-		expectedHT     *HeaderTable
-		expectedRS     ReferenceSet
+		context    Context
+		buf        []byte
+		expectedES *EmittedSet
+		expectedHT *HeaderTable
+		expectedRS ReferenceSet
 	)
 
 	var HeaderTableSize int = 256
@@ -479,11 +491,11 @@ func TestResponseWithoutHuffman(t *testing.T) {
 		0xff,
 	}
 
-	expectedHeader = http.Header{
-		":status":       []string{"302"},
-		"Cache-Control": []string{"private"},
-		"Date":          []string{"Mon, 21 Oct 2013 20:13:21 GMT"},
-		"Location":      []string{"https://www.example.com"},
+	expectedES = &EmittedSet{
+		HeaderField{":status", "302"},
+		HeaderField{"cache-control", "private"},
+		HeaderField{"date", "Mon, 21 Oct 2013 20:13:21 GMT"},
+		HeaderField{"location", "https://www.example.com"},
 	}
 
 	expectedHT = NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
@@ -516,8 +528,10 @@ func TestResponseWithoutHuffman(t *testing.T) {
 	}
 
 	// test Emitted Set
-	if !reflect.DeepEqual(context.ES.Header, expectedHeader) {
-		t.Errorf("\n got %v\nwant %v", context.ES.Header, expectedHeader)
+	sort.Sort(context.ES)
+	sort.Sort(expectedES)
+	if !reflect.DeepEqual(context.ES, expectedES) {
+		t.Errorf("\n got %v\nwant %v", context.ES, expectedES)
 	}
 
 	// test Reference Set
@@ -541,11 +555,11 @@ func TestResponseWithoutHuffman(t *testing.T) {
 		0x84, 0x8c,
 	}
 
-	expectedHeader = http.Header{
-		":status":       []string{"200"},
-		"Cache-Control": []string{"private"},
-		"Date":          []string{"Mon, 21 Oct 2013 20:13:21 GMT"},
-		"Location":      []string{"https://www.example.com"},
+	expectedES = &EmittedSet{
+		HeaderField{":status", "200"},
+		HeaderField{"cache-control", "private"},
+		HeaderField{"date", "Mon, 21 Oct 2013 20:13:21 GMT"},
+		HeaderField{"location", "https://www.example.com"},
 	}
 
 	expectedHT = NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
@@ -578,8 +592,10 @@ func TestResponseWithoutHuffman(t *testing.T) {
 	}
 
 	// test Emitted Set
-	if !reflect.DeepEqual(context.ES.Header, expectedHeader) {
-		t.Errorf("\n got %v\nwant %v", context.ES.Header, expectedHeader)
+	sort.Sort(context.ES)
+	sort.Sort(expectedES)
+	if !reflect.DeepEqual(context.ES, expectedES) {
+		t.Errorf("\n got %v\nwant %v", context.ES, expectedES)
 	}
 
 	// test Reference Set
@@ -628,13 +644,13 @@ func TestResponseWithoutHuffman(t *testing.T) {
 		0x3d, 0x31,
 	}
 
-	expectedHeader = http.Header{
-		":status":          []string{"200"},
-		"Cache-Control":    []string{"private"},
-		"Date":             []string{"Mon, 21 Oct 2013 20:13:22 GMT"},
-		"Location":         []string{"https://www.example.com"},
-		"Content-Encoding": []string{"gzip"},
-		"Set-Cookie":       []string{"foo=ASDJKHQKBZXOQWEOPIUAXQWEOIU; max-age=3600; version=1"},
+	expectedES = &EmittedSet{
+		HeaderField{":status", "200"},
+		HeaderField{"cache-control", "private"},
+		HeaderField{"date", "Mon, 21 Oct 2013 20:13:22 GMT"},
+		HeaderField{"location", "https://www.example.com"},
+		HeaderField{"content-encoding", "gzip"},
+		HeaderField{"set-cookie", "foo=ASDJKHQKBZXOQWEOPIUAXQWEOIU; max-age=3600; version=1"},
 	}
 
 	expectedHT = NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
@@ -665,8 +681,10 @@ func TestResponseWithoutHuffman(t *testing.T) {
 	}
 
 	// test Emitted Set
-	if !reflect.DeepEqual(context.ES.Header, expectedHeader) {
-		t.Errorf("\n got %v\nwant %v", context.ES.Header, expectedHeader)
+	sort.Sort(context.ES)
+	sort.Sort(expectedES)
+	if !reflect.DeepEqual(context.ES, expectedES) {
+		t.Errorf("\n got %v\nwant %v", context.ES, expectedES)
 	}
 
 	// test Reference Set
@@ -684,10 +702,10 @@ func TestResponseWithoutHuffman(t *testing.T) {
 
 func TestResponseWithHuffman(t *testing.T) {
 	var (
-		context        Context
-		buf            []byte
-		expectedHeader http.Header
-		expectedHT     *HeaderTable
+		context    Context
+		buf        []byte
+		expectedES *EmittedSet
+		expectedHT *HeaderTable
 	)
 
 	var HeaderTableSize int = 256
@@ -715,11 +733,11 @@ func TestResponseWithHuffman(t *testing.T) {
 		0xff,
 	}
 
-	expectedHeader = http.Header{
-		":status":       []string{"302"},
-		"Cache-Control": []string{"private"},
-		"Date":          []string{"Mon, 21 Oct 2013 20:13:21 GMT"},
-		"Location":      []string{"https://www.example.com"},
+	expectedES = &EmittedSet{
+		HeaderField{":status", "302"},
+		HeaderField{"cache-control", "private"},
+		HeaderField{"date", "Mon, 21 Oct 2013 20:13:21 GMT"},
+		HeaderField{"location", "https://www.example.com"},
 	}
 
 	expectedHT = NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
@@ -745,8 +763,10 @@ func TestResponseWithHuffman(t *testing.T) {
 	}
 
 	// test Emitted Set
-	if !reflect.DeepEqual(context.ES.Header, expectedHeader) {
-		t.Errorf("\n got %v\nwant %v", context.ES.Header, expectedHeader)
+	sort.Sort(context.ES)
+	sort.Sort(expectedES)
+	if !reflect.DeepEqual(context.ES, expectedES) {
+		t.Errorf("\n got %v\nwant %v", context.ES, expectedES)
 	}
 
 	// TODO: test Reference Set
@@ -760,11 +780,11 @@ func TestResponseWithHuffman(t *testing.T) {
 		0x84, 0x8c,
 	}
 
-	expectedHeader = http.Header{
-		":status":       []string{"200"},
-		"Cache-Control": []string{"private"},
-		"Date":          []string{"Mon, 21 Oct 2013 20:13:21 GMT"},
-		"Location":      []string{"https://www.example.com"},
+	expectedES = &EmittedSet{
+		HeaderField{":status", "200"},
+		HeaderField{"cache-control", "private"},
+		HeaderField{"date", "Mon, 21 Oct 2013 20:13:21 GMT"},
+		HeaderField{"location", "https://www.example.com"},
 	}
 
 	expectedHT = NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
@@ -790,8 +810,10 @@ func TestResponseWithHuffman(t *testing.T) {
 	}
 
 	// test Emitted Set
-	if !reflect.DeepEqual(context.ES.Header, expectedHeader) {
-		t.Errorf("\n got %v\nwant %v", context.ES.Header, expectedHeader)
+	sort.Sort(context.ES)
+	sort.Sort(expectedES)
+	if !reflect.DeepEqual(context.ES, expectedES) {
+		t.Errorf("\n got %v\nwant %v", context.ES, expectedES)
 	}
 
 	// TODO: test Reference Set
@@ -826,13 +848,13 @@ func TestResponseWithHuffman(t *testing.T) {
 		0x6c, 0x2f,
 	}
 
-	expectedHeader = http.Header{
-		":status":          []string{"200"},
-		"Cache-Control":    []string{"private"},
-		"Date":             []string{"Mon, 21 Oct 2013 20:13:22 GMT"},
-		"Location":         []string{"https://www.example.com"},
-		"Content-Encoding": []string{"gzip"},
-		"Set-Cookie":       []string{"foo=ASDJKHQKBZXOQWEOPIUAXQWEOIU; max-age=3600; version=1"},
+	expectedES = &EmittedSet{
+		HeaderField{":status", "200"},
+		HeaderField{"cache-control", "private"},
+		HeaderField{"date", "Mon, 21 Oct 2013 20:13:22 GMT"},
+		HeaderField{"location", "https://www.example.com"},
+		HeaderField{"content-encoding", "gzip"},
+		HeaderField{"set-cookie", "foo=ASDJKHQKBZXOQWEOPIUAXQWEOIU; max-age=3600; version=1"},
 	}
 
 	expectedHT = NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
@@ -857,8 +879,10 @@ func TestResponseWithHuffman(t *testing.T) {
 	}
 
 	// test Emitted Set
-	if !reflect.DeepEqual(context.ES.Header, expectedHeader) {
-		t.Errorf("\n got %v\nwant %v", context.ES.Header, expectedHeader)
+	sort.Sort(context.ES)
+	sort.Sort(expectedES)
+	if !reflect.DeepEqual(context.ES, expectedES) {
+		t.Errorf("\n got %v\nwant %v", context.ES, expectedES)
 	}
 
 	// TODO: test Reference Set
@@ -888,11 +912,11 @@ func TestResponseWithoutHuffman_Eviction(t *testing.T) {
 		0x84, 0x8c,
 	}
 
-	expectedHeader := http.Header{
-		":status":       []string{"200"},
-		"Cache-Control": []string{"private"},
-		"Date":          []string{"Mon, 21 Oct 2013 20:13:21 GMT"},
-		"Location":      []string{"https://www.example.com"},
+	expectedES := &EmittedSet{
+		HeaderField{":status", "200"},
+		HeaderField{"cache-control", "private"},
+		HeaderField{"date", "Mon, 21 Oct 2013 20:13:21 GMT"},
+		HeaderField{"location", "https://www.example.com"},
 	}
 
 	expectedHT := NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
@@ -918,7 +942,9 @@ func TestResponseWithoutHuffman_Eviction(t *testing.T) {
 	}
 
 	// test Emitted Set
-	if !reflect.DeepEqual(context.ES.Header, expectedHeader) {
-		t.Errorf("\n got %v\nwant %v", context.ES.Header, expectedHeader)
+	sort.Sort(context.ES)
+	sort.Sort(expectedES)
+	if !reflect.DeepEqual(context.ES, expectedES) {
+		t.Errorf("\n got %v\nwant %v", context.ES, expectedES)
 	}
 }
