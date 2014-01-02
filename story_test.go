@@ -88,18 +88,20 @@ func RunStory(testfile TestFile, t *testing.T) {
 	}
 }
 
-const dir string = "./hpack-test-case/node-http2-hpack/"
-
-func TestSingleStory(t *testing.T) {
-	testcases := readJsonFile(dir + "story_29.json")
-	RunStory(testcases, t)
-}
+// func TestSingleStory(t *testing.T) {
+// 	testcases := readJsonFile(dir + "story_29.json")
+// 	RunStory(testcases, t)
+// }
 
 func TestStory(t *testing.T) {
-	files, _ := ioutil.ReadDir(dir)
-	for _, f := range files {
-		t.Log("==== test", dir+f.Name())
-		testcases := readJsonFile(dir + f.Name())
-		RunStory(testcases, t)
+	dirs := []string{"./hpack-test-case/node-http2-hpack/", "./hpack-test-case/nghttp2/", "./hpack-test-case/haskell-http2/"}
+
+	for _, dir := range dirs {
+		files, _ := ioutil.ReadDir(dir)
+		for _, f := range files {
+			t.Log("==== test", dir+f.Name())
+			testcases := readJsonFile(dir + f.Name())
+			RunStory(testcases, t)
+		}
 	}
 }
