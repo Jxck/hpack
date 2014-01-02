@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"reflect"
+	"sort"
 	"testing"
 )
 
@@ -38,7 +39,7 @@ const TestCaseDir string = "./hpack-test-case"
 type TestCase struct {
 	HeaderTableSize int `json:"header_table_size"`
 	Wire            string
-	Headers         EmittedSet // []map[string]string
+	Headers         []map[string]string
 }
 
 type TestFile struct {
@@ -71,8 +72,18 @@ func RunStory(testfile TestFile, t *testing.T) {
 		}
 		context.Decode(wire)
 
-		if !reflect.DeepEqual(context.ES, cases.Headers) {
-			t.Fatalf("actual %v expected %v", context.ES.Dump(), cases.Headers)
+		expectedES := &EmittedSet{}
+		for _, header := range cases.Headers {
+			for key, value := range header {
+				expectedES.Emit(NewHeaderField(key, value))
+			}
+		}
+
+		sort.Sort(context.ES)
+		sort.Sort(expectedES)
+
+		if !reflect.DeepEqual(context.ES, expectedES) {
+			t.Fatalf("actual %v expected %v", context.ES.Dump(), expectedES.Dump())
 		}
 	}
 }

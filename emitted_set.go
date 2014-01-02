@@ -28,6 +28,9 @@ func (e *EmittedSet) Swap(i, j int) {
 
 func (e *EmittedSet) Less(i, j int) bool {
 	es := *e
+	if es[i].Name == es[j].Name {
+		return es[i].Value < es[j].Value
+	}
 	return es[i].Name < es[j].Name
 }
 
