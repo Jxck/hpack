@@ -49,6 +49,10 @@ func (rs *ReferenceSet) Has(hf *HeaderField) bool {
 
 // remove given reference from refset
 func (rs *ReferenceSet) Remove(hf *HeaderField) bool {
+	// search as same as Has() dose
+	// not use Has() because it dosen't returns index
+	// and I don't want to return (bool, int) as Has()
+	// for 'if' statement
 	for i, rf := range *rs {
 		if hf == rf.HeaderField {
 			tmp := *rs
@@ -67,6 +71,7 @@ func (rs *ReferenceSet) Reset() {
 	}
 }
 
+// Dump for Debug
 func (rs *ReferenceSet) Dump() (str string) {
 	str += "\n-------------- RS --------------\n"
 	for i, v := range *rs {

@@ -1,31 +1,5 @@
 package hpack
 
-/*
-  HT 1 0 1
-     2 1 2
-     3 2 3
-     4 3 4
-  ST 5 0 1
-     6 1 2
-     7 2 3
-     8 3 4
-
-  i = 8
-  T[8] = ST[3] = ST[8-4-1]
-
-
-HT
-1 0
-2 1
-3 2
-4 3
-5 0
-6 1
-7 2
-8 3
-. .
-58 53
-*/
 var StaticHeaderTable = []*HeaderField{
 	/* 0*/ {":authority", ""},
 	/* 1*/ {":method", "GET"},

@@ -48,7 +48,7 @@ func (c *Context) Decode(wire []byte) {
 	// 各デコードごとに前回のをリセットする。
 	c.ES = NewEmittedSet()
 	c.RS.Reset()
-	Debug(Red("clean Emitted Set"))
+	Info(Red("clean Emitted Set"))
 	Debug(Cyan(
 		"\n===== Before Decode =====")+
 		"%v"+Cyan(
@@ -61,11 +61,11 @@ func (c *Context) Decode(wire []byte) {
 		case *IndexedHeader:
 			index := int(f.Index)
 
-			/**
-			 * idx=0 の場合 Reference Set を空にする
-			 */
 			if index == 0 {
-				Debug(Red("Empty ReferenceSet"))
+				/**
+				 * idx=0 の場合 Reference Set を空にする
+				 */
+				Info(Red("Empty ReferenceSet"))
 				c.RS.Empty()
 				continue
 			}
@@ -84,9 +84,12 @@ func (c *Context) Decode(wire []byte) {
 					 * 参照が Reference Set にあった場合
 					 * Reference Set から消す
 					 */
-					Debug(Red(fmt.Sprintf("== Indexed - Remove ==")))
-					Debug(fmt.Sprintf("  idx = %v", index))
-					Debug(fmt.Sprintf("  -> HT[%v] = %v", index, headerField))
+
+					Info(Red(fmt.Sprintf("== Indexed - Remove ==")))
+					Info(fmt.Sprintf("  idx = %v", index))
+					Info(fmt.Sprintf("  -> HT[%v] = %v", index, headerField))
+
+					// remove
 					c.RS.Remove(headerField)
 				} else {
 					/**
@@ -94,20 +97,20 @@ func (c *Context) Decode(wire []byte) {
 					* 該当のエントリを取り出す
 					 */
 
-					Debug(Red("== Indexed - Add =="))
-					Debug(fmt.Sprintf("  idx = %v", index))
-					Debug(fmt.Sprintf("  -> ST[%v] = %v", index, headerField))
+					Info(Red("== Indexed - Add =="))
+					Info(fmt.Sprintf("  idx = %v", index))
+					Info(fmt.Sprintf("  -> ST[%v] = %v", index, headerField))
 
 					// Emit
-					Debug(Blue("\tEmit"))
+					Info(Blue("\tEmit"))
 					c.ES.Emit(headerField)
 
 					// ヘッダテーブルにコピーする
-					Debug(Blue("\tAdd to HT"))
+					Info(Blue("\tAdd to HT"))
 					c.Push(headerField)
 
 					// その参照を RefSet に追加する
-					Debug(Blue("\tAdd to RS"))
+					Info(Blue("\tAdd to RS"))
 					c.RS.Add(headerField, EMITTED)
 				}
 			} else {
@@ -124,24 +127,26 @@ func (c *Context) Decode(wire []byte) {
 					 * 参照が Reference Set にあった場合
 					 * Reference Set から消す
 					 */
-					Debug(Red(fmt.Sprintf("== Indexed - Remove ==")))
-					Debug(fmt.Sprintf("  idx = %v", index))
-					Debug(fmt.Sprintf("  -> HT[%v] = %v", index, headerField))
+					Info(Red(fmt.Sprintf("== Indexed - Remove ==")))
+					Info(fmt.Sprintf("  idx = %v", index))
+					Info(fmt.Sprintf("  -> HT[%v] = %v", index, headerField))
+
+					// remove
 					c.RS.Remove(headerField)
 				} else {
 					/**
 					* 参照が Reference Set に無い場合
 					 */
-					Debug(Red("== Indexed - Add =="))
-					Debug(fmt.Sprintf("  idx = %v", index))
-					Debug(fmt.Sprintf("  -> HT[%v] = %v", index, headerField))
+					Info(Red("== Indexed - Add =="))
+					Info(fmt.Sprintf("  idx = %v", index))
+					Info(fmt.Sprintf("  -> HT[%v] = %v", index, headerField))
 
 					// Emit
-					Debug(Blue("\tEmit"))
+					Info(Blue("\tEmit"))
 					c.ES.Emit(headerField)
 
 					// その参照を RefSet に追加する
-					Debug(Blue("\tAdd to RS"))
+					Info(Blue("\tAdd to RS"))
 					c.RS.Add(headerField, EMITTED)
 				}
 			}
@@ -170,11 +175,11 @@ func (c *Context) Decode(wire []byte) {
 			// Header Field 生成
 			headerField := NewHeaderField(name, value)
 
-			Debug(Red("== Indexed Literal =="))
-			Debug(fmt.Sprintf("  Indexed name (idx = %v)", index))
-			Debug(fmt.Sprintf("  -> ST[%v].Name = %v", index, name))
-			Debug(fmt.Sprintf("  Literal value (len = %v)", f.ValueLength))
-			Debug(fmt.Sprintf("  %v", f.ValueString))
+			Info(Red("== Indexed Literal =="))
+			Info(fmt.Sprintf("  Indexed name (idx = %v)", index))
+			Info(fmt.Sprintf("  -> ST[%v].Name = %v", index, name))
+			Info(fmt.Sprintf("  Literal value (len = %v)", f.ValueLength))
+			Info(fmt.Sprintf("  %v", f.ValueString))
 
 			if f.Indexing {
 				/**
@@ -182,15 +187,15 @@ func (c *Context) Decode(wire []byte) {
 				 */
 
 				// Emit
-				Debug(Blue("\tEmit"))
+				Info(Blue("\tEmit"))
 				c.ES.Emit(headerField)
 
 				// ヘッダテーブルにコピーする
-				Debug(Blue("\tAdd to HT"))
+				Info(Blue("\tAdd to HT"))
 				c.Push(headerField)
 
 				// その参照を RefSet に追加する
-				Debug(Blue("\tAdd to RS"))
+				Info(Blue("\tAdd to RS"))
 				c.RS.Add(headerField, EMITTED)
 
 			} else {
@@ -199,34 +204,34 @@ func (c *Context) Decode(wire []byte) {
 				 */
 
 				// Emit
-				Debug(Blue("\tEmit"))
+				Info(Blue("\tEmit"))
 				c.ES.Emit(headerField)
 			}
 
 		case *StringLiteral:
-			Debug(Red(fmt.Sprintf("== String Literal (%v) ==", f)))
+			Info(Red(fmt.Sprintf("== String Literal (%v) ==", f)))
 
 			headerField := NewHeaderField(f.NameString, f.ValueString)
 			if f.Indexing {
 				// HT に追加する場合
 
 				// Emit
-				Debug(Blue("\tEmit"))
+				Info(Blue("\tEmit"))
 				c.ES.Emit(headerField)
 
 				// ヘッダテーブルにコピーする
-				Debug(Blue("\tAdd to HT"))
+				Info(Blue("\tAdd to HT"))
 				c.Push(headerField)
 
 				// その参照を RefSet に追加する
-				Debug(Blue("\tAdd to RS"))
+				Info(Blue("\tAdd to RS"))
 				c.RS.Add(headerField, EMITTED)
 
 			} else {
 				// HT に追加しない場合
 
 				// Emit
-				Debug(Blue("\tEmit"))
+				Info(Blue("\tEmit"))
 				c.ES.Emit(headerField)
 			}
 
@@ -239,7 +244,7 @@ func (c *Context) Decode(wire []byte) {
 	for _, referencedField := range *c.RS {
 		if !referencedField.Emitted {
 			headerField := referencedField.HeaderField
-			Debug(Blue("\tEmit rest entries ")+"%v", *headerField)
+			Info(Blue("\tEmit rest entries ")+"%v", *headerField)
 			c.ES.Emit(headerField)
 		}
 	}
@@ -247,12 +252,15 @@ func (c *Context) Decode(wire []byte) {
 
 // removing entry from top
 // until make space of size in Header Table
-func (c *Context) Eviction() (count int) {
+// Evict された参照を RS からも消すために、 Context の方でやる。
+func (c *Context) Eviction() {
 	for c.HT.Size() > c.HT.HEADER_TABLE_SIZE {
-		Debug(Red("Eviction")+" %v", c.HT.HeaderFields[len(c.HT.HeaderFields)-1])
+		// サイズが収まるまで減らす
+		Info(Red("Eviction")+" %v", c.HT.HeaderFields[len(c.HT.HeaderFields)-1])
 		removed := c.HT.Remove(len(c.HT.HeaderFields) - 1)
+
+		// 消したエントリへの参照を RS からも消す
 		c.RS.Remove(removed)
-		count++
 	}
 	return
 }
@@ -264,6 +272,7 @@ func (c *Context) Push(hf *HeaderField) {
 	c.Eviction()
 }
 
+// Dump for Debug
 func (c *Context) Dump() string {
 	return fmt.Sprintf("%v%v%v", c.HT.Dump(), c.RS.Dump(), c.ES.Dump())
 }

@@ -3,6 +3,7 @@ package hpack
 import (
 	"github.com/jxck/hpack/huffman"
 	integer "github.com/jxck/hpack/integer_representation"
+	. "github.com/jxck/logger"
 	"github.com/jxck/swrap"
 	"log"
 )
@@ -12,7 +13,6 @@ func init() {
 }
 
 // Decode Wire byte seq to Slice of Frames
-// TODO: make it return channel
 func Decode(wire []byte, cxt CXT) (frames []Frame) {
 	sw := swrap.New(wire)
 	buf := &sw
@@ -26,12 +26,12 @@ func Decode(wire []byte, cxt CXT) (frames []Frame) {
 func DecodeHeader(buf *swrap.SWrap, cxt CXT) Frame {
 	// check first byte
 	types := (*buf)[0]
-	// log.Println("types =", types)
+	Debug("types = %v", types)
 	if types >= 0x80 { // 1xxx xxxx
 		// Indexed Header Representation
 
 		index := DecodePrefixedInteger(buf, 7)
-		// log.Println("Indexed =", index)
+		Debug("Indexed = %v", index)
 		frame := NewIndexedHeader(index)
 		return frame
 	}
@@ -43,9 +43,9 @@ func DecodeHeader(buf *swrap.SWrap, cxt CXT) Frame {
 
 		indexing := true
 		name := DecodeLiteral(buf, cxt)
-		// log.Println("StringLiteral name =", name)
+		Debug("StringLiteral name = %v", name)
 		value := DecodeLiteral(buf, cxt)
-		// log.Println("StringLiteral value =", value)
+		Debug("StringLiteral value = %v", value)
 		frame := NewStringLiteral(indexing, name, value)
 		return frame
 	}
@@ -57,9 +57,9 @@ func DecodeHeader(buf *swrap.SWrap, cxt CXT) Frame {
 
 		indexing := false
 		name := DecodeLiteral(buf, cxt)
-		// log.Println("StringLiteral name =", name)
+		Debug("StringLiteral name = %v", name)
 		value := DecodeLiteral(buf, cxt)
-		// log.Println("StringLiteral value =", value)
+		Debug("StringLiteral value = %v", value)
 		frame := NewStringLiteral(indexing, name, value)
 		return frame
 	}
@@ -68,9 +68,9 @@ func DecodeHeader(buf *swrap.SWrap, cxt CXT) Frame {
 
 		indexing := false
 		index := DecodePrefixedInteger(buf, 6)
-		// log.Println("IndexedLiteral index =", index)
+		Debug("IndexedLiteral index = %v", index)
 		value := DecodeLiteral(buf, cxt)
-		// log.Println("IndexedLiteral value =", value)
+		Debug("IndexedLiteral value = %v", value)
 		frame := NewIndexedLiteral(indexing, index, value)
 		return frame
 	}
@@ -79,9 +79,9 @@ func DecodeHeader(buf *swrap.SWrap, cxt CXT) Frame {
 
 		indexing := true
 		index := DecodePrefixedInteger(buf, 6)
-		// log.Println("IndexedLiteral index =", index)
+		Debug("IndexedLiteral index = %v", index)
 		value := DecodeLiteral(buf, cxt)
-		// log.Println("IndexedLiteral value =", value)
+		Debug("IndexedLiteral value = %v", value)
 		frame := NewIndexedLiteral(indexing, index, value)
 		return frame
 	}
@@ -104,15 +104,11 @@ func DecodeString(buf *swrap.SWrap, n uint64) string {
 }
 
 func DecodeLiteral(buf *swrap.SWrap, cxt CXT) (value string) {
-	// log.Println(buf)
-
 	// 最初のバイトを取り出す
 	first := (*buf)[0]
 
 	// 最初の 1bit をみて huffman かどうか取得
 	huffmanEncoded := (first&0x80 == 0x80)
-
-	// log.Println("buf.Len()", buf.Len())
 
 	if huffmanEncoded {
 		// 最初のバイトから 1 bit 目を消す
@@ -127,15 +123,13 @@ func DecodeLiteral(buf *swrap.SWrap, cxt CXT) (value string) {
 			code = append(code, buf.Shift())
 		}
 
-		// log.Println("code", code)
-
 		// コンテキストに合わせてデコード
 		if cxt == REQUEST {
 			value = string(huffman.DecodeRequest(code))
 		} else if cxt == RESPONSE {
 			value = string(huffman.DecodeResponse(code))
 		}
-		// log.Println(cxt, value)
+		Debug("(context, decoded) = (%t, %v)", cxt, value)
 	} else {
 		valueLength := DecodePrefixedInteger(buf, 8)
 		value = DecodeString(buf, valueLength)

@@ -59,6 +59,7 @@ func (ht *HeaderTable) Remove(index int) *HeaderField {
 	return removed
 }
 
+// Dump for Debug
 func (ht *HeaderTable) Dump() (str string) {
 	str += fmt.Sprintf("\n--------- HT(%v/%v) ---------\n",
 		ht.Size(), ht.HEADER_TABLE_SIZE)
