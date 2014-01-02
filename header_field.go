@@ -1,15 +1,5 @@
 package hpack
 
-// method, scheme, host, path, status
-// are must and needs ":" prefix
-var MustHeader = map[string]string{
-	"scheme": ":scheme",
-	"method": ":method",
-	"path":   ":path",
-	"host":   ":host",
-	"status": ":status",
-}
-
 // A name-value pair.
 // Both name and value are sequences of octets.
 type HeaderField struct {

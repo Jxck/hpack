@@ -33,10 +33,10 @@ func TestRequestWithoutHuffman(t *testing.T) {
 	}
 
 	expectedHeader = http.Header{
-		"Method":    []string{"GET"},
-		"Scheme":    []string{"http"},
-		"Path":      []string{"/"},
-		"Authority": []string{"www.example.com"},
+		":method":    []string{"GET"},
+		":scheme":    []string{"http"},
+		":path":      []string{"/"},
+		":authority": []string{"www.example.com"},
 	}
 
 	expectedHT = NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
@@ -97,10 +97,10 @@ func TestRequestWithoutHuffman(t *testing.T) {
 	}
 
 	expectedHeader = http.Header{
-		"Method":        []string{"GET"},
-		"Scheme":        []string{"http"},
-		"Path":          []string{"/"},
-		"Authority":     []string{"www.example.com"},
+		":method":       []string{"GET"},
+		":scheme":       []string{"http"},
+		":path":         []string{"/"},
+		":authority":    []string{"www.example.com"},
 		"Cache-Control": []string{"no-cache"},
 	}
 
@@ -169,10 +169,10 @@ func TestRequestWithoutHuffman(t *testing.T) {
 	}
 
 	expectedHeader = http.Header{
-		"Method":     []string{"GET"},
-		"Scheme":     []string{"https"},
-		"Path":       []string{"/index.html"},
-		"Authority":  []string{"www.example.com"},
+		":method":    []string{"GET"},
+		":scheme":    []string{"https"},
+		":path":      []string{"/index.html"},
+		":authority": []string{"www.example.com"},
 		"Custom-Key": []string{"custom-value"},
 	}
 
@@ -252,10 +252,10 @@ func TestRequestWithHuffman(t *testing.T) {
 	}
 
 	expectedHeader = http.Header{
-		"Method":    []string{"GET"},
-		"Scheme":    []string{"http"},
-		"Path":      []string{"/"},
-		"Authority": []string{"www.example.com"},
+		":method":    []string{"GET"},
+		":scheme":    []string{"http"},
+		":path":      []string{"/"},
+		":authority": []string{"www.example.com"},
 	}
 
 	expectedHT = NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
@@ -315,10 +315,10 @@ func TestRequestWithHuffman(t *testing.T) {
 	}
 
 	expectedHeader = http.Header{
-		"Method":        []string{"GET"},
-		"Scheme":        []string{"http"},
-		"Path":          []string{"/"},
-		"Authority":     []string{"www.example.com"},
+		":method":       []string{"GET"},
+		":scheme":       []string{"http"},
+		":path":         []string{"/"},
+		":authority":    []string{"www.example.com"},
 		"Cache-Control": []string{"no-cache"},
 	}
 
@@ -386,10 +386,10 @@ func TestRequestWithHuffman(t *testing.T) {
 	}
 
 	expectedHeader = http.Header{
-		"Method":     []string{"GET"},
-		"Scheme":     []string{"https"},
-		"Path":       []string{"/index.html"},
-		"Authority":  []string{"www.example.com"},
+		":method":    []string{"GET"},
+		":scheme":    []string{"https"},
+		":path":      []string{"/index.html"},
+		":authority": []string{"www.example.com"},
 		"Custom-Key": []string{"custom-value"},
 	}
 
@@ -480,7 +480,7 @@ func TestResponseWithoutHuffman(t *testing.T) {
 	}
 
 	expectedHeader = http.Header{
-		"Status":        []string{"302"},
+		":status":       []string{"302"},
 		"Cache-Control": []string{"private"},
 		"Date":          []string{"Mon, 21 Oct 2013 20:13:21 GMT"},
 		"Location":      []string{"https://www.example.com"},
@@ -542,7 +542,7 @@ func TestResponseWithoutHuffman(t *testing.T) {
 	}
 
 	expectedHeader = http.Header{
-		"Status":        []string{"200"},
+		":status":       []string{"200"},
 		"Cache-Control": []string{"private"},
 		"Date":          []string{"Mon, 21 Oct 2013 20:13:21 GMT"},
 		"Location":      []string{"https://www.example.com"},
@@ -629,7 +629,7 @@ func TestResponseWithoutHuffman(t *testing.T) {
 	}
 
 	expectedHeader = http.Header{
-		"Status":           []string{"200"},
+		":status":          []string{"200"},
 		"Cache-Control":    []string{"private"},
 		"Date":             []string{"Mon, 21 Oct 2013 20:13:22 GMT"},
 		"Location":         []string{"https://www.example.com"},
@@ -716,7 +716,7 @@ func TestResponseWithHuffman(t *testing.T) {
 	}
 
 	expectedHeader = http.Header{
-		"Status":        []string{"302"},
+		":status":       []string{"302"},
 		"Cache-Control": []string{"private"},
 		"Date":          []string{"Mon, 21 Oct 2013 20:13:21 GMT"},
 		"Location":      []string{"https://www.example.com"},
@@ -761,7 +761,7 @@ func TestResponseWithHuffman(t *testing.T) {
 	}
 
 	expectedHeader = http.Header{
-		"Status":        []string{"200"},
+		":status":       []string{"200"},
 		"Cache-Control": []string{"private"},
 		"Date":          []string{"Mon, 21 Oct 2013 20:13:21 GMT"},
 		"Location":      []string{"https://www.example.com"},
@@ -827,7 +827,7 @@ func TestResponseWithHuffman(t *testing.T) {
 	}
 
 	expectedHeader = http.Header{
-		"Status":           []string{"200"},
+		":status":          []string{"200"},
 		"Cache-Control":    []string{"private"},
 		"Date":             []string{"Mon, 21 Oct 2013 20:13:22 GMT"},
 		"Location":         []string{"https://www.example.com"},
@@ -889,7 +889,7 @@ func TestResponseWithoutHuffman_Eviction(t *testing.T) {
 	}
 
 	expectedHeader := http.Header{
-		"Status":        []string{"200"},
+		":status":       []string{"200"},
 		"Cache-Control": []string{"private"},
 		"Date":          []string{"Mon, 21 Oct 2013 20:13:21 GMT"},
 		"Location":      []string{"https://www.example.com"},
