@@ -94,8 +94,12 @@ func RunStory(testfile TestFile, t *testing.T) {
 // }
 
 func TestStory(t *testing.T) {
-	t.Skip()
-	dirs := []string{"./hpack-test-case/node-http2-hpack/", "./hpack-test-case/nghttp2/", "./hpack-test-case/haskell-http2/"}
+	dirs := []string{
+		// "./hpack-test-case/node-http2-hpack/",
+		// "./hpack-test-case/nghttp2/",
+		// "./hpack-test-case/haskell-http2/",
+		"./hpack-test-case/go-hpack/",
+	}
 
 	for _, dir := range dirs {
 		files, _ := ioutil.ReadDir(dir)
