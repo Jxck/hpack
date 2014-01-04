@@ -18,7 +18,8 @@ func (frame *IndexedLiteral) Encode() (buf *swrap.SWrap) {
 		index[0] += 0x40
 	}
 	buf = &index
-	buf.Merge(integer.Encode(frame.ValueLength, 8))
+	// No Huffman
+	buf.Merge(integer.Encode(frame.ValueLength, 7))
 	buf.Merge([]byte(frame.ValueString))
 	return buf
 }
@@ -32,9 +33,11 @@ func (frame *StringLiteral) Encode() (buf *swrap.SWrap) {
 		sw.Add(0x40) // 0100 0000
 	}
 	buf = &sw
-	buf.Merge(integer.Encode(frame.NameLength, 8))
+	// No Huffman
+	buf.Merge(integer.Encode(frame.NameLength, 7))
 	buf.Merge([]byte(frame.NameString))
-	buf.Merge(integer.Encode(frame.ValueLength, 8))
+	// No Huffman
+	buf.Merge(integer.Encode(frame.ValueLength, 7))
 	buf.Merge([]byte(frame.ValueString))
 	return buf
 }

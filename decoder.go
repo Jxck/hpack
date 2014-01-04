@@ -131,7 +131,7 @@ func DecodeLiteral(buf *swrap.SWrap, cxt CXT) (value string) {
 		}
 		Debug("(context, decoded) = (%t, %v)", cxt, value)
 	} else {
-		valueLength := DecodePrefixedInteger(buf, 8)
+		valueLength := DecodePrefixedInteger(buf, 7)
 		value = DecodeString(buf, valueLength)
 	}
 	return value
