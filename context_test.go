@@ -938,3 +938,25 @@ func TestResponseWithHuffman(t *testing.T) {
 		}
 	}
 }
+
+func TestEncode(t *testing.T) {
+	context := NewContext(REQUEST, DEFAULT_HEADER_TABLE_SIZE)
+
+	hs := HeaderSet{
+		NewHeaderField(":status", "200"),
+		NewHeaderField("cache-control", "private"),
+		NewHeaderField("date", "Mon, 21 Oct 2013 20:13:22 GMT"),
+		NewHeaderField("location", "https://www.example.com"),
+		NewHeaderField("content-encoding", "gzip"),
+		NewHeaderField("set-cookie", "foo=ASDJKHQKBZXOQWEOPIUAXQWEOIU; max-age=3600; version=1"),
+	}
+
+	encoded := context.Encode(hs)
+
+	context.Decode(encoded)
+	for i, v := range *context.ES {
+		if *hs[i] != v {
+			t.Errorf("\n got %v\nwant %v", context.ES.Dump(), hs)
+		}
+	}
+}
