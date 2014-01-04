@@ -37,16 +37,16 @@ const TestCaseDir string = "./hpack-test-case"
 //   ]
 // }
 type TestCase struct {
-	HeaderTableSize int `json:"header_table_size"`
-	Wire            string
-	Headers         []map[string]string
+	HeaderTableSize int                 `json:"header_table_size"`
+	Wire            string              `json:"wire"`
+	Headers         []map[string]string `json:"headers"`
 }
 
 type TestFile struct {
-	Draft       int
-	Context     string
-	Description string
-	Cases       []TestCase
+	Draft       int        `json:"draft"`
+	Context     string     `json:"context"`
+	Description string     `json:"description"`
+	Cases       []TestCase `json:"cases"`
 }
 
 func readJsonFile(path string) TestFile {
@@ -104,5 +104,48 @@ func TestStory(t *testing.T) {
 			testcases := readJsonFile(dir + f.Name())
 			RunStory(testcases, t)
 		}
+	}
+}
+
+func writeJson(src, dst, filename string) {
+	testFile := readJsonFile(src + filename)
+
+	testFile.Draft = 5
+	testFile.Description = "https://github.com/jxck/hpack implemeted in Golang. Encoded using String Literal, no Header/Static Table, and always start with emptied Reference Set. by Jxck."
+
+	context := NewContext(testFile.Context == "request", DEFAULT_HEADER_TABLE_SIZE)
+	// 一つのケースごと
+	for i, c := range testFile.Cases {
+		hs := HeaderSet{}
+		// 一つのヘッダごと
+		for _, header := range c.Headers {
+			for key, value := range header {
+				hs = append(hs, NewHeaderField(key, value))
+			}
+		}
+
+		hexdump := context.Encode(hs)
+		wire := hex.EncodeToString(hexdump)
+		testFile.Cases[i].Wire = wire
+		testFile.Cases[i].HeaderTableSize = DEFAULT_HEADER_TABLE_SIZE
+	}
+
+	b, _ := json.MarshalIndent(testFile, "", "  ")
+	file, err := os.Create(dst + filename)
+	if err != nil {
+		log.Fatal(err)
+	}
+	n, err := file.Write(b)
+	if n == 0 || err != nil {
+		log.Fatal("failt to write file")
+	}
+}
+
+func TestEncodeStory(t *testing.T) {
+	src := "./hpack-test-case/raw-data/"
+	dst := "./hpack-test-case/go-hpack/"
+	files, _ := ioutil.ReadDir(src)
+	for _, file := range files {
+		writeJson(src, dst, file.Name())
 	}
 }
