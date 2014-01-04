@@ -6,8 +6,8 @@ HPACK implementation in Golang
 
 ## version
 
-hpack (draft-03)
-http://tools.ietf.org/html/draft-ietf-httpbis-header-compression-03
+hpack (draft-05)
+http://tools.ietf.org/html/draft-ietf-httpbis-header-compression-05
 
 
 ## require
