@@ -110,12 +110,14 @@ func DecodeLiteral(buf *swrap.SWrap, cxt CXT) (value string) {
 	// 最初の 1bit をみて huffman かどうか取得
 	huffmanEncoded := (first&0x80 == 0x80)
 
+	Debug("huffman = %t", huffmanEncoded)
 	if huffmanEncoded {
 		// 最初のバイトから 1 bit 目を消す
 		(*buf)[0] = first & 127
 
 		// ここで prefixed Integer 7 で読む。
 		b := DecodePrefixedInteger(buf, 7)
+		Debug("Literal Length = %v", b)
 
 		// その長さの分だけバイト値を取り出す
 		code := []byte{}
