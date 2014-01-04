@@ -42,7 +42,6 @@ func (ht *HeaderTable) Len() int {
 
 // push new Header Field to top of HeaderTable
 // with eviction
-// :TODO (check & test eviction more)
 func (ht *HeaderTable) Push(hf *HeaderField) {
 	tmp := []*HeaderField{hf}
 	ht.HeaderFields = append(tmp, ht.HeaderFields...)
