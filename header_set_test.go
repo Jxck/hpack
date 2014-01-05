@@ -21,7 +21,7 @@ func TestNewHeaderSet(t *testing.T) {
 		{"cookie", "a"},
 		{"cookie", "b"},
 	}
-	actual := NewHeaderSet(header)
+	actual := ToHeaderSet(header)
 
 	for i, hf := range expected {
 		if actual[i] != hf {

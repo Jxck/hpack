@@ -10,7 +10,7 @@ import (
 // A complete set of key-value pairs contained in a HTTP request or response is a header set.
 type HeaderSet []HeaderField
 
-func NewHeaderSet(header http.Header) HeaderSet {
+func ToHeaderSet(header http.Header) HeaderSet {
 	hs := HeaderSet{}
 	for key, values := range header {
 		key := strings.ToLower(key)
