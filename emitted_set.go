@@ -2,6 +2,7 @@ package hpack
 
 import (
 	"fmt"
+	"net/http"
 )
 
 // List of Emitted Header
@@ -32,6 +33,15 @@ func (e *EmittedSet) Less(i, j int) bool {
 		return es[i].Value < es[j].Value
 	}
 	return es[i].Name < es[j].Name
+}
+
+// convert to http.Header
+func (e *EmittedSet) ToHeader() http.Header {
+	header := make(http.Header)
+	for _, hf := range *e {
+		header.Add(hf.Name, hf.Value)
+	}
+	return header
 }
 
 // Dump for Debug

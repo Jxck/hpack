@@ -8,14 +8,14 @@ import (
 
 // A header set is a potentially ordered group of header fields that are encoded jointly.
 // A complete set of key-value pairs contained in a HTTP request or response is a header set.
-type HeaderSet []*HeaderField
+type HeaderSet []HeaderField
 
 func NewHeaderSet(header http.Header) HeaderSet {
 	hs := HeaderSet{}
 	for key, values := range header {
 		key := strings.ToLower(key)
 		for _, value := range values {
-			hs = append(hs, NewHeaderField(key, value))
+			hs = append(hs, *NewHeaderField(key, value))
 		}
 	}
 	return hs
@@ -32,7 +32,7 @@ func (hs HeaderSet) ToHeader() http.Header {
 func (hs HeaderSet) Dump() (str string) {
 	str += fmt.Sprintf("\n--------- HS ---------\n")
 	for i, v := range hs {
-		str += fmt.Sprintln(i, *v)
+		str += fmt.Sprintln(i, v)
 	}
 	str += "--------------------------------\n"
 	return str

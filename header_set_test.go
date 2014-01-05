@@ -24,7 +24,7 @@ func TestNewHeaderSet(t *testing.T) {
 	actual := NewHeaderSet(header)
 
 	for i, hf := range expected {
-		if !(*(actual[i]) == *hf) {
+		if actual[i] != hf {
 			t.Errorf("\ngot  %v\nwant %v", actual.Dump(), expected.Dump())
 		}
 	}
