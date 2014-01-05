@@ -21,6 +21,7 @@ func ToHeaderSet(header http.Header) HeaderSet {
 	return hs
 }
 
+// convert to http.Header
 func (hs HeaderSet) ToHeader() http.Header {
 	header := make(http.Header)
 	for _, hf := range hs {

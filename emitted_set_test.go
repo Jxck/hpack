@@ -6,7 +6,7 @@ import (
 )
 
 func TestEmit(t *testing.T) {
-	es := NewEmittedSet()
+	es := NewHeaderSet()
 	hf1 := NewHeaderField("key1", "value1")
 	hf2 := NewHeaderField("key2", "value2")
 	es.Emit(hf1)
@@ -17,7 +17,7 @@ func TestEmit(t *testing.T) {
 }
 
 func TestEmitSort(t *testing.T) {
-	es := &EmittedSet{
+	es := &HeaderSet{
 		HeaderField{":method", "GET"},
 		HeaderField{":scheme", "http"},
 		HeaderField{":path", "/"},

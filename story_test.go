@@ -72,7 +72,7 @@ func RunStory(testfile TestFile, t *testing.T) {
 		}
 		context.Decode(wire)
 
-		expectedES := &EmittedSet{}
+		expectedES := &HeaderSet{}
 		for _, header := range cases.Headers {
 			for key, value := range header {
 				expectedES.Emit(NewHeaderField(key, value))

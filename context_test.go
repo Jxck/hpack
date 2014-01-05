@@ -12,7 +12,7 @@ func TestRequestWithoutHuffman(t *testing.T) {
 	var (
 		context    *Context
 		buf        []byte
-		expectedES *EmittedSet
+		expectedES *HeaderSet
 		expectedHT *HeaderTable
 		expectedRS ReferenceSet
 	)
@@ -32,7 +32,7 @@ func TestRequestWithoutHuffman(t *testing.T) {
 		0x2e, 0x63, 0x6f, 0x6d,
 	}
 
-	expectedES = &EmittedSet{
+	expectedES = &HeaderSet{
 		HeaderField{":method", "GET"},
 		HeaderField{":scheme", "http"},
 		HeaderField{":path", "/"},
@@ -98,7 +98,7 @@ func TestRequestWithoutHuffman(t *testing.T) {
 		0x68, 0x65,
 	}
 
-	expectedES = &EmittedSet{
+	expectedES = &HeaderSet{
 		HeaderField{":method", "GET"},
 		HeaderField{":scheme", "http"},
 		HeaderField{":path", "/"},
@@ -172,7 +172,7 @@ func TestRequestWithoutHuffman(t *testing.T) {
 		0x75, 0x65,
 	}
 
-	expectedES = &EmittedSet{
+	expectedES = &HeaderSet{
 		HeaderField{":method", "GET"},
 		HeaderField{":scheme", "https"},
 		HeaderField{":path", "/index.html"},
@@ -238,7 +238,7 @@ func TestRequestWithHuffman(t *testing.T) {
 	var (
 		context    *Context
 		buf        []byte
-		expectedES *EmittedSet
+		expectedES *HeaderSet
 		expectedHT *HeaderTable
 		expectedRS ReferenceSet
 	)
@@ -257,7 +257,7 @@ func TestRequestWithHuffman(t *testing.T) {
 		0x12, 0x25, 0xba, 0x7f,
 	}
 
-	expectedES = &EmittedSet{
+	expectedES = &HeaderSet{
 		HeaderField{":method", "GET"},
 		HeaderField{":scheme", "http"},
 		HeaderField{":path", "/"},
@@ -322,7 +322,7 @@ func TestRequestWithHuffman(t *testing.T) {
 		0x4a, 0x13, 0x98, 0xff,
 	}
 
-	expectedES = &EmittedSet{
+	expectedES = &HeaderSet{
 		HeaderField{":method", "GET"},
 		HeaderField{":scheme", "http"},
 		HeaderField{":path", "/"},
@@ -395,7 +395,7 @@ func TestRequestWithHuffman(t *testing.T) {
 		0xff,
 	}
 
-	expectedES = &EmittedSet{
+	expectedES = &HeaderSet{
 		HeaderField{":method", "GET"},
 		HeaderField{":scheme", "https"},
 		HeaderField{":path", "/index.html"},
@@ -461,7 +461,7 @@ func TestResponseWithoutHuffman(t *testing.T) {
 	var (
 		context    *Context
 		buf        []byte
-		expectedES *EmittedSet
+		expectedES *HeaderSet
 		expectedHT *HeaderTable
 		expectedRS ReferenceSet
 	)
@@ -491,7 +491,7 @@ func TestResponseWithoutHuffman(t *testing.T) {
 		0xff,
 	}
 
-	expectedES = &EmittedSet{
+	expectedES = &HeaderSet{
 		HeaderField{":status", "302"},
 		HeaderField{"cache-control", "private"},
 		HeaderField{"date", "Mon, 21 Oct 2013 20:13:21 GMT"},
@@ -555,7 +555,7 @@ func TestResponseWithoutHuffman(t *testing.T) {
 		0x84, 0x8c,
 	}
 
-	expectedES = &EmittedSet{
+	expectedES = &HeaderSet{
 		HeaderField{":status", "200"},
 		HeaderField{"cache-control", "private"},
 		HeaderField{"date", "Mon, 21 Oct 2013 20:13:21 GMT"},
@@ -644,7 +644,7 @@ func TestResponseWithoutHuffman(t *testing.T) {
 		0x3d, 0x31,
 	}
 
-	expectedES = &EmittedSet{
+	expectedES = &HeaderSet{
 		HeaderField{":status", "200"},
 		HeaderField{"cache-control", "private"},
 		HeaderField{"date", "Mon, 21 Oct 2013 20:13:22 GMT"},
@@ -704,7 +704,7 @@ func TestResponseWithHuffman(t *testing.T) {
 	var (
 		context    *Context
 		buf        []byte
-		expectedES *EmittedSet
+		expectedES *HeaderSet
 		expectedHT *HeaderTable
 		expectedRS ReferenceSet
 	)
@@ -734,7 +734,7 @@ func TestResponseWithHuffman(t *testing.T) {
 		0xff,
 	}
 
-	expectedES = &EmittedSet{
+	expectedES = &HeaderSet{
 		HeaderField{":status", "302"},
 		HeaderField{"cache-control", "private"},
 		HeaderField{"date", "Mon, 21 Oct 2013 20:13:21 GMT"},
@@ -798,7 +798,7 @@ func TestResponseWithHuffman(t *testing.T) {
 		0x84, 0x8c,
 	}
 
-	expectedES = &EmittedSet{
+	expectedES = &HeaderSet{
 		HeaderField{":status", "200"},
 		HeaderField{"cache-control", "private"},
 		HeaderField{"date", "Mon, 21 Oct 2013 20:13:21 GMT"},
@@ -883,7 +883,7 @@ func TestResponseWithHuffman(t *testing.T) {
 		0x6c, 0x2f,
 	}
 
-	expectedES = &EmittedSet{
+	expectedES = &HeaderSet{
 		HeaderField{":status", "200"},
 		HeaderField{"cache-control", "private"},
 		HeaderField{"date", "Mon, 21 Oct 2013 20:13:22 GMT"},

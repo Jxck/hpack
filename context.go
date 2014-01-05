@@ -33,21 +33,21 @@ type Context struct {
 	CXT
 	HT *HeaderTable
 	RS *ReferenceSet
-	ES *EmittedSet
+	ES *HeaderSet
 }
 
 func NewContext(context CXT, SETTINGS_HEADER_TABLE_SIZE int) *Context {
 	return &Context{
 		HT:  NewHeaderTable(SETTINGS_HEADER_TABLE_SIZE),
 		RS:  NewReferenceSet(),
-		ES:  NewEmittedSet(),
+		ES:  NewHeaderSet(),
 		CXT: context,
 	}
 }
 
 func (c *Context) Decode(wire []byte) {
 	// 各デコードごとに前回のをリセットする。
-	c.ES = NewEmittedSet()
+	c.ES = NewHeaderSet()
 	c.RS.Reset()
 	Info(Red("clean Emitted Set"))
 	Debug(Cyan(
