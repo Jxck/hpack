@@ -10,7 +10,7 @@ import (
 
 func TestRequestWithoutHuffman(t *testing.T) {
 	var (
-		context    Context
+		context    *Context
 		buf        []byte
 		expectedES *EmittedSet
 		expectedHT *HeaderTable
@@ -236,7 +236,7 @@ func TestRequestWithoutHuffman(t *testing.T) {
 
 func TestRequestWithHuffman(t *testing.T) {
 	var (
-		context    Context
+		context    *Context
 		buf        []byte
 		expectedES *EmittedSet
 		expectedHT *HeaderTable
@@ -459,7 +459,7 @@ func TestRequestWithHuffman(t *testing.T) {
 
 func TestResponseWithoutHuffman(t *testing.T) {
 	var (
-		context    Context
+		context    *Context
 		buf        []byte
 		expectedES *EmittedSet
 		expectedHT *HeaderTable
@@ -702,7 +702,7 @@ func TestResponseWithoutHuffman(t *testing.T) {
 
 func TestResponseWithHuffman(t *testing.T) {
 	var (
-		context    Context
+		context    *Context
 		buf        []byte
 		expectedES *EmittedSet
 		expectedHT *HeaderTable
