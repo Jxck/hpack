@@ -21,6 +21,14 @@ func NewHeaderSet(header http.Header) HeaderSet {
 	return hs
 }
 
+func (hs HeaderSet) ToHeader() http.Header {
+	header := make(http.Header)
+	for _, hf := range hs {
+		header.Add(hf.Name, hf.Value)
+	}
+	return header
+}
+
 func (hs HeaderSet) Dump() (str string) {
 	str += fmt.Sprintf("\n--------- HS ---------\n")
 	for i, v := range hs {
