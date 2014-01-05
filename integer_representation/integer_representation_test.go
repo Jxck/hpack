@@ -68,9 +68,9 @@ func TestReadPrefixedInteger(t *testing.T) {
 	// 0x0A 0000 1010
 	// 0x06 0000 0110
 	var prefix uint8 = 5
-	buf := []byte{0x1F, 0x95, 0x0A, 0x06}
+	buf := swrap.New([]byte{0x1F, 0x95, 0x0A, 0x06})
 	expected := []byte{0x1F, 0x95, 0xA}
-	actual := ReadPrefixedInteger(buf, prefix)
+	actual := ReadPrefixedInteger(&buf, prefix)
 	if !bytes.Equal(expected, actual) {
 		t.Errorf("got %v\nwant %v", actual, expected)
 	}
