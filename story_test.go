@@ -115,7 +115,7 @@ func writeJson(src, dst, filename string) {
 	testFile := readJsonFile(src + filename)
 
 	testFile.Draft = 5
-	testFile.Description = "https://github.com/jxck/hpack implemeted in Golang. Encoded using String Literal, no Header/Static Table, and always start with emptied Reference Set. by Jxck."
+	testFile.Description = "https://github.com/jxck/hpack implemeted in Golang. Encoded using String Literal with Huffman, no Header/Static Table, and always start with emptied Reference Set. by Jxck."
 
 	context := NewContext(testFile.Context == "request", DEFAULT_HEADER_TABLE_SIZE)
 	// 一つのケースごと
