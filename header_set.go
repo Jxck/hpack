@@ -10,6 +10,10 @@ import (
 // A complete set of key-value pairs contained in a HTTP request or response is a header set.
 type HeaderSet []HeaderField
 
+func NewHeaderSet() *HeaderSet {
+	return &HeaderSet{}
+}
+
 func ToHeaderSet(header http.Header) HeaderSet {
 	hs := HeaderSet{}
 	for key, values := range header {
@@ -19,6 +23,28 @@ func ToHeaderSet(header http.Header) HeaderSet {
 		}
 	}
 	return hs
+}
+
+func (hs *HeaderSet) Emit(hf *HeaderField) {
+	*hs = append(*hs, *hf)
+}
+
+func (hs *HeaderSet) Len() int {
+	return len(*hs)
+}
+
+// Sort Interface
+func (hs *HeaderSet) Swap(i, j int) {
+	h := *hs
+	h[i], h[j] = h[j], h[i]
+}
+
+func (hs *HeaderSet) Less(i, j int) bool {
+	h := *hs
+	if h[i].Name == h[j].Name {
+		return h[i].Value < h[j].Value
+	}
+	return h[i].Name < h[j].Name
 }
 
 // convert to http.Header
