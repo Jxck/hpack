@@ -287,7 +287,7 @@ func (c *Context) Encode(headerSet HeaderSet) []byte {
 	// 全て StringLiteral(Indexing = false) でエンコード
 	for _, h := range headerSet {
 		sl := NewStringLiteral(false, h.Name, h.Value)
-		buf.Merge(*sl.Encode())
+		buf.Merge(*sl.EncodeHuffman(c.CXT))
 	}
 
 	return buf.Bytes()

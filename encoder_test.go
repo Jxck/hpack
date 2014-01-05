@@ -105,3 +105,24 @@ func TestStringLiteralEncode_Indexing(t *testing.T) {
 		t.Errorf("\ngot %v\nwant %v", actual, expected)
 	}
 }
+
+func TestStringLiteralEncodeHuffman_Indexing(t *testing.T) {
+	var indexing bool
+	var name, value string = "custom-key", "custom-value"
+
+	// Indexing
+	indexing = true
+	expected := []byte{
+		0x00, 0x88, 0x4e, 0xb0,
+		0x8b, 0x74, 0x97, 0x90,
+		0xfa, 0x7f, 0x89, 0x4e,
+		0xb0, 0x8b, 0x74, 0x97,
+		0x9a, 0x17, 0xa8, 0xff,
+	}
+
+	frame := NewStringLiteral(indexing, name, value)
+	actual := frame.EncodeHuffman(REQUEST)
+	if !actual.Compare(expected) {
+		t.Errorf("\ngot %v\nwant %v", actual, expected)
+	}
+}
