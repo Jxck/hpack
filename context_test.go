@@ -960,3 +960,24 @@ func TestEncode(t *testing.T) {
 		}
 	}
 }
+
+func TestEncodeWithHuffman(t *testing.T) {
+	context := NewContext(REQUEST, DEFAULT_HEADER_TABLE_SIZE)
+	hs := HeaderSet{
+		*NewHeaderField(":method", "GET"),
+		*NewHeaderField(":scheme", "http"),
+		*NewHeaderField(":authority", "g-ecx.images-amazon.com"),
+		*NewHeaderField(":path", "/images/G/01/gno/beacon/BeaconSprite-US-01._V401903535_.png"),
+		*NewHeaderField("user-agent", "Mozilla/5.0 NewHeaderField(Macintosh; Intel Mac OS X 10.8; rv:16.0) Gecko/20100101 Firefox/16.0"),
+		*NewHeaderField("accept", "image/png,image/*;q=0.8,*/*;q=0.5"),
+		*NewHeaderField("accept-language", "en-US,en;q=0.5"),
+		*NewHeaderField("accept-encoding", "gzip, deflate"),
+		*NewHeaderField("connection", "keep-alive"),
+		*NewHeaderField("referer", "http://www.amazon.com/"),
+	}
+
+	encoded := context.Encode(hs)
+	if encoded[len(encoded)-1] == 255 {
+		t.Error("8bit EOS on huffman encoded result is error")
+	}
+}

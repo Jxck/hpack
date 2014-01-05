@@ -1,6 +1,7 @@
 package huffman
 
 import (
+	"fmt"
 	"log"
 )
 
@@ -16,6 +17,10 @@ type byt struct {
 
 func newByt() *byt {
 	return &byt{0, 8}
+}
+
+func (b *byt) Dump() string {
+	return fmt.Sprintf("(v=%v, r=%v)", b.value, b.remain)
 }
 
 func EncodeRequest(raw []byte) (encoded []byte) {
@@ -79,7 +84,7 @@ func Encode(raw []byte, table *HuffmanTable) (encoded []byte) {
 		}
 	}
 
-	if b.remain > 0 { // EOS でパディング
+	if b.remain > 0 && b.remain < 8 { // EOS でパディング
 		// パディング分切り出す
 		eos := RequestHuffmanTable[256]
 		shift := eos.length - b.remain
