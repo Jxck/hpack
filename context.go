@@ -9,7 +9,6 @@ import (
 	"log"
 )
 
-var verbose bool
 var loglevel int
 
 // Request or Response
@@ -21,11 +20,9 @@ const (
 )
 
 func init() {
-	flag.BoolVar(&verbose, "v", false, "verbose out")
 	flag.IntVar(&loglevel, "l", 0, "log level (1 ERR, 2 WARNING, 3 INFO, 4 DEBUG)")
 	flag.Parse()
 	LogLevel(loglevel)
-	Verbose(verbose)
 	log.SetFlags(log.Lshortfile)
 }
 
