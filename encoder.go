@@ -7,16 +7,14 @@ import (
 )
 
 func (frame *IndexedHeader) Encode() (buf *swrap.SWrap) {
-	buf = new(swrap.SWrap)
-	buf.Merge(integer.Encode(frame.Index, 7))
+	buf = swrap.Make(integer.Encode(frame.Index, 7))
 	(*buf)[0] += 0x80
 	return buf
 }
 
 func (frame *IndexedLiteral) Encode() (buf *swrap.SWrap) {
 	// TODO: support huff encode
-	buf = new(swrap.SWrap)
-	buf.Merge(integer.Encode(frame.Index, 6))
+	buf = swrap.Make(integer.Encode(frame.Index, 6))
 	if !frame.Indexing {
 		(*buf)[0] += 0x40
 	}

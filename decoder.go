@@ -14,8 +14,7 @@ func init() {
 
 // Decode Wire byte seq to Slice of Frames
 func Decode(wire []byte, cxt CXT) (frames []Frame) {
-	sw := swrap.New(wire)
-	buf := &sw
+	buf := swrap.Make(wire)
 	for buf.Len() > 0 {
 		frames = append(frames, DecodeHeader(buf, cxt))
 	}
