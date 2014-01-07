@@ -120,7 +120,7 @@ func DecodeLiteral(buf *swrap.SWrap, cxt CXT) (value string) {
 		Debug("Literal Length = %v", b)
 
 		// その長さの分だけバイト値を取り出す
-		code := []byte{}
+		code := make([]byte, 0)
 		for ; b > 0; b-- {
 			code = append(code, buf.Shift())
 		}

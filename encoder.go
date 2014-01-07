@@ -7,18 +7,19 @@ import (
 )
 
 func (frame *IndexedHeader) Encode() (buf *swrap.SWrap) {
-	index := integer.Encode(frame.Index, 7)
-	index[0] += 0x80
-	return &index
+	buf = new(swrap.SWrap)
+	buf.Merge(integer.Encode(frame.Index, 7))
+	(*buf)[0] += 0x80
+	return buf
 }
 
 func (frame *IndexedLiteral) Encode() (buf *swrap.SWrap) {
 	// TODO: support huff encode
-	index := integer.Encode(frame.Index, 6)
+	buf = new(swrap.SWrap)
+	buf.Merge(integer.Encode(frame.Index, 6))
 	if !frame.Indexing {
-		index[0] += 0x40
+		(*buf)[0] += 0x40
 	}
-	buf = &index
 	// No Huffman
 	buf.Merge(integer.Encode(frame.ValueLength, 7))
 	buf.Merge([]byte(frame.ValueString))
@@ -27,13 +28,12 @@ func (frame *IndexedLiteral) Encode() (buf *swrap.SWrap) {
 
 func (frame *StringLiteral) Encode() (buf *swrap.SWrap) {
 	// TODO: support huff encode
-	sw := swrap.SWrap{}
+	buf = new(swrap.SWrap)
 	if frame.Indexing {
-		sw.Add(0) // 0000 0000
+		buf.Add(0) // 0000 0000
 	} else {
-		sw.Add(0x40) // 0100 0000
+		buf.Add(0x40) // 0100 0000
 	}
-	buf = &sw
 	// No Huffman
 	buf.Merge(integer.Encode(frame.NameLength, 7))
 	buf.Merge([]byte(frame.NameString))
@@ -48,13 +48,12 @@ func (frame *StringLiteral) Encode() (buf *swrap.SWrap) {
 // type に足すのも考えたけど、 New の引数を増やすか、使う側が設定する必要が
 // あるのも微妙かと思い、別メソッドとすることにした。
 func (frame *StringLiteral) EncodeHuffman(cxt CXT) (buf *swrap.SWrap) {
-	sw := swrap.SWrap{}
+	buf = new(swrap.SWrap)
 	if frame.Indexing {
-		sw.Add(0) // 0000 0000
+		buf.Add(0) // 0000 0000
 	} else {
-		sw.Add(0x40) // 0100 0000
+		buf.Add(0x40) // 0100 0000
 	}
-	buf = &sw
 
 	var encoded, length []byte
 

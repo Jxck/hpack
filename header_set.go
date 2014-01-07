@@ -11,11 +11,11 @@ import (
 type HeaderSet []HeaderField
 
 func NewHeaderSet() *HeaderSet {
-	return &HeaderSet{}
+	return new(HeaderSet)
 }
 
 func ToHeaderSet(header http.Header) HeaderSet {
-	hs := HeaderSet{}
+	hs := *new(HeaderSet)
 	for key, values := range header {
 		key := strings.ToLower(key)
 		for _, value := range values {

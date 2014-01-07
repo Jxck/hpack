@@ -22,7 +22,7 @@ type HeaderTable struct {
 func NewHeaderTable(SETTINGS_HEADER_TABLE_SIZE int) *HeaderTable {
 	return &HeaderTable{
 		SETTINGS_HEADER_TABLE_SIZE,
-		[]*HeaderField{},
+		make([]*HeaderField, 0),
 	}
 }
 
@@ -53,7 +53,7 @@ func (ht *HeaderTable) Remove(index int) *HeaderField {
 	copy(ht.HeaderFields[index:], ht.HeaderFields[index+1:])
 	// avoid memory leak
 	removed := ht.HeaderFields[len(ht.HeaderFields)-1]
-	ht.HeaderFields[len(ht.HeaderFields)-1] = &HeaderField{} // GC
+	ht.HeaderFields[len(ht.HeaderFields)-1] = new(HeaderField) // GC
 	ht.HeaderFields = ht.HeaderFields[:len(ht.HeaderFields)-1]
 	return removed
 }

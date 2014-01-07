@@ -19,7 +19,7 @@ type ReferencedField struct {
 type ReferenceSet []*ReferencedField
 
 func NewReferenceSet() *ReferenceSet {
-	return &ReferenceSet{}
+	return new(ReferenceSet)
 }
 
 func (rs *ReferenceSet) Len() int {
@@ -34,7 +34,7 @@ func (rs *ReferenceSet) Add(hf *HeaderField, emitted bool) {
 
 // cleanup reference set
 func (rs *ReferenceSet) Empty() {
-	*rs = ReferenceSet{}
+	*rs = *new(ReferenceSet)
 }
 
 // search given reference is exists in refset or not

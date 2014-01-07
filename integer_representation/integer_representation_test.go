@@ -55,7 +55,7 @@ func TestEncodeDecodeQuickCheck(t *testing.T) {
 		t.Log(actual)
 		return actual == I
 	}
-	c := &quick.Config{}
+	c := new(quick.Config)
 
 	if err := quick.Check(f, c); err != nil {
 		t.Error(err)

@@ -97,7 +97,7 @@ func Encode(raw []byte, table *HuffmanTable) (encoded []byte) {
 		// 配列に移す
 		encoded = append(encoded, byte(b.value))
 		// 最後なのでゼロ値でGC
-		b = &byt{}
+		b = new(byt)
 	}
 
 	return encoded

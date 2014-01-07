@@ -72,7 +72,7 @@ func RunStory(testfile TestFile, t *testing.T) {
 		}
 		context.Decode(wire)
 
-		expectedES := &HeaderSet{}
+		expectedES := new(HeaderSet)
 		for _, header := range cases.Headers {
 			for key, value := range header {
 				expectedES.Emit(NewHeaderField(key, value))
@@ -120,7 +120,7 @@ func writeJson(src, dst, filename string) {
 	context := NewContext(testFile.Context == "request", DEFAULT_HEADER_TABLE_SIZE)
 	// 一つのケースごと
 	for i, c := range testFile.Cases {
-		hs := HeaderSet{}
+		hs := *new(HeaderSet)
 		// 一つのヘッダごと
 		for _, header := range c.Headers {
 			for key, value := range header {
