@@ -65,7 +65,7 @@ func TestIndexedLiteralEncode(t *testing.T) {
 	}
 }
 
-func TestStringLiteralEncode_Indexing(t *testing.T) {
+func TestStringLiteralEncode(t *testing.T) {
 	var indexing bool
 	var name, value string = "custom-key", "custom-header"
 
@@ -106,7 +106,7 @@ func TestStringLiteralEncode_Indexing(t *testing.T) {
 	}
 }
 
-func TestStringLiteralEncodeHuffman_Indexing(t *testing.T) {
+func TestStringLiteralEncodeHuffman(t *testing.T) {
 	var indexing bool
 	var name, value string = "custom-key", "custom-value"
 
