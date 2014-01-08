@@ -18,7 +18,6 @@ func (frame *IndexedHeader) Encode() (buf *swrap.SWrap) {
 }
 
 func (frame *IndexedLiteral) Encode() (buf *swrap.SWrap) {
-	// TODO: support huff encode
 	buf = swrap.Make(integer.Encode(frame.Index, 6))
 	if !frame.Indexing {
 		(*buf)[0] += 0x40
@@ -29,8 +28,29 @@ func (frame *IndexedLiteral) Encode() (buf *swrap.SWrap) {
 	return buf
 }
 
+func (frame *IndexedLiteral) EncodeHuffman(cxt CXT) (buf *swrap.SWrap) {
+	buf = swrap.Make(integer.Encode(frame.Index, 6))
+	if !frame.Indexing {
+		(*buf)[0] += 0x40
+	}
+
+	var encoded, length []byte
+
+	// Value With Huffman
+	if cxt == REQUEST {
+		encoded = huffman.EncodeRequest([]byte(frame.ValueString))
+	} else {
+		encoded = huffman.EncodeResponse([]byte(frame.ValueString))
+	}
+	length = integer.Encode(uint64(len(encoded)), 7)
+	length[0] += 0x80 // 1000 0000 (huffman flag)
+	buf.Merge(length)
+	buf.Merge(encoded)
+
+	return buf
+}
+
 func (frame *StringLiteral) Encode() (buf *swrap.SWrap) {
-	// TODO: support huff encode
 	buf = new(swrap.SWrap)
 	if frame.Indexing {
 		buf.Add(0) // 0000 0000

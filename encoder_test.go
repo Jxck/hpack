@@ -65,6 +65,29 @@ func TestIndexedLiteralEncode(t *testing.T) {
 	}
 }
 
+func TestIndexedLiteralEncodeHuffman(t *testing.T) {
+	var indexing bool
+	var index uint64
+	var value string
+
+	// Indexing
+	indexing = true
+	index = 4
+	value = "www.example.com"
+	expected := []byte{
+		0x04, 0x8b, 0xdb, 0x6d,
+		0x88, 0x3e, 0x68, 0xd1,
+		0xcb, 0x12, 0x25, 0xba,
+		0x7f,
+	}
+
+	frame := NewIndexedLiteral(indexing, index, value)
+	actual := frame.EncodeHuffman(REQUEST)
+	if !actual.Compare(expected) {
+		t.Errorf("\ngot %v\nwant %v", actual, expected)
+	}
+}
+
 func TestStringLiteralEncode(t *testing.T) {
 	var indexing bool
 	var name, value string = "custom-key", "custom-header"
