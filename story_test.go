@@ -95,10 +95,18 @@ func RunStory(testfile TestFile, t *testing.T) {
 
 func TestStory(t *testing.T) {
 	dirs := []string{
-		"./hpack-test-case/nghttp2/",
-		// "./hpack-test-case/node-http2-hpack/",
+		"./hpack-test-case/go-hpack/",
 		// "./hpack-test-case/haskell-http2/",
-		// "./hpack-test-case/go-hpack/",
+		// "./hpack-test-case/haskell-http2-diff/",
+		// "./hpack-test-case/haskell-http2-diff-huffman/",
+		// "./hpack-test-case/haskell-http2-linear/",
+		// "./hpack-test-case/haskell-http2-linear-huffman/",
+		// "./hpack-test-case/haskell-http2-naive/",
+		// "./hpack-test-case/haskell-http2-naive-huffman/",
+		// "./hpack-test-case/nghttp2/",
+		// "./hpack-test-case/node-http2-hpack/",
+		// "./hpack-test-case/node-http2-protocol/",
+		// "./hpack-test-case/twitter-hpack/",
 	}
 
 	for _, dir := range dirs {
