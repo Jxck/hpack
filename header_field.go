@@ -7,7 +7,6 @@ type HeaderField struct {
 	Value string
 }
 
-// Add prefix if name is Must Header
 func NewHeaderField(name, value string) *HeaderField {
 	return &HeaderField{name, value}
 }
