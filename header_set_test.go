@@ -11,14 +11,14 @@ func TestNewHeaderSet(t *testing.T) {
 	header := make(http.Header)
 	header.Add("method", "get")
 	header.Add("host", "example.com")
-	header.Add(":host", "example.com")
+	header.Add(":authority", "example.com")
 	header.Add("cookie", "a")
 	header.Add("cookie", "b")
 
 	expected := HeaderSet{
 		{"method", "get"},
 		{"host", "example.com"},
-		{":host", "example.com"},
+		{":authority", "example.com"},
 		{"cookie", "a"},
 		{"cookie", "b"},
 	}
@@ -35,14 +35,14 @@ func TestToHeader(t *testing.T) {
 	header := make(http.Header)
 	header.Add("method", "get")
 	header.Add("host", "example.com")
-	header.Add(":host", "example.com")
+	header.Add(":authority", "example.com")
 	header.Add("cookie", "a")
 	header.Add("cookie", "b")
 
 	headerSet := HeaderSet{
 		{"method", "get"},
 		{"host", "example.com"},
-		{":host", "example.com"},
+		{":authority", "example.com"},
 		{"cookie", "a"},
 		{"cookie", "b"},
 	}
