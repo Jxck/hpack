@@ -37,6 +37,7 @@ const TestCaseDir string = "./hpack-test-case"
 //   ]
 // }
 type TestCase struct {
+	Seqno           int                 `json:"seqno"`
 	HeaderTableSize int                 `json:"header_table_size"`
 	Wire            string              `json:"wire"`
 	Headers         []map[string]string `json:"headers"`
@@ -122,7 +123,7 @@ func TestStory(t *testing.T) {
 func writeJson(src, dst, filename string) {
 	testFile := readJsonFile(src + filename)
 
-	testFile.Draft = 5
+	testFile.Draft = Version
 	testFile.Description = "https://github.com/jxck/hpack implemeted in Golang. Encoded using String Literal with Huffman, no Header/Static Table, and always start with emptied Reference Set. by Jxck."
 
 	context := NewContext(DEFAULT_HEADER_TABLE_SIZE)
@@ -138,6 +139,7 @@ func writeJson(src, dst, filename string) {
 
 		hexdump := context.Encode(hs)
 		wire := hex.EncodeToString(hexdump)
+		testFile.Cases[i].Seqno = i
 		testFile.Cases[i].Wire = wire
 		testFile.Cases[i].HeaderTableSize = DEFAULT_HEADER_TABLE_SIZE
 	}

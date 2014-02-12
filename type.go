@@ -4,6 +4,10 @@ import (
 	"github.com/jxck/swrap"
 )
 
+const (
+	Version int = 6
+)
+
 type Frame interface {
 	Encode() *swrap.SWrap
 }
