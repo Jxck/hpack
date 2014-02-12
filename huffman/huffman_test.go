@@ -7,7 +7,6 @@ import (
 	"testing/quick"
 )
 
-// ===== Encode =====
 func toHexString(hex []byte) (hexstr string) {
 	for _, v := range hex {
 		s := fmt.Sprintf("%x", v)
@@ -19,30 +18,13 @@ func toHexString(hex []byte) (hexstr string) {
 	return hexstr
 }
 
-var requestTestCase = []struct {
+var testCase = []struct {
 	str, hex string
 }{
 	{"www.example.com", "db6d883e68d1cb1225ba7f"},
 	{"no-cache", "63654a1398ff"},
 	{"custom-key", "4eb08b749790fa7f"},
 	{"custom-value", "4eb08b74979a17a8ff"},
-}
-
-func TestEncodeRequest(t *testing.T) {
-	for _, tc := range requestTestCase {
-		raw := []byte(tc.str)
-		expected := tc.hex
-		encoded := Encode(raw)
-		actual := toHexString(encoded)
-		if actual != expected {
-			t.Errorf("\ngot  %v\nwant %v", actual, expected)
-		}
-	}
-}
-
-var responseTestCase = []struct {
-	str, hex string
-}{
 	{"302", "98a7"},
 	{"gzip", "cbd54e"},
 	{"private", "73d5cd111f"},
@@ -64,8 +46,8 @@ var responseTestCase = []struct {
 	},
 }
 
-func TestEncodeResponse(t *testing.T) {
-	for _, tc := range responseTestCase {
+func TestEncode(t *testing.T) {
+	for _, tc := range testCase {
 		raw := []byte(tc.str)
 		expected := tc.hex
 		encoded := Encode(raw)
@@ -76,8 +58,7 @@ func TestEncodeResponse(t *testing.T) {
 	}
 }
 
-// ===== Decode =====
-func TestDecodeResponse(t *testing.T) {
+func TestDecode(t *testing.T) {
 	expected := "302"
 	// Show(root)
 	var code = []byte{0x98, 0xa7}
@@ -88,20 +69,8 @@ func TestDecodeResponse(t *testing.T) {
 	}
 }
 
-// ===== Encode -> Decode =====
 func TestEncodeDecode(t *testing.T) {
-	// Request
-	for _, tc := range requestTestCase {
-		expected := []byte(tc.str)
-		encoded := Encode(expected)
-		actual := Decode(encoded)
-
-		if reflect.DeepEqual(actual, expected) == false {
-			t.Errorf("\ngot  %v\nwant %v", actual, expected)
-		}
-	}
-	// Response
-	for _, tc := range responseTestCase {
+	for _, tc := range testCase {
 		expected := []byte(tc.str)
 		encoded := Encode(expected)
 		actual := Decode(encoded)
@@ -112,21 +81,12 @@ func TestEncodeDecode(t *testing.T) {
 	}
 }
 
-// ===== Quick Check =====
 func TestQuickCheckEncodeDecode(t *testing.T) {
 	f := func(expected []byte) bool {
 		var encoded, actual []byte
-		// request
 		encoded = Encode(expected)
 		actual = Decode(encoded)
-		req := reflect.DeepEqual(actual, expected)
-
-		// response
-		encoded = Encode(expected)
-		actual = Decode(encoded)
-		res := reflect.DeepEqual(actual, expected)
-
-		return req && res
+		return reflect.DeepEqual(actual, expected)
 	}
 
 	c := &quick.Config{
