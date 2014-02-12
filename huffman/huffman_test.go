@@ -43,24 +43,24 @@ func TestEncodeRequest(t *testing.T) {
 var responseTestCase = []struct {
 	str, hex string
 }{
-	{"302", "409f"},
-	{"gzip", "e1fbb30f"},
-	{"private", "c31b39bf387f"},
+	{"302", "98a7"},
+	{"gzip", "cbd54e"},
+	{"private", "73d5cd111f"},
 	{
 		"Mon, 21 Oct 2013 20:13:21 GMT",
-		"a2fba20320f2ab303124018b490d3209e877",
+		"ef6b3a7a0e6e8fa263d0729a6e8397d869bd873747bbbfc7",
 	},
 	{
 		"Mon, 21 Oct 2013 20:13:22 GMT",
-		"a2fba20320f2ab303124018b490d3309e877",
+		"ef6b3a7a0e6e8fa263d0729a6e8397d869bd873f47bbbfc7",
 	},
 	{
 		"https://www.example.com",
-		"e39e7864dd7afd3d3d248747db87284955f6ff",
+		"ce31743d801b6db107cd1a396244b74f",
 	},
 	{
 		"foo=ASDJKHQKBZXOQWEOPIUAXQWEOIU; max-age=3600; version=1",
-		"df7dfb36d3d9e1fcfc3fafe7abfcfefcbfaf3edf2f977fd36ff7fd79f6f977fd3de16bfa46fe10d889447de1ce18e565f76c2f",
+		"c5adb77f876fc7fbf7fdbfbebff3f7f4fb7ebbbe9f5f87e37fefedfaeefa7c3f1d5d1a23ce546436cd494bd5d1cc5f0535969b",
 	},
 }
 
@@ -80,7 +80,7 @@ func TestEncodeResponse(t *testing.T) {
 func TestDecodeResponse(t *testing.T) {
 	expected := "302"
 	// Show(root)
-	var code = []byte{0x40, 0x9f}
+	var code = []byte{0x98, 0xa7}
 	result := DecodeResponse(code)
 	actual := string(result)
 	if actual != expected {
