@@ -124,7 +124,7 @@ func DecodeLiteral(buf *swrap.SWrap) (value string) {
 			code = append(code, buf.Shift())
 		}
 
-		// コンテキストに合わせてデコード
+		// ハフマンデコード
 		value = string(huffman.Decode(code))
 		Debug("decoded = %v", value)
 	} else {

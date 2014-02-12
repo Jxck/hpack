@@ -6,11 +6,6 @@ import (
 	"github.com/jxck/swrap"
 )
 
-// Huffman 対応時に Encode() に request/response や flag などを渡すと、
-// Frame Interface が変わるし、 IndexedHeader にはいらない。
-// type に足すのも考えたけど、 New の引数を増やすか、使う側が設定する必要が
-// あるのも微妙かと思い、 HuffmanEncode(CTX) と別メソッドとすることにした。
-
 func (frame *IndexedHeader) Encode() (buf *swrap.SWrap) {
 	buf = swrap.Make(integer.Encode(frame.Index, 7))
 	(*buf)[0] += 0x80
