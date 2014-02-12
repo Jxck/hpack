@@ -38,9 +38,9 @@ func (frame *IndexedLiteral) EncodeHuffman(cxt CXT) (buf *swrap.SWrap) {
 
 	// Value With Huffman
 	if cxt == REQUEST {
-		encoded = huffman.EncodeRequest([]byte(frame.ValueString))
+		encoded = huffman.Encode([]byte(frame.ValueString))
 	} else {
-		encoded = huffman.EncodeResponse([]byte(frame.ValueString))
+		encoded = huffman.Encode([]byte(frame.ValueString))
 	}
 	length = integer.Encode(uint64(len(encoded)), 7)
 	length[0] += 0x80 // 1000 0000 (huffman flag)
@@ -78,9 +78,9 @@ func (frame *StringLiteral) EncodeHuffman(cxt CXT) (buf *swrap.SWrap) {
 
 	// Name With Huffman
 	if cxt == REQUEST {
-		encoded = huffman.EncodeRequest([]byte(frame.NameString))
+		encoded = huffman.Encode([]byte(frame.NameString))
 	} else {
-		encoded = huffman.EncodeResponse([]byte(frame.NameString))
+		encoded = huffman.Encode([]byte(frame.NameString))
 	}
 
 	length = integer.Encode(uint64(len(encoded)), 7)
@@ -90,9 +90,9 @@ func (frame *StringLiteral) EncodeHuffman(cxt CXT) (buf *swrap.SWrap) {
 
 	// Value With Huffman
 	if cxt == REQUEST {
-		encoded = huffman.EncodeRequest([]byte(frame.ValueString))
+		encoded = huffman.Encode([]byte(frame.ValueString))
 	} else {
-		encoded = huffman.EncodeResponse([]byte(frame.ValueString))
+		encoded = huffman.Encode([]byte(frame.ValueString))
 	}
 	length = integer.Encode(uint64(len(encoded)), 7)
 	length[0] += 0x80 // 1000 0000 (huffman flag)

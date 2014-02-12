@@ -23,14 +23,8 @@ func (b *byt) Dump() string {
 	return fmt.Sprintf("(v=%v, r=%v)", b.value, b.remain)
 }
 
-func EncodeRequest(raw []byte) (encoded []byte) {
-	return Encode(raw, huffmanTable)
-}
-func EncodeResponse(raw []byte) (encoded []byte) {
-	return Encode(raw, huffmanTable)
-}
-
-func Encode(raw []byte, table *HuffmanTable) (encoded []byte) {
+func Encode(raw []byte) (encoded []byte) {
+	table := huffmanTable
 	// 空のバイト列はそのまま返す
 	if len(raw) == 0 {
 		return raw

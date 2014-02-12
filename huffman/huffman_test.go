@@ -32,7 +32,7 @@ func TestEncodeRequest(t *testing.T) {
 	for _, tc := range requestTestCase {
 		raw := []byte(tc.str)
 		expected := tc.hex
-		encoded := EncodeRequest(raw)
+		encoded := Encode(raw)
 		actual := toHexString(encoded)
 		if actual != expected {
 			t.Errorf("\ngot  %v\nwant %v", actual, expected)
@@ -68,7 +68,7 @@ func TestEncodeResponse(t *testing.T) {
 	for _, tc := range responseTestCase {
 		raw := []byte(tc.str)
 		expected := tc.hex
-		encoded := EncodeResponse(raw)
+		encoded := Encode(raw)
 		actual := toHexString(encoded)
 		if actual != expected {
 			t.Errorf("\ngot  %v\nwant %v", actual, expected)
@@ -81,7 +81,7 @@ func TestDecodeResponse(t *testing.T) {
 	expected := "302"
 	// Show(root)
 	var code = []byte{0x98, 0xa7}
-	result := DecodeResponse(code)
+	result := Decode(code)
 	actual := string(result)
 	if actual != expected {
 		t.Errorf("\ngot  %v\nwant %v", actual, expected)
@@ -93,8 +93,8 @@ func TestEncodeDecode(t *testing.T) {
 	// Request
 	for _, tc := range requestTestCase {
 		expected := []byte(tc.str)
-		encoded := EncodeRequest(expected)
-		actual := DecodeRequest(encoded)
+		encoded := Encode(expected)
+		actual := Decode(encoded)
 
 		if reflect.DeepEqual(actual, expected) == false {
 			t.Errorf("\ngot  %v\nwant %v", actual, expected)
@@ -103,8 +103,8 @@ func TestEncodeDecode(t *testing.T) {
 	// Response
 	for _, tc := range responseTestCase {
 		expected := []byte(tc.str)
-		encoded := EncodeResponse(expected)
-		actual := DecodeResponse(encoded)
+		encoded := Encode(expected)
+		actual := Decode(encoded)
 
 		if reflect.DeepEqual(actual, expected) == false {
 			t.Errorf("\ngot  %v\nwant %v", actual, expected)
@@ -117,13 +117,13 @@ func TestQuickCheckEncodeDecode(t *testing.T) {
 	f := func(expected []byte) bool {
 		var encoded, actual []byte
 		// request
-		encoded = EncodeRequest(expected)
-		actual = DecodeRequest(encoded)
+		encoded = Encode(expected)
+		actual = Decode(encoded)
 		req := reflect.DeepEqual(actual, expected)
 
 		// response
-		encoded = EncodeResponse(expected)
-		actual = DecodeResponse(encoded)
+		encoded = Encode(expected)
+		actual = Decode(encoded)
 		res := reflect.DeepEqual(actual, expected)
 
 		return req && res

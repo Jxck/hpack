@@ -6,15 +6,13 @@ import (
 )
 
 var (
-	RequestHuffmanTree  *node
-	ResponseHuffmanTree *node
+	HuffmanTree *node
 )
 
 func init() {
 	log.SetFlags(log.Lshortfile)
 
-	RequestHuffmanTree = BuildRequestTree()
-	ResponseHuffmanTree = BuildResponseTree()
+	HuffmanTree = BuildTree(huffmanTable)
 }
 
 // huffman tree の node
@@ -43,15 +41,6 @@ func show(current *node) {
 		show(current.left)
 		show(current.right)
 	}
-}
-
-// 実際に呼ばれる関数
-func BuildRequestTree() (root *node) {
-	return BuildTree(huffmanTable)
-}
-
-func BuildResponseTree() (root *node) {
-	return BuildTree(huffmanTable)
 }
 
 // ツリーを構築する
@@ -86,14 +75,6 @@ func BuildTree(table *HuffmanTable) (root *node) {
 	return root
 }
 
-func DecodeRequest(codes []byte) []byte {
-	return Decode(RequestHuffmanTree, codes)
-}
-
-func DecodeResponse(codes []byte) []byte {
-	return Decode(ResponseHuffmanTree, codes)
-}
-
 /* テストデータ
 [141,       127,       91       ]
 [1000 1101, 0111 1111, 0101 1011]
@@ -107,7 +88,8 @@ func DecodeResponse(codes []byte) []byte {
 
 // バイト配列を渡すと木を辿り
 // その葉にあるテーブルへのインデックスの配列を返す。
-func Decode(root *node, codes []byte) []byte {
+func Decode(codes []byte) []byte {
+	root := HuffmanTree
 	// 空のバイト列はそのまま返す
 	if len(codes) == 0 {
 		return codes

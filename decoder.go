@@ -126,9 +126,9 @@ func DecodeLiteral(buf *swrap.SWrap, cxt CXT) (value string) {
 
 		// コンテキストに合わせてデコード
 		if cxt == REQUEST {
-			value = string(huffman.DecodeRequest(code))
+			value = string(huffman.Decode(code))
 		} else if cxt == RESPONSE {
-			value = string(huffman.DecodeResponse(code))
+			value = string(huffman.Decode(code))
 		}
 		Debug("(context, decoded) = (%t, %v)", cxt, value)
 	} else {
