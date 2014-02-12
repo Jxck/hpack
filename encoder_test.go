@@ -82,7 +82,7 @@ func TestIndexedLiteralEncodeHuffman(t *testing.T) {
 	}
 
 	frame := NewIndexedLiteral(indexing, index, value)
-	actual := frame.EncodeHuffman(REQUEST)
+	actual := frame.EncodeHuffman()
 	if !actual.Compare(expected) {
 		t.Errorf("\ngot %v\nwant %v", actual, expected)
 	}
@@ -144,7 +144,7 @@ func TestStringLiteralEncodeHuffman(t *testing.T) {
 	}
 
 	frame := NewStringLiteral(indexing, name, value)
-	actual := frame.EncodeHuffman(REQUEST)
+	actual := frame.EncodeHuffman()
 	if !actual.Compare(expected) {
 		t.Errorf("\ngot %v\nwant %v", actual, expected)
 	}

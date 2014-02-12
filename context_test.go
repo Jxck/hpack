@@ -17,7 +17,7 @@ func TestRequestWithoutHuffman(t *testing.T) {
 		expectedRS ReferenceSet
 	)
 
-	context = NewContext(REQUEST, DEFAULT_HEADER_TABLE_SIZE)
+	context = NewContext(DEFAULT_HEADER_TABLE_SIZE)
 
 	/**
 	 * First Request
@@ -243,7 +243,7 @@ func TestRequestWithHuffman(t *testing.T) {
 		expectedRS ReferenceSet
 	)
 
-	context = NewContext(REQUEST, DEFAULT_HEADER_TABLE_SIZE)
+	context = NewContext(DEFAULT_HEADER_TABLE_SIZE)
 
 	/**
 	 * First Request
@@ -467,7 +467,7 @@ func TestResponseWithoutHuffman(t *testing.T) {
 	)
 
 	var HeaderTableSize int = 256
-	context = NewContext(RESPONSE, HeaderTableSize)
+	context = NewContext(HeaderTableSize)
 
 	/**
 	 * First Response
@@ -714,7 +714,7 @@ func TestResponseWithHuffman(t *testing.T) {
 	)
 
 	var HeaderTableSize int = 256
-	context = NewContext(RESPONSE, HeaderTableSize)
+	context = NewContext(HeaderTableSize)
 
 	/**
 	 * First Response
@@ -952,7 +952,7 @@ func TestResponseWithHuffman(t *testing.T) {
 }
 
 func TestEncode(t *testing.T) {
-	context := NewContext(REQUEST, DEFAULT_HEADER_TABLE_SIZE)
+	context := NewContext(DEFAULT_HEADER_TABLE_SIZE)
 
 	hs := HeaderSet{
 		*NewHeaderField(":status", "200"),
@@ -974,7 +974,7 @@ func TestEncode(t *testing.T) {
 }
 
 func TestEncodeWithHuffman(t *testing.T) {
-	context := NewContext(REQUEST, DEFAULT_HEADER_TABLE_SIZE)
+	context := NewContext(DEFAULT_HEADER_TABLE_SIZE)
 	hs := HeaderSet{
 		*NewHeaderField(":method", "GET"),
 		*NewHeaderField(":scheme", "http"),

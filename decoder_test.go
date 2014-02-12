@@ -16,7 +16,7 @@ func TestIndexedHeaderDecode(t *testing.T) {
 	// expected
 	var index uint64 = 2
 
-	decoded := DecodeHeader(&buf, REQUEST)
+	decoded := DecodeHeader(&buf)
 	frame, ok := decoded.(*IndexedHeader)
 	if !ok {
 		t.Errorf("Decoded to incorrect frame type: %T", frame)
@@ -39,7 +39,7 @@ func TestIndexedLiteralDecode_NoIndexing_NoHuffman(t *testing.T) {
 	var index uint64 = 4
 	var value string = "/sample/path"
 
-	decoded := DecodeHeader(&buf, REQUEST)
+	decoded := DecodeHeader(&buf)
 	frame, ok := decoded.(*IndexedLiteral)
 	if !ok {
 		t.Errorf("Decoded to incorrect frame type: %T", frame)
@@ -74,7 +74,7 @@ func TestStringLiteralDecode_Indexing_NoHuffman(t *testing.T) {
 	var indexing bool = true
 	var name, value string = "custom-key", "custom-header"
 
-	decoded := DecodeHeader(&buf, REQUEST)
+	decoded := DecodeHeader(&buf)
 	frame, ok := decoded.(*StringLiteral)
 	if !ok {
 		t.Errorf("Decoded to incorrect frame type: %T", frame)
@@ -111,7 +111,7 @@ func TestIndexedLiteralDecode_Indexing_Huffman(t *testing.T) {
 	var index uint64 = 4
 	var value string = "www.example.com"
 
-	decoded := DecodeHeader(&buf, REQUEST)
+	decoded := DecodeHeader(&buf)
 	frame, ok := decoded.(*IndexedLiteral)
 	if !ok {
 		t.Errorf("Decoded to incorrect frame type: %T", frame)
