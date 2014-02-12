@@ -24,10 +24,10 @@ func (b *byt) Dump() string {
 }
 
 func EncodeRequest(raw []byte) (encoded []byte) {
-	return Encode(raw, RequestHuffmanTable)
+	return Encode(raw, huffmanTable)
 }
 func EncodeResponse(raw []byte) (encoded []byte) {
-	return Encode(raw, ResponseHuffmanTable)
+	return Encode(raw, huffmanTable)
 }
 
 func Encode(raw []byte, table *HuffmanTable) (encoded []byte) {
@@ -86,7 +86,7 @@ func Encode(raw []byte, table *HuffmanTable) (encoded []byte) {
 
 	if b.remain > 0 && b.remain < 8 { // EOS でパディング
 		// パディング分切り出す
-		eos := RequestHuffmanTable[256]
+		eos := huffmanTable[256]
 		shift := eos.length - b.remain
 		padding := eos.code >> shift
 

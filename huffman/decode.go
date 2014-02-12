@@ -47,11 +47,11 @@ func show(current *node) {
 
 // 実際に呼ばれる関数
 func BuildRequestTree() (root *node) {
-	return BuildTree(RequestHuffmanTable)
+	return BuildTree(huffmanTable)
 }
 
 func BuildResponseTree() (root *node) {
-	return BuildTree(ResponseHuffmanTable)
+	return BuildTree(huffmanTable)
 }
 
 // ツリーを構築する

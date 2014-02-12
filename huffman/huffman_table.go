@@ -10,7 +10,7 @@ type HuffmanTable [257]HuffmanCode
 /*
   HuffmanTable  [257]HuffmanCode
 */
-var HuffmanTable = &HuffmanTable{
+var huffmanTable = &HuffmanTable{
 	{0x7ffffba, 27},
 	{0x7ffffbb, 27},
 	{0x7ffffbc, 27},
