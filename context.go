@@ -11,14 +11,6 @@ import (
 
 var loglevel int
 
-// Request or Response
-type CXT bool
-
-const (
-	REQUEST  CXT = true
-	RESPONSE     = false
-)
-
 func init() {
 	flag.IntVar(&loglevel, "l", 0, "log level (1 ERR, 2 WARNING, 3 INFO, 4 DEBUG)")
 	flag.Parse()
@@ -27,18 +19,16 @@ func init() {
 }
 
 type Context struct {
-	CXT
 	HT *HeaderTable
 	RS *ReferenceSet
 	ES *HeaderSet
 }
 
-func NewContext(context CXT, SETTINGS_HEADER_TABLE_SIZE int) *Context {
+func NewContext(SETTINGS_HEADER_TABLE_SIZE int) *Context {
 	return &Context{
-		HT:  NewHeaderTable(SETTINGS_HEADER_TABLE_SIZE),
-		RS:  NewReferenceSet(),
-		ES:  NewHeaderSet(),
-		CXT: context,
+		HT: NewHeaderTable(SETTINGS_HEADER_TABLE_SIZE),
+		RS: NewReferenceSet(),
+		ES: NewHeaderSet(),
 	}
 }
 
@@ -53,7 +43,7 @@ func (c *Context) Decode(wire []byte) {
 		"==========================="),
 		c.Dump())
 
-	frames := Decode(wire, c.CXT)
+	frames := Decode(wire)
 	for _, frame := range frames {
 		switch f := frame.(type) {
 		case *IndexedHeader:
@@ -284,7 +274,7 @@ func (c *Context) Encode(headerSet HeaderSet) []byte {
 	// 全て StringLiteral(Indexing = false) でエンコード
 	for _, h := range headerSet {
 		sl := NewStringLiteral(false, h.Name, h.Value)
-		buf.Merge(*sl.EncodeHuffman(c.CXT))
+		buf.Merge(*sl.EncodeHuffman())
 	}
 
 	return buf.Bytes()

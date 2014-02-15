@@ -37,6 +37,7 @@ const TestCaseDir string = "./hpack-test-case"
 //   ]
 // }
 type TestCase struct {
+	Seqno           int                 `json:"seqno"`
 	HeaderTableSize int                 `json:"header_table_size"`
 	Wire            string              `json:"wire"`
 	Headers         []map[string]string `json:"headers"`
@@ -64,7 +65,7 @@ func readJsonFile(path string) TestFile {
 }
 
 func RunStory(testfile TestFile, t *testing.T) {
-	context := NewContext(testfile.Context == "request", DEFAULT_HEADER_TABLE_SIZE)
+	context := NewContext(DEFAULT_HEADER_TABLE_SIZE)
 	for _, cases := range testfile.Cases {
 		wire, err := hex.DecodeString(cases.Wire)
 		if err != nil {
@@ -122,10 +123,10 @@ func TestStory(t *testing.T) {
 func writeJson(src, dst, filename string) {
 	testFile := readJsonFile(src + filename)
 
-	testFile.Draft = 5
+	testFile.Draft = Version
 	testFile.Description = "https://github.com/jxck/hpack implemeted in Golang. Encoded using String Literal with Huffman, no Header/Static Table, and always start with emptied Reference Set. by Jxck."
 
-	context := NewContext(testFile.Context == "request", DEFAULT_HEADER_TABLE_SIZE)
+	context := NewContext(DEFAULT_HEADER_TABLE_SIZE)
 	// 一つのケースごと
 	for i, c := range testFile.Cases {
 		hs := *new(HeaderSet)
@@ -138,6 +139,7 @@ func writeJson(src, dst, filename string) {
 
 		hexdump := context.Encode(hs)
 		wire := hex.EncodeToString(hexdump)
+		testFile.Cases[i].Seqno = i
 		testFile.Cases[i].Wire = wire
 		testFile.Cases[i].HeaderTableSize = DEFAULT_HEADER_TABLE_SIZE
 	}

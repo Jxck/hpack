@@ -4,6 +4,10 @@ import (
 	"github.com/jxck/swrap"
 )
 
+const (
+	Version int = 6
+)
+
 type Frame interface {
 	Encode() *swrap.SWrap
 }
@@ -31,7 +35,7 @@ func NewIndexedHeader(index uint64) (frame *IndexedHeader) {
 // +---+---+---+---+---+---+---+---+
 // | 0 | F |      Index (6+)       |
 // +---+---+---+-------------------+
-// |       Value Length (8+)       |
+// | H |     Value Length (7+)     |
 // +-------------------------------+
 // | Value String (Length octets)  |
 // +-------------------------------+
@@ -58,11 +62,11 @@ func NewIndexedLiteral(indexing bool, index uint64, value string) (frame *Indexe
 // +---+---+---+---+---+---+---+---+
 // | 0 | F |           0           |
 // +---+---+---+-------------------+
-// |       Name Length (8+)        |
+// | H |     Name Length (7+)      |
 // +-------------------------------+
 // |  Name String (Length octets)  |
 // +-------------------------------+
-// |       Value Length (8+)       |
+// | H |     Value Length (7+)     |
 // +-------------------------------+
 // | Value String (Length octets)  |
 // +-------------------------------+

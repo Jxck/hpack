@@ -13,16 +13,16 @@ func init() {
 }
 
 // Decode Wire byte seq to Slice of Frames
-func Decode(wire []byte, cxt CXT) (frames []Frame) {
+func Decode(wire []byte) (frames []Frame) {
 	buf := swrap.Make(wire)
 	for buf.Len() > 0 {
-		frames = append(frames, DecodeHeader(buf, cxt))
+		frames = append(frames, DecodeHeader(buf))
 	}
 	return frames
 }
 
 // Decode single Frame from buffer and return it
-func DecodeHeader(buf *swrap.SWrap, cxt CXT) Frame {
+func DecodeHeader(buf *swrap.SWrap) Frame {
 	// check first byte
 	types := (*buf)[0]
 	Debug("types = %v", types)
@@ -41,9 +41,9 @@ func DecodeHeader(buf *swrap.SWrap, cxt CXT) Frame {
 		buf.Shift()
 
 		indexing := true
-		name := DecodeLiteral(buf, cxt)
+		name := DecodeLiteral(buf)
 		Debug("StringLiteral name = %v", name)
-		value := DecodeLiteral(buf, cxt)
+		value := DecodeLiteral(buf)
 		Debug("StringLiteral value = %v", value)
 		frame := NewStringLiteral(indexing, name, value)
 		return frame
@@ -55,9 +55,9 @@ func DecodeHeader(buf *swrap.SWrap, cxt CXT) Frame {
 		buf.Shift()
 
 		indexing := false
-		name := DecodeLiteral(buf, cxt)
+		name := DecodeLiteral(buf)
 		Debug("StringLiteral name = %v", name)
-		value := DecodeLiteral(buf, cxt)
+		value := DecodeLiteral(buf)
 		Debug("StringLiteral value = %v", value)
 		frame := NewStringLiteral(indexing, name, value)
 		return frame
@@ -68,7 +68,7 @@ func DecodeHeader(buf *swrap.SWrap, cxt CXT) Frame {
 		indexing := false
 		index := DecodePrefixedInteger(buf, 6)
 		Debug("IndexedLiteral index = %v", index)
-		value := DecodeLiteral(buf, cxt)
+		value := DecodeLiteral(buf)
 		Debug("IndexedLiteral value = %v", value)
 		frame := NewIndexedLiteral(indexing, index, value)
 		return frame
@@ -79,7 +79,7 @@ func DecodeHeader(buf *swrap.SWrap, cxt CXT) Frame {
 		indexing := true
 		index := DecodePrefixedInteger(buf, 6)
 		Debug("IndexedLiteral index = %v", index)
-		value := DecodeLiteral(buf, cxt)
+		value := DecodeLiteral(buf)
 		Debug("IndexedLiteral value = %v", value)
 		frame := NewIndexedLiteral(indexing, index, value)
 		return frame
@@ -102,7 +102,7 @@ func DecodeString(buf *swrap.SWrap, n uint64) string {
 	return string(valueBytes)
 }
 
-func DecodeLiteral(buf *swrap.SWrap, cxt CXT) (value string) {
+func DecodeLiteral(buf *swrap.SWrap) (value string) {
 	// 最初のバイトを取り出す
 	first := (*buf)[0]
 
@@ -124,13 +124,9 @@ func DecodeLiteral(buf *swrap.SWrap, cxt CXT) (value string) {
 			code = append(code, buf.Shift())
 		}
 
-		// コンテキストに合わせてデコード
-		if cxt == REQUEST {
-			value = string(huffman.DecodeRequest(code))
-		} else if cxt == RESPONSE {
-			value = string(huffman.DecodeResponse(code))
-		}
-		Debug("(context, decoded) = (%t, %v)", cxt, value)
+		// ハフマンデコード
+		value = string(huffman.Decode(code))
+		Debug("decoded = %v", value)
 	} else {
 		valueLength := DecodePrefixedInteger(buf, 7)
 		value = DecodeString(buf, valueLength)

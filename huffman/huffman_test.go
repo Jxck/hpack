@@ -7,7 +7,6 @@ import (
 	"testing/quick"
 )
 
-// ===== Encode =====
 func toHexString(hex []byte) (hexstr string) {
 	for _, v := range hex {
 		s := fmt.Sprintf("%x", v)
@@ -19,56 +18,39 @@ func toHexString(hex []byte) (hexstr string) {
 	return hexstr
 }
 
-var requestTestCase = []struct {
+var testCase = []struct {
 	str, hex string
 }{
 	{"www.example.com", "db6d883e68d1cb1225ba7f"},
 	{"no-cache", "63654a1398ff"},
 	{"custom-key", "4eb08b749790fa7f"},
 	{"custom-value", "4eb08b74979a17a8ff"},
-}
-
-func TestEncodeRequest(t *testing.T) {
-	for _, tc := range requestTestCase {
-		raw := []byte(tc.str)
-		expected := tc.hex
-		encoded := EncodeRequest(raw)
-		actual := toHexString(encoded)
-		if actual != expected {
-			t.Errorf("\ngot  %v\nwant %v", actual, expected)
-		}
-	}
-}
-
-var responseTestCase = []struct {
-	str, hex string
-}{
-	{"302", "409f"},
-	{"gzip", "e1fbb30f"},
-	{"private", "c31b39bf387f"},
+	{"302", "98a7"},
+	{"gzip", "cbd54e"},
+	{"private", "73d5cd111f"},
 	{
 		"Mon, 21 Oct 2013 20:13:21 GMT",
-		"a2fba20320f2ab303124018b490d3209e877",
+		"ef6b3a7a0e6e8fa263d0729a6e8397d869bd873747bbbfc7",
 	},
 	{
 		"Mon, 21 Oct 2013 20:13:22 GMT",
-		"a2fba20320f2ab303124018b490d3309e877",
+		"ef6b3a7a0e6e8fa263d0729a6e8397d869bd873f47bbbfc7",
 	},
 	{
 		"https://www.example.com",
-		"e39e7864dd7afd3d3d248747db87284955f6ff",
+		"ce31743d801b6db107cd1a396244b74f",
 	},
 	{
 		"foo=ASDJKHQKBZXOQWEOPIUAXQWEOIU; max-age=3600; version=1",
-		"df7dfb36d3d9e1fcfc3fafe7abfcfefcbfaf3edf2f977fd36ff7fd79f6f977fd3de16bfa46fe10d889447de1ce18e565f76c2f",
+		"c5adb77f876fc7fbf7fdbfbebff3f7f4fb7ebbbe9f5f87e37fefedfaeefa7c3f1d5d1a23ce546436cd494bd5d1cc5f0535969b",
 	},
 }
 
-func TestEncodeResponse(t *testing.T) {
-	for _, tc := range responseTestCase {
+func TestEncode(t *testing.T) {
+	for _, tc := range testCase {
 		raw := []byte(tc.str)
 		expected := tc.hex
-		encoded := EncodeResponse(raw)
+		encoded := Encode(raw)
 		actual := toHexString(encoded)
 		if actual != expected {
 			t.Errorf("\ngot  %v\nwant %v", actual, expected)
@@ -76,35 +58,22 @@ func TestEncodeResponse(t *testing.T) {
 	}
 }
 
-// ===== Decode =====
-func TestDecodeResponse(t *testing.T) {
+func TestDecode(t *testing.T) {
 	expected := "302"
 	// Show(root)
-	var code = []byte{0x40, 0x9f}
-	result := DecodeResponse(code)
+	var code = []byte{0x98, 0xa7}
+	result := Decode(code)
 	actual := string(result)
 	if actual != expected {
 		t.Errorf("\ngot  %v\nwant %v", actual, expected)
 	}
 }
 
-// ===== Encode -> Decode =====
 func TestEncodeDecode(t *testing.T) {
-	// Request
-	for _, tc := range requestTestCase {
+	for _, tc := range testCase {
 		expected := []byte(tc.str)
-		encoded := EncodeRequest(expected)
-		actual := DecodeRequest(encoded)
-
-		if reflect.DeepEqual(actual, expected) == false {
-			t.Errorf("\ngot  %v\nwant %v", actual, expected)
-		}
-	}
-	// Response
-	for _, tc := range responseTestCase {
-		expected := []byte(tc.str)
-		encoded := EncodeResponse(expected)
-		actual := DecodeResponse(encoded)
+		encoded := Encode(expected)
+		actual := Decode(encoded)
 
 		if reflect.DeepEqual(actual, expected) == false {
 			t.Errorf("\ngot  %v\nwant %v", actual, expected)
@@ -112,21 +81,12 @@ func TestEncodeDecode(t *testing.T) {
 	}
 }
 
-// ===== Quick Check =====
 func TestQuickCheckEncodeDecode(t *testing.T) {
 	f := func(expected []byte) bool {
 		var encoded, actual []byte
-		// request
-		encoded = EncodeRequest(expected)
-		actual = DecodeRequest(encoded)
-		req := reflect.DeepEqual(actual, expected)
-
-		// response
-		encoded = EncodeResponse(expected)
-		actual = DecodeResponse(encoded)
-		res := reflect.DeepEqual(actual, expected)
-
-		return req && res
+		encoded = Encode(expected)
+		actual = Decode(encoded)
+		return reflect.DeepEqual(actual, expected)
 	}
 
 	c := &quick.Config{

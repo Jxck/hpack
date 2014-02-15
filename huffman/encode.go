@@ -23,14 +23,8 @@ func (b *byt) Dump() string {
 	return fmt.Sprintf("(v=%v, r=%v)", b.value, b.remain)
 }
 
-func EncodeRequest(raw []byte) (encoded []byte) {
-	return Encode(raw, RequestHuffmanTable)
-}
-func EncodeResponse(raw []byte) (encoded []byte) {
-	return Encode(raw, ResponseHuffmanTable)
-}
-
-func Encode(raw []byte, table *HuffmanTable) (encoded []byte) {
+func Encode(raw []byte) (encoded []byte) {
+	table := huffmanTable
 	// 空のバイト列はそのまま返す
 	if len(raw) == 0 {
 		return raw
@@ -86,7 +80,7 @@ func Encode(raw []byte, table *HuffmanTable) (encoded []byte) {
 
 	if b.remain > 0 && b.remain < 8 { // EOS でパディング
 		// パディング分切り出す
-		eos := RequestHuffmanTable[256]
+		eos := huffmanTable[256]
 		shift := eos.length - b.remain
 		padding := eos.code >> shift
 

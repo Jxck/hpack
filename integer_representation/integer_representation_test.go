@@ -27,6 +27,15 @@ func TestEncode(t *testing.T) {
 	}
 }
 
+func BenchmarkEncode(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		Encode(10, 5)
+		Encode(40, 5)
+		Encode(1337, 5)
+		Encode(3000000, 5)
+	}
+}
+
 func TestDecode(t *testing.T) {
 	testcases := []struct {
 		expected, actual uint64
@@ -43,6 +52,15 @@ func TestDecode(t *testing.T) {
 		if expected != actual {
 			t.Errorf("got %v\nwant %v", actual, expected)
 		}
+	}
+}
+
+func BenchmarkDecode(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		Decode(swrap.New([]byte{10}), 5)
+		Decode(swrap.New([]byte{31, 9}), 5)
+		Decode(swrap.New([]byte{31, 154, 10}), 5)
+		Decode(swrap.New([]byte{31, 161, 141, 183, 1}), 5)
 	}
 }
 
