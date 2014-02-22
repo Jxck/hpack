@@ -25,12 +25,12 @@ func Decode(wire []byte) (frames []Frame) {
 func DecodeHeader(buf *swrap.SWrap) Frame {
 	// check first byte
 	types := (*buf)[0]
-	Debug("types = %v", types)
+	Trace("types = %v", types)
 	if types >= 0x80 { // 1xxx xxxx
 		// Indexed Header Representation
 
 		index := DecodePrefixedInteger(buf, 7)
-		Debug("Indexed = %v", index)
+		Trace("Indexed = %v", index)
 		frame := NewIndexedHeader(index)
 		return frame
 	}
@@ -42,9 +42,9 @@ func DecodeHeader(buf *swrap.SWrap) Frame {
 
 		indexing := true
 		name := DecodeLiteral(buf)
-		Debug("StringLiteral name = %v", name)
+		Trace("StringLiteral name = %v", name)
 		value := DecodeLiteral(buf)
-		Debug("StringLiteral value = %v", value)
+		Trace("StringLiteral value = %v", value)
 		frame := NewStringLiteral(indexing, name, value)
 		return frame
 	}
@@ -56,9 +56,9 @@ func DecodeHeader(buf *swrap.SWrap) Frame {
 
 		indexing := false
 		name := DecodeLiteral(buf)
-		Debug("StringLiteral name = %v", name)
+		Trace("StringLiteral name = %v", name)
 		value := DecodeLiteral(buf)
-		Debug("StringLiteral value = %v", value)
+		Trace("StringLiteral value = %v", value)
 		frame := NewStringLiteral(indexing, name, value)
 		return frame
 	}
@@ -67,9 +67,9 @@ func DecodeHeader(buf *swrap.SWrap) Frame {
 
 		indexing := false
 		index := DecodePrefixedInteger(buf, 6)
-		Debug("IndexedLiteral index = %v", index)
+		Trace("IndexedLiteral index = %v", index)
 		value := DecodeLiteral(buf)
-		Debug("IndexedLiteral value = %v", value)
+		Trace("IndexedLiteral value = %v", value)
 		frame := NewIndexedLiteral(indexing, index, value)
 		return frame
 	}
@@ -78,9 +78,9 @@ func DecodeHeader(buf *swrap.SWrap) Frame {
 
 		indexing := true
 		index := DecodePrefixedInteger(buf, 6)
-		Debug("IndexedLiteral index = %v", index)
+		Trace("IndexedLiteral index = %v", index)
 		value := DecodeLiteral(buf)
-		Debug("IndexedLiteral value = %v", value)
+		Trace("IndexedLiteral value = %v", value)
 		frame := NewIndexedLiteral(indexing, index, value)
 		return frame
 	}
@@ -109,14 +109,14 @@ func DecodeLiteral(buf *swrap.SWrap) (value string) {
 	// 最初の 1bit をみて huffman かどうか取得
 	huffmanEncoded := (first&0x80 == 0x80)
 
-	Debug("huffman = %t", huffmanEncoded)
+	Trace("huffman = %t", huffmanEncoded)
 	if huffmanEncoded {
 		// 最初のバイトから 1 bit 目を消す
 		(*buf)[0] = first & 127
 
 		// ここで prefixed Integer 7 で読む。
 		b := DecodePrefixedInteger(buf, 7)
-		Debug("Literal Length = %v", b)
+		Trace("Literal Length = %v", b)
 
 		// その長さの分だけバイト値を取り出す
 		code := make([]byte, 0)
@@ -126,7 +126,7 @@ func DecodeLiteral(buf *swrap.SWrap) (value string) {
 
 		// ハフマンデコード
 		value = string(huffman.Decode(code))
-		Debug("decoded = %v", value)
+		Trace("decoded = %v", value)
 	} else {
 		valueLength := DecodePrefixedInteger(buf, 7)
 		value = DecodeString(buf, valueLength)

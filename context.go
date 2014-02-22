@@ -37,7 +37,7 @@ func (c *Context) Decode(wire []byte) {
 	c.ES = NewHeaderSet()
 	c.RS.Reset()
 	Info(Red("clean Emitted Set"))
-	Debug(Cyan(
+	Trace(Cyan(
 		"\n===== Before Decode =====")+
 		"%v"+Cyan(
 		"==========================="),
