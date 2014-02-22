@@ -12,7 +12,7 @@ import (
 var loglevel int
 
 func init() {
-	flag.IntVar(&loglevel, "l", 0, "log level (1 ERR, 2 WARNING, 3 INFO, 4 DEBUG)")
+	flag.IntVar(&loglevel, "l", 0, "log level (1 ERR, 2 WARNING, 3 NOTICE, 4 INFO, 5 DEBUG)")
 	flag.Parse()
 	LogLevel(loglevel)
 	log.SetFlags(log.Lshortfile)
