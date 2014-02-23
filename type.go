@@ -18,8 +18,26 @@ type Frame interface {
 // +---+---+---+---+---+---+---+---+
 // | 1 |        Index (7+)         |
 // +---+---------------------------+
+//
+// if Index == 0
+//
+// 0   1   2   3   4   5   6   7
+// +---+---+---+---+---+---+---+---+
+// | 1 |             0             |
+// +---+---------------------------+
+// Reference Set Emptying
+//
+// 0   1   2   3   4   5   6   7
+// +---+---+---+---+---+---+---+---+
+// | 0 |   New maximum size (7+)   |
+// +---+---------------------------+
+// Maximum Header Table Size Change
+//
 type IndexedHeader struct {
 	Index uint64
+	// Refset Emptify if Option == 128
+	// Table Size Change if Option < 128
+	Option uint8
 }
 
 func NewIndexedHeader(index uint64) (frame *IndexedHeader) {

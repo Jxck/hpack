@@ -51,10 +51,23 @@ func (c *Context) Decode(wire []byte) {
 
 			if index == 0 {
 				/**
-				 * idx=0 の場合 Reference Set を空にする
+				 * idx=0 の場合 Option を見る
 				 */
-				Debug(Red("Empty ReferenceSet"))
-				c.RS.Empty()
+
+				if f.Option == 128 {
+					/**
+					 * Reference Set Emptying
+					 */
+					Debug(Red("Reference Set Emptying"))
+					c.RS.Empty()
+				} else if f.Option < 128 {
+					/**
+					 * Maximum Header Table Size Change
+					 */
+					Debug(Red("Maximum Header Table Size Change"))
+					// TODO: change header table size
+				}
+
 				continue
 			}
 

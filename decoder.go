@@ -32,6 +32,10 @@ func DecodeHeader(buf *swrap.SWrap) Frame {
 		index := DecodePrefixedInteger(buf, 7)
 		Trace("Indexed = %v", index)
 		frame := NewIndexedHeader(index)
+
+		if index == 0 {
+			frame.Option = buf.Shift()
+		}
 		return frame
 	}
 	if types == 0 { // 0000 0000
