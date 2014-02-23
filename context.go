@@ -282,7 +282,11 @@ func (c *Context) Encode(headerSet HeaderSet) []byte {
 	var buf swrap.SWrap
 
 	// ReferenceSet を空にする
-	buf.Merge(*NewIndexedHeader(0).Encode())
+	indexHeader := NewIndexedHeader(0)
+	indexHeader.Option = 0x80
+
+	emptyRef := *indexHeader.Encode()
+	buf.Merge(emptyRef)
 
 	// 全て StringLiteral(Indexing = false) でエンコード
 	for _, h := range headerSet {

@@ -37,7 +37,7 @@ type IndexedHeader struct {
 	Index uint64
 	// Refset Emptify if Option == 128
 	// Table Size Change if Option < 128
-	Option uint8
+	Option byte
 }
 
 func NewIndexedHeader(index uint64) (frame *IndexedHeader) {
