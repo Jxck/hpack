@@ -15,14 +15,12 @@ func init() {
 	log.SetFlags(log.Lshortfile)
 }
 
-const TestCaseDir string = "./hpack-test-case"
-
 // {
 //   "draft": 5,
-//   "context": "request",
 //   "description": "Encoded request headers with Literal without index only.",
 //   "cases": [
 //     {
+//       "seqno": 0,
 //       "header_table_size": 4096,
 //       "wire": "1234567890abcdef",
 //       "headers": [
@@ -45,7 +43,6 @@ type TestCase struct {
 
 type TestFile struct {
 	Draft       int        `json:"draft"`
-	Context     string     `json:"context"`
 	Description string     `json:"description"`
 	Cases       []TestCase `json:"cases"`
 }
@@ -121,7 +118,11 @@ func writeJson(src, dst, filename string) {
 	testFile := readJsonFile(src + filename)
 
 	testFile.Draft = Version
-	testFile.Description = "https://github.com/jxck/hpack implemeted in Golang. Encoded using String Literal with Huffman, no Header/Static Table, and always start with emptied Reference Set. by Jxck."
+	testFile.Description = "" +
+		"https://github.com/jxck/hpack implemeted in Golang. " +
+		"Encoded using String Literal with Huffman, " +
+		"no Header/Static Table, " +
+		"and always start with emptied Reference Set. by Jxck."
 
 	context := NewContext(DEFAULT_HEADER_TABLE_SIZE)
 	// 一つのケースごと
