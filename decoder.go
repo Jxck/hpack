@@ -34,7 +34,8 @@ func DecodeHeader(buf *swrap.SWrap) Frame {
 		frame := NewIndexedHeader(index)
 
 		if index == 0 {
-			frame.Option = buf.Shift()
+			// TODO: Decoding Error
+			log.Fatal("Decoding Error: The index value of 0 is not used.")
 		}
 		return frame
 	}
@@ -86,6 +87,17 @@ func DecodeHeader(buf *swrap.SWrap) Frame {
 		value := DecodeLiteral(buf)
 		Trace("IndexedLiteral value = %v", value)
 		frame := NewIndexedLiteral(indexing, index, value)
+		return frame
+	}
+	if types == 0x30 { // 0011 0000
+		// remove first byte defines type
+		buf.Shift()
+		frame := NewEmptyReferenceSet()
+		return frame
+	}
+	if types&0xf0 == 0x20 { // 0010 xxxx & 1111 0000 == 0010 0000
+		maxSize := DecodePrefixedInteger(buf, 4)
+		frame := NewChangeHeaderTableSize(maxSize)
 		return frame
 	}
 	return nil

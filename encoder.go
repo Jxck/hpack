@@ -10,7 +10,7 @@ func (frame *IndexedHeader) Encode() (buf *swrap.SWrap) {
 	buf = swrap.Make(integer.Encode(frame.Index, 7))
 	(*buf)[0] += 0x80
 	if frame.Index == 0 {
-		buf.Add(frame.Option)
+		// TODO: Encoding Error
 	}
 	return buf
 }
@@ -85,5 +85,17 @@ func (frame *StringLiteral) EncodeHuffman() (buf *swrap.SWrap) {
 	buf.Merge(length)
 	buf.Merge(encoded)
 
+	return buf
+}
+
+func (frame *EmptyReferenceSet) Encode() (buf *swrap.SWrap) {
+	buf = swrap.Make([]byte{0x30})
+	return buf
+}
+
+func (frame *ChangeHeaderTableSize) Encode() (buf *swrap.SWrap) {
+	buf = new(swrap.SWrap)
+	buf.Add(0x20) // 0010 0000
+	buf.Merge(integer.Encode(frame.MaxSize, 4))
 	return buf
 }

@@ -12,7 +12,7 @@ import (
 var loglevel int
 
 func init() {
-	flag.IntVar(&loglevel, "l", 0, "log level (1 ERR, 2 WARNING, 3 NOTICE, 4 INFO, 5 DEBUG)")
+	flag.IntVar(&loglevel, "l", 0, "log level (1 ERR, 2 WARNING, 3 NOTICE, 4 INFO, 5 DEBUG, 6 TRACE)")
 	flag.Parse()
 	LogLevel(loglevel)
 	log.SetFlags(log.Lshortfile)
@@ -50,25 +50,8 @@ func (c *Context) Decode(wire []byte) {
 			index := int(f.Index)
 
 			if index == 0 {
-				/**
-				 * idx=0 の場合 Option を見る
-				 */
-
-				if f.Option == 128 {
-					/**
-					 * Reference Set Emptying
-					 */
-					Debug(Red("Reference Set Emptying"))
-					c.RS.Empty()
-				} else if f.Option < 128 {
-					/**
-					 * Maximum Header Table Size Change
-					 */
-					Debug(Red("Maximum Header Table Size Change"))
-					// TODO: change header table size
-				}
-
-				continue
+				// TODO: Decoding Error
+				log.Fatal("Decoding Error: The index value of 0 is not used.")
 			}
 
 			var headerField *HeaderField
@@ -282,10 +265,9 @@ func (c *Context) Encode(headerSet HeaderSet) []byte {
 	var buf swrap.SWrap
 
 	// ReferenceSet を空にする
-	indexHeader := NewIndexedHeader(0)
-	indexHeader.Option = 0x80
+	emptyReferenceSet := NewEmptyReferenceSet()
 
-	emptyRef := *indexHeader.Encode()
+	emptyRef := *emptyReferenceSet.Encode()
 	buf.Merge(emptyRef)
 
 	// 全て StringLiteral(Indexing = false) でエンコード
