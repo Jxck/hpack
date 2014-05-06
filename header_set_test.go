@@ -1,8 +1,8 @@
 package hpack
 
 import (
+	assert "github.com/jxck/assertion"
 	"net/http"
-	"reflect"
 	"sort"
 	"testing"
 )
@@ -23,12 +23,7 @@ func TestNewHeaderSet(t *testing.T) {
 		{"cookie", "b"},
 	}
 	actual := ToHeaderSet(header)
-
-	for i, hf := range expected {
-		if actual[i] != hf {
-			t.Errorf("\ngot  %v\nwant %v", actual.Dump(), expected.Dump())
-		}
-	}
+	assert.Equal(t, actual, expected)
 }
 
 func TestToHeader(t *testing.T) {
@@ -47,10 +42,7 @@ func TestToHeader(t *testing.T) {
 		{"cookie", "b"},
 	}
 	actual := headerSet.ToHeader()
-
-	if !reflect.DeepEqual(header, actual) {
-		t.Errorf("\ngot  %v\nwant %v", actual, header)
-	}
+	assert.Equal(t, actual, header)
 }
 
 func TestEmit(t *testing.T) {
@@ -59,9 +51,7 @@ func TestEmit(t *testing.T) {
 	hf2 := NewHeaderField("key2", "value2")
 	hs.Emit(hf1)
 	hs.Emit(hf2)
-	if hs.Len() != 2 {
-		t.Fatal("%v should length %v", hs, 2)
-	}
+	assert.Equal(t, hs.Len(), 2)
 }
 
 func TestEmitSort(t *testing.T) {
@@ -72,9 +62,15 @@ func TestEmitSort(t *testing.T) {
 		HeaderField{":authority", "www.example.com"},
 		HeaderField{"cache-control", "no-cache"},
 	}
-
 	sort.Sort(hs)
-	if (*hs)[0].Name != ":authority" {
-		t.Fatal("*hs[0] should length %v but %v", ":authority", (*hs)[0])
+
+	expected := &HeaderSet{
+		HeaderField{":authority", "www.example.com"},
+		HeaderField{":method", "GET"},
+		HeaderField{":path", "/"},
+		HeaderField{":scheme", "http"},
+		HeaderField{"cache-control", "no-cache"},
 	}
+
+	assert.Equal(t, hs, expected)
 }
