@@ -1,7 +1,7 @@
 package integer_representation
 
 import (
-	"bytes"
+	assert "github.com/jxck/assertion"
 	"github.com/jxck/swrap"
 	"testing"
 	"testing/quick"
@@ -21,9 +21,7 @@ func TestEncode(t *testing.T) {
 	for _, testcase := range testcases {
 		actual := testcase.actual.Bytes()
 		expected := testcase.expected
-		if !bytes.Equal(expected, actual) {
-			t.Errorf("got %v\nwant %v", actual, expected)
-		}
+		assert.Equal(t, actual, expected)
 	}
 }
 
@@ -49,9 +47,7 @@ func TestDecode(t *testing.T) {
 	for _, testcase := range testcases {
 		actual := testcase.actual
 		expected := testcase.expected
-		if expected != actual {
-			t.Errorf("got %v\nwant %v", actual, expected)
-		}
+		assert.Equal(t, actual, expected)
 	}
 }
 
@@ -89,7 +85,5 @@ func TestReadPrefixedInteger(t *testing.T) {
 	buf := swrap.New([]byte{0x1F, 0x95, 0x0A, 0x06})
 	expected := []byte{0x1F, 0x95, 0xA}
 	actual := ReadPrefixedInteger(&buf, prefix)
-	if !bytes.Equal(expected, actual) {
-		t.Errorf("got %v\nwant %v", actual, expected)
-	}
+	assert.Equal(t, actual.Bytes(), expected)
 }
