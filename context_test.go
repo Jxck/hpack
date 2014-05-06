@@ -9,6 +9,7 @@ import (
 )
 
 func TestRequestWithoutHuffman(t *testing.T) {
+	// D.2.  Request Examples without Huffman
 	var (
 		context    *Context
 		buf        []byte
@@ -20,7 +21,7 @@ func TestRequestWithoutHuffman(t *testing.T) {
 	context = NewContext(DEFAULT_HEADER_TABLE_SIZE)
 
 	/**
-	 * First Request
+	 * D.2.1.  First request
 	 */
 	Debug(Pink("\n========== First Request ==============="))
 
@@ -82,7 +83,7 @@ func TestRequestWithoutHuffman(t *testing.T) {
 	}
 
 	/**
-	 * Second Request
+	 * D.2.2.  Second request
 	 */
 	Debug(Pink("\n========== Second Request ==============="))
 
@@ -142,7 +143,7 @@ func TestRequestWithoutHuffman(t *testing.T) {
 	}
 
 	/**
-	 * Third Request
+	 * D.2.3.  Third request
 	 */
 	Debug(Pink("\n========== Third Request ==============="))
 
@@ -217,6 +218,7 @@ func TestRequestWithoutHuffman(t *testing.T) {
 }
 
 func TestRequestWithHuffman(t *testing.T) {
+	// D.3.  Request Examples with Huffman
 	var (
 		context    *Context
 		buf        []byte
@@ -228,7 +230,7 @@ func TestRequestWithHuffman(t *testing.T) {
 	context = NewContext(DEFAULT_HEADER_TABLE_SIZE)
 
 	/**
-	 * First Request
+	 * D.3.1.  First request
 	 */
 	Debug(Pink("\n========== First Request ==============="))
 
@@ -288,7 +290,7 @@ func TestRequestWithHuffman(t *testing.T) {
 	}
 
 	/**
-	 * Second Request
+	 * D.3.2.  Second request
 	 */
 	Debug(Pink("\n========== Second Request ==============="))
 
@@ -347,7 +349,7 @@ func TestRequestWithHuffman(t *testing.T) {
 	}
 
 	/**
-	 * Third Request
+	 * D.3.3.  Third request
 	 */
 	Debug(Pink("\n========== Third Request ==============="))
 
@@ -419,6 +421,7 @@ func TestRequestWithHuffman(t *testing.T) {
 }
 
 func TestResponseWithoutHuffman(t *testing.T) {
+	// D.4.  Response Examples without Huffman
 	var (
 		context    *Context
 		buf        []byte
@@ -431,7 +434,7 @@ func TestResponseWithoutHuffman(t *testing.T) {
 	context = NewContext(HeaderTableSize)
 
 	/**
-	 * First Response
+	 * D.4.1.  First response
 	 */
 	Debug(Pink("\n========== First Response ==============="))
 
@@ -518,7 +521,7 @@ func TestResponseWithoutHuffman(t *testing.T) {
 	}
 
 	/**
-	 * Second Response
+	 * D.4.2.  Second response
 	 */
 	Debug(Pink("\n========== Second Response ==============="))
 
@@ -571,7 +574,7 @@ func TestResponseWithoutHuffman(t *testing.T) {
 	}
 
 	/**
-	 * Third Response
+	 * D.4.3.  Third response
 	 */
 	Debug(Pink("\n========== Third Response ==============="))
 
@@ -675,6 +678,7 @@ func TestResponseWithoutHuffman(t *testing.T) {
 }
 
 func TestResponseWithHuffman(t *testing.T) {
+	// D.5.  Response Examples with Huffman
 	var (
 		context    *Context
 		buf        []byte
@@ -687,7 +691,7 @@ func TestResponseWithHuffman(t *testing.T) {
 	context = NewContext(HeaderTableSize)
 
 	/**
-	 * First Response
+	 * D.5.1.  First response
 	 */
 	Debug(Pink("\n========== First Response ==============="))
 
@@ -774,7 +778,7 @@ func TestResponseWithHuffman(t *testing.T) {
 	}
 
 	/**
-	 * Second Response
+	 * D.5.2.  Second response
 	 */
 	Debug(Pink("\n========== Second Response ==============="))
 
@@ -827,7 +831,7 @@ func TestResponseWithHuffman(t *testing.T) {
 	}
 
 	/**
-	 * Third Response
+	 * D.5.3.  Third response
 	 */
 	Debug(Pink("\n========== Third Response ==============="))
 
