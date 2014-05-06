@@ -7,7 +7,7 @@ import (
 
 func TestStringLiteralEncode(t *testing.T) {
 	// D.1.1.  Literal Header Field with Indexing
-	var indexing bool = true
+	var indexing Indexing = WITH
 	var name, value string = "custom-key", "custom-header"
 	buf := []byte{
 		0x00, 0x0a,
@@ -33,7 +33,7 @@ func TestStringLiteralEncode(t *testing.T) {
 
 func TestIndexedLiteralEncode(t *testing.T) {
 	// D.1.2.  Literal Header Field without Indexing
-	var indexing bool = false
+	var indexing Indexing = WITHOUT
 	var index uint64 = 4
 	var value string = "/sample/path"
 	buf := []byte{

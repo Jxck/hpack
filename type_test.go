@@ -15,7 +15,7 @@ func TestNewIndexedHeader(t *testing.T) {
 }
 
 func TestNewIndexedLiteral(t *testing.T) {
-	var indexing bool = true
+	var indexing Indexing = WITH
 	var index uint64 = 10
 	var value string = "var"
 	var frame *IndexedLiteral = NewIndexedLiteral(indexing, index, value)
@@ -27,7 +27,7 @@ func TestNewIndexedLiteral(t *testing.T) {
 }
 
 func TestNewStringLiteral(t *testing.T) {
-	var indexing bool = true
+	var indexing Indexing = WITH
 	var name string = "foo"
 	var value string = "var"
 	var frame *StringLiteral = NewStringLiteral(indexing, name, value)
