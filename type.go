@@ -4,8 +4,13 @@ import (
 	"github.com/jxck/swrap"
 )
 
+type Indexing int
+
 const (
-	Version int = 6
+	Version int      = 7
+	WITH    Indexing = iota
+	WITHOUT
+	NEVER
 )
 
 type Frame interface {
@@ -28,25 +33,31 @@ func NewIndexedHeader(index uint64) (frame *IndexedHeader) {
 	return
 }
 
-// Literal Header Field without Indexing - Indexed Name (F=1)
-// Literal Header Field with Incremental Indexing - Indexed Name (F=0)
+// Literal Header Field with Incremental Indexing - Indexed Name
+// | 0 | 1 |      Index (6+)       |
+//
+// Literal Header Field without Indexing - Indexed Name
+// | 0 | 0 | 0 | 0 |  Index (4+)   |
+//
+// Literal Header Field never Indexed - Indexed Nmae
+// | 0 | 0 | 0 | 1 |  Index (4+)   |
 //
 //  0   1   2   3   4   5   6   7
 // +---+---+---+---+---+---+---+---+
-// | 0 | F |      Index (6+)       |
+// | 0 |       Flag + Index        |
 // +---+---+---+-------------------+
 // | H |     Value Length (7+)     |
 // +-------------------------------+
 // | Value String (Length octets)  |
 // +-------------------------------+
 type IndexedLiteral struct {
-	Indexing    bool
+	Indexing    Indexing
 	Index       uint64
 	ValueLength uint64
 	ValueString string
 }
 
-func NewIndexedLiteral(indexing bool, index uint64, value string) (frame *IndexedLiteral) {
+func NewIndexedLiteral(indexing Indexing, index uint64, value string) (frame *IndexedLiteral) {
 	frame = new(IndexedLiteral)
 	frame.Indexing = indexing
 	frame.Index = index
@@ -55,12 +66,18 @@ func NewIndexedLiteral(indexing bool, index uint64, value string) (frame *Indexe
 	return
 }
 
-// Literal Header Field without Indexing - New Name (F=1)
-// Literal Header Field with Incremental Indexing - New Name (F=0)
+// Literal Header Field with Incremental Indexing - New Name
+// Flag = 64 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 |
+//
+// Literal Header Field without Indexing - New Name
+// Flag =  0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+//
+// Literal Header Field never Indexed - New Name
+// Flag = 16 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 |
 //
 //   0   1   2   3   4   5   6   7
 // +---+---+---+---+---+---+---+---+
-// | 0 | F |           0           |
+// |     Flag=( 0 | 16 | 64 )      |
 // +---+---+---+-------------------+
 // | H |     Name Length (7+)      |
 // +-------------------------------+
@@ -71,7 +88,7 @@ func NewIndexedLiteral(indexing bool, index uint64, value string) (frame *Indexe
 // | Value String (Length octets)  |
 // +-------------------------------+
 type StringLiteral struct {
-	Indexing    bool
+	Indexing    Indexing
 	Index       uint64
 	NameLength  uint64
 	NameString  string
@@ -79,7 +96,7 @@ type StringLiteral struct {
 	ValueString string
 }
 
-func NewStringLiteral(indexing bool, name, value string) (frame *StringLiteral) {
+func NewStringLiteral(indexing Indexing, name, value string) (frame *StringLiteral) {
 	frame = new(StringLiteral)
 	frame.Indexing = indexing
 	frame.NameLength = uint64(len(name))
