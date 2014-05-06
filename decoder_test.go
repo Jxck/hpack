@@ -1,14 +1,10 @@
 package hpack
 
 import (
+	assert "github.com/jxck/assertion"
 	"github.com/jxck/swrap"
-	"log"
 	"testing"
 )
-
-func init() {
-	log.SetFlags(log.Lshortfile)
-}
 
 func TestIndexedHeaderDecode(t *testing.T) {
 	buf := swrap.New([]byte{0x82})
@@ -21,9 +17,7 @@ func TestIndexedHeaderDecode(t *testing.T) {
 	if !ok {
 		t.Errorf("Decoded to incorrect frame type: %T", frame)
 	}
-	if frame.Index != index {
-		t.Errorf("got %v\nwant %v", frame.Index, index)
-	}
+	assert.Equal(t, frame.Index, index)
 }
 
 func TestIndexedLiteralDecode_NoIndexing_NoHuffman(t *testing.T) {
@@ -44,19 +38,7 @@ func TestIndexedLiteralDecode_NoIndexing_NoHuffman(t *testing.T) {
 	if !ok {
 		t.Errorf("Decoded to incorrect frame type: %T", frame)
 	}
-	if frame.Indexing != indexing ||
-		frame.Index != index ||
-		frame.ValueLength != uint64(len(value)) ||
-		frame.ValueString != value {
-		t.Errorf(`
-frame      = %v
----should---
-indexing   = %v
-index      = %v
-len(value) = %v
-value      = %v
-`, frame, indexing, index, len(value), value)
-	}
+	assert.Equal(t, frame, NewIndexedLiteral(indexing, index, value))
 }
 
 func TestStringLiteralDecode_Indexing_NoHuffman(t *testing.T) {
@@ -79,23 +61,7 @@ func TestStringLiteralDecode_Indexing_NoHuffman(t *testing.T) {
 	if !ok {
 		t.Errorf("Decoded to incorrect frame type: %T", frame)
 	}
-	if frame.Indexing != indexing ||
-		frame.Index != 0 ||
-		frame.NameLength != uint64(len(name)) ||
-		frame.NameString != name ||
-		frame.ValueLength != uint64(len(value)) ||
-		frame.ValueString != value {
-		t.Errorf(`
-frame      = %v
----should---
-indexing   = %v
-index      = %v
-len(name)  = %v
-name       = %v
-len(value) = %v
-value      = %v
-`, frame, indexing, 0, len(name), name, len(value), value)
-	}
+	assert.Equal(t, frame, NewStringLiteral(indexing, name, value))
 }
 
 func TestIndexedLiteralDecode_Indexing_Huffman(t *testing.T) {
@@ -116,17 +82,5 @@ func TestIndexedLiteralDecode_Indexing_Huffman(t *testing.T) {
 	if !ok {
 		t.Errorf("Decoded to incorrect frame type: %T", frame)
 	}
-	if frame.Indexing != indexing ||
-		frame.Index != index ||
-		frame.ValueLength != uint64(len(value)) ||
-		frame.ValueString != value {
-		t.Errorf(`
-frame      = %v
----should---
-indexing   = %v
-index      = %v
-len(value) = %v
-value      = %v
-`, frame, indexing, index, len(value), value)
-	}
+	assert.Equal(t, frame, NewIndexedLiteral(indexing, index, value))
 }

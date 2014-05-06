@@ -1,6 +1,7 @@
 package hpack
 
 import (
+	assert "github.com/jxck/assertion"
 	"testing"
 )
 
@@ -12,17 +13,13 @@ func TestIndexedHeaderEncode(t *testing.T) {
 	frame = NewIndexedHeader(index)
 	actual := frame.Encode()
 	expected := []byte{0x82}
-	if !actual.Compare(expected) {
-		t.Errorf("\ngot %v\nwant %v", actual, expected)
-	}
+	assert.Equal(t, actual.Bytes(), expected)
 
 	index = 180
 	frame = NewIndexedHeader(index)
 	actual = frame.Encode()
 	expected = []byte{0xFF, 0x35}
-	if !actual.Compare(expected) {
-		t.Errorf("\ngot %v\nwant %v", actual, expected)
-	}
+	assert.Equal(t, actual.Bytes(), expected)
 }
 
 func TestIndexedLiteralEncode(t *testing.T) {
@@ -43,9 +40,8 @@ func TestIndexedLiteralEncode(t *testing.T) {
 
 	frame := NewIndexedLiteral(indexing, index, value)
 	actual := frame.Encode()
-	if !actual.Compare(expected) {
-		t.Errorf("\ngot %v\nwant %v", actual, expected)
-	}
+
+	assert.Equal(t, actual.Bytes(), expected)
 
 	// Indexing
 	indexing = true
@@ -60,9 +56,7 @@ func TestIndexedLiteralEncode(t *testing.T) {
 
 	frame = NewIndexedLiteral(indexing, index, value)
 	actual = frame.Encode()
-	if !actual.Compare(expected) {
-		t.Errorf("\ngot %v\nwant %v", actual, expected)
-	}
+	assert.Equal(t, actual.Bytes(), expected)
 }
 
 func TestIndexedLiteralEncodeHuffman(t *testing.T) {
@@ -83,9 +77,7 @@ func TestIndexedLiteralEncodeHuffman(t *testing.T) {
 
 	frame := NewIndexedLiteral(indexing, index, value)
 	actual := frame.EncodeHuffman()
-	if !actual.Compare(expected) {
-		t.Errorf("\ngot %v\nwant %v", actual, expected)
-	}
+	assert.Equal(t, actual.Bytes(), expected)
 }
 
 func TestStringLiteralEncode(t *testing.T) {
@@ -106,9 +98,7 @@ func TestStringLiteralEncode(t *testing.T) {
 
 	frame := NewStringLiteral(indexing, name, value)
 	actual := frame.Encode()
-	if !actual.Compare(expected) {
-		t.Errorf("\ngot %v\nwant %v", actual, expected)
-	}
+	assert.Equal(t, actual.Bytes(), expected)
 
 	// Indexing
 	indexing = true
@@ -124,9 +114,7 @@ func TestStringLiteralEncode(t *testing.T) {
 
 	frame = NewStringLiteral(indexing, name, value)
 	actual = frame.Encode()
-	if !actual.Compare(expected) {
-		t.Errorf("\ngot %v\nwant %v", actual, expected)
-	}
+	assert.Equal(t, actual.Bytes(), expected)
 }
 
 func TestStringLiteralEncodeHuffman(t *testing.T) {
@@ -145,7 +133,5 @@ func TestStringLiteralEncodeHuffman(t *testing.T) {
 
 	frame := NewStringLiteral(indexing, name, value)
 	actual := frame.EncodeHuffman()
-	if !actual.Compare(expected) {
-		t.Errorf("\ngot %v\nwant %v", actual, expected)
-	}
+	assert.Equal(t, actual.Bytes(), expected)
 }
