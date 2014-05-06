@@ -1,9 +1,9 @@
 package hpack
 
 import (
+	assert "github.com/jxck/assertion"
 	. "github.com/jxck/color"
 	. "github.com/jxck/logger"
-	"reflect"
 	"sort"
 	"testing"
 )
@@ -62,23 +62,12 @@ func TestRequestWithoutHuffman(t *testing.T) {
 	context.Decode(buf)
 
 	// test Header Table
-	if context.HT.Size() != expectedHT.Size() {
-		t.Errorf("\n got %v\nwant %v", context.HT.Size(), expectedHT.Size())
-	}
-
-	// test Header Table
-	for i, hf := range expectedHT.HeaderFields {
-		if !(*context.HT.HeaderFields[i] == *hf) {
-			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], *hf)
-		}
-	}
+	assert.Equal(t, context.HT, expectedHT)
 
 	// test Emitted Set
 	sort.Sort(context.ES)
 	sort.Sort(expectedES)
-	if !reflect.DeepEqual(context.ES, expectedES) {
-		t.Errorf("\n got %v\nwant %v", context.ES, expectedES)
-	}
+	assert.Equal(t, context.ES, expectedES)
 
 	// test Reference Set
 	if expectedRS.Len() != context.RS.Len() {
@@ -133,23 +122,12 @@ func TestRequestWithoutHuffman(t *testing.T) {
 	context.Decode(buf)
 
 	// test Header Table
-	if context.HT.Size() != expectedHT.Size() {
-		t.Errorf("\n got %v\nwant %v", context.HT.Size(), expectedHT.Size())
-	}
-
-	// test Header Table
-	for i, hf := range expectedHT.HeaderFields {
-		if !(*context.HT.HeaderFields[i] == *hf) {
-			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], *hf)
-		}
-	}
+	assert.Equal(t, context.HT, expectedHT)
 
 	// test Emitted Set
 	sort.Sort(context.ES)
 	sort.Sort(expectedES)
-	if !reflect.DeepEqual(context.ES, expectedES) {
-		t.Errorf("\n got %v\nwant %v", context.ES, expectedES)
-	}
+	assert.Equal(t, context.ES, expectedES)
 
 	// test Reference Set
 	if expectedRS.Len() != context.RS.Len() {
@@ -218,23 +196,12 @@ func TestRequestWithoutHuffman(t *testing.T) {
 	context.Decode(buf)
 
 	// test Header Table
-	if context.HT.Size() != expectedHT.Size() {
-		t.Errorf("\n got %v\nwant %v", context.HT.Size(), expectedHT.Size())
-	}
-
-	// test Header Table
-	for i, hf := range expectedHT.HeaderFields {
-		if !(*context.HT.HeaderFields[i] == *hf) {
-			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], *hf)
-		}
-	}
+	assert.Equal(t, context.HT, expectedHT)
 
 	// test Emitted Set
 	sort.Sort(context.ES)
 	sort.Sort(expectedES)
-	if !reflect.DeepEqual(context.ES, expectedES) {
-		t.Errorf("\n got %v\nwant %v", context.ES, expectedES)
-	}
+	assert.Equal(t, context.ES, expectedES)
 
 	// test Reference Set
 	if expectedRS.Len() != context.RS.Len() {
@@ -301,23 +268,12 @@ func TestRequestWithHuffman(t *testing.T) {
 	context.Decode(buf)
 
 	// test Header Table
-	if context.HT.Size() != expectedHT.Size() {
-		t.Errorf("\n got %v\nwant %v", context.HT.Size(), expectedHT.Size())
-	}
-
-	// test Header Table
-	for i, hf := range expectedHT.HeaderFields {
-		if !(*context.HT.HeaderFields[i] == *hf) {
-			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], *hf)
-		}
-	}
+	assert.Equal(t, context.HT, expectedHT)
 
 	// test Emitted Set
 	sort.Sort(context.ES)
 	sort.Sort(expectedES)
-	if !reflect.DeepEqual(context.ES, expectedES) {
-		t.Errorf("\n got %v\nwant %v", context.ES, expectedES)
-	}
+	assert.Equal(t, context.ES, expectedES)
 
 	// test Reference Set
 	if expectedRS.Len() != context.RS.Len() {
@@ -371,23 +327,12 @@ func TestRequestWithHuffman(t *testing.T) {
 	context.Decode(buf)
 
 	// test Header Table
-	if context.HT.Size() != expectedHT.Size() {
-		t.Errorf("\n got %v\nwant %v", context.HT.Size(), expectedHT.Size())
-	}
-
-	// test Header Table
-	for i, hf := range expectedHT.HeaderFields {
-		if !(*context.HT.HeaderFields[i] == *hf) {
-			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], *hf)
-		}
-	}
+	assert.Equal(t, context.HT, expectedHT)
 
 	// test Emitted Set
 	sort.Sort(context.ES)
 	sort.Sort(expectedES)
-	if !reflect.DeepEqual(context.ES, expectedES) {
-		t.Errorf("\n got %v\nwant %v", context.ES, expectedES)
-	}
+	assert.Equal(t, context.ES, expectedES)
 
 	// test Reference Set
 	if expectedRS.Len() != context.RS.Len() {
@@ -453,23 +398,12 @@ func TestRequestWithHuffman(t *testing.T) {
 	context.Decode(buf)
 
 	// test Header Table
-	if context.HT.Size() != expectedHT.Size() {
-		t.Errorf("\n got %v\nwant %v", context.HT.Size(), expectedHT.Size())
-	}
-
-	// test Header Table
-	for i, hf := range expectedHT.HeaderFields {
-		if !(*context.HT.HeaderFields[i] == *hf) {
-			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], *hf)
-		}
-	}
+	assert.Equal(t, context.HT, expectedHT)
 
 	// test Emitted Set
 	sort.Sort(context.ES)
 	sort.Sort(expectedES)
-	if !reflect.DeepEqual(context.ES, expectedES) {
-		t.Errorf("\n got %v\nwant %v", context.ES, expectedES)
-	}
+	assert.Equal(t, context.ES, expectedES)
 
 	// test Reference Set
 	if expectedRS.Len() != context.RS.Len() {
@@ -546,7 +480,7 @@ func TestResponseWithoutHuffman(t *testing.T) {
 		HeaderField{"location", "https://www.example.com"},
 	}
 
-	expectedHT = NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
+	expectedHT = NewHeaderTable(HeaderTableSize)
 	expectedHT.HeaderFields = []*HeaderField{
 		NewHeaderField("location", "https://www.example.com"),
 		NewHeaderField("date", "Mon, 21 Oct 2013 20:13:21 GMT"),
@@ -564,23 +498,12 @@ func TestResponseWithoutHuffman(t *testing.T) {
 	context.Decode(buf)
 
 	// test Header Table
-	if context.HT.Size() != expectedHT.Size() {
-		t.Errorf("\n got %v\nwant %v", context.HT.Size(), expectedHT.Size())
-	}
-
-	// test Header Table
-	for i, hf := range expectedHT.HeaderFields {
-		if !(*context.HT.HeaderFields[i] == *hf) {
-			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], *hf)
-		}
-	}
+	assert.Equal(t, context.HT, expectedHT)
 
 	// test Emitted Set
 	sort.Sort(context.ES)
 	sort.Sort(expectedES)
-	if !reflect.DeepEqual(context.ES, expectedES) {
-		t.Errorf("\n got %v\nwant %v", context.ES, expectedES)
-	}
+	assert.Equal(t, context.ES, expectedES)
 
 	// test Reference Set
 	if expectedRS.Len() != context.RS.Len() {
@@ -610,7 +533,7 @@ func TestResponseWithoutHuffman(t *testing.T) {
 		HeaderField{"location", "https://www.example.com"},
 	}
 
-	expectedHT = NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
+	expectedHT = NewHeaderTable(HeaderTableSize)
 	expectedHT.HeaderFields = []*HeaderField{
 		NewHeaderField(":status", "200"),
 		NewHeaderField("location", "https://www.example.com"),
@@ -628,23 +551,12 @@ func TestResponseWithoutHuffman(t *testing.T) {
 	context.Decode(buf)
 
 	// test Header Table
-	if context.HT.Size() != expectedHT.Size() {
-		t.Errorf("\n got %v\nwant %v", context.HT.Size(), expectedHT.Size())
-	}
-
-	// test Header Table
-	for i, hf := range expectedHT.HeaderFields {
-		if !(*context.HT.HeaderFields[i] == *hf) {
-			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], *hf)
-		}
-	}
+	assert.Equal(t, context.HT, expectedHT)
 
 	// test Emitted Set
 	sort.Sort(context.ES)
 	sort.Sort(expectedES)
-	if !reflect.DeepEqual(context.ES, expectedES) {
-		t.Errorf("\n got %v\nwant %v", context.ES, expectedES)
-	}
+	assert.Equal(t, context.ES, expectedES)
 
 	// test Reference Set
 	if expectedRS.Len() != context.RS.Len() {
@@ -726,7 +638,7 @@ func TestResponseWithoutHuffman(t *testing.T) {
 		HeaderField{"set-cookie", "foo=ASDJKHQKBZXOQWEOPIUAXQWEOIU; max-age=3600; version=1"},
 	}
 
-	expectedHT = NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
+	expectedHT = NewHeaderTable(HeaderTableSize)
 	expectedHT.HeaderFields = []*HeaderField{
 		NewHeaderField("set-cookie", "foo=ASDJKHQKBZXOQWEOPIUAXQWEOIU; max-age=3600; version=1"),
 		NewHeaderField("content-encoding", "gzip"),
@@ -742,23 +654,12 @@ func TestResponseWithoutHuffman(t *testing.T) {
 	context.Decode(buf)
 
 	// test Header Table
-	if context.HT.Size() != expectedHT.Size() {
-		t.Errorf("\n got %v\nwant %v", context.HT.Size(), expectedHT.Size())
-	}
-
-	// test Header Table
-	for i, hf := range expectedHT.HeaderFields {
-		if !(*context.HT.HeaderFields[i] == *hf) {
-			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], *hf)
-		}
-	}
+	assert.Equal(t, context.HT, expectedHT)
 
 	// test Emitted Set
 	sort.Sort(context.ES)
 	sort.Sort(expectedES)
-	if !reflect.DeepEqual(context.ES, expectedES) {
-		t.Errorf("\n got %v\nwant %v", context.ES, expectedES)
-	}
+	assert.Equal(t, context.ES, expectedES)
 
 	// test Reference Set
 	if expectedRS.Len() != context.RS.Len() {
@@ -835,7 +736,7 @@ func TestResponseWithHuffman(t *testing.T) {
 		HeaderField{"location", "https://www.example.com"},
 	}
 
-	expectedHT = NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
+	expectedHT = NewHeaderTable(HeaderTableSize)
 	expectedHT.HeaderFields = []*HeaderField{
 		NewHeaderField("location", "https://www.example.com"),
 		NewHeaderField("date", "Mon, 21 Oct 2013 20:13:21 GMT"),
@@ -853,23 +754,12 @@ func TestResponseWithHuffman(t *testing.T) {
 	context.Decode(buf)
 
 	// test Header Table
-	if context.HT.Size() != expectedHT.Size() {
-		t.Errorf("\n got %v\nwant %v", context.HT.Size(), expectedHT.Size())
-	}
-
-	// test Header Table
-	for i, hf := range expectedHT.HeaderFields {
-		if !(*context.HT.HeaderFields[i] == *hf) {
-			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], *hf)
-		}
-	}
+	assert.Equal(t, context.HT, expectedHT)
 
 	// test Emitted Set
 	sort.Sort(context.ES)
 	sort.Sort(expectedES)
-	if !reflect.DeepEqual(context.ES, expectedES) {
-		t.Errorf("\n got %v\nwant %v", context.ES, expectedES)
-	}
+	assert.Equal(t, context.ES, expectedES)
 
 	// test Reference Set
 	if expectedRS.Len() != context.RS.Len() {
@@ -899,7 +789,7 @@ func TestResponseWithHuffman(t *testing.T) {
 		HeaderField{"location", "https://www.example.com"},
 	}
 
-	expectedHT = NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
+	expectedHT = NewHeaderTable(HeaderTableSize)
 	expectedHT.HeaderFields = []*HeaderField{
 		NewHeaderField(":status", "200"),
 		NewHeaderField("location", "https://www.example.com"),
@@ -917,23 +807,12 @@ func TestResponseWithHuffman(t *testing.T) {
 	context.Decode(buf)
 
 	// test Header Table
-	if context.HT.Size() != expectedHT.Size() {
-		t.Errorf("\n got %v\nwant %v", context.HT.Size(), expectedHT.Size())
-	}
-
-	// test Header Table
-	for i, hf := range expectedHT.HeaderFields {
-		if !(*context.HT.HeaderFields[i] == *hf) {
-			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], *hf)
-		}
-	}
+	assert.Equal(t, context.HT, expectedHT)
 
 	// test Emitted Set
 	sort.Sort(context.ES)
 	sort.Sort(expectedES)
-	if !reflect.DeepEqual(context.ES, expectedES) {
-		t.Errorf("\n got %v\nwant %v", context.ES, expectedES)
-	}
+	assert.Equal(t, context.ES, expectedES)
 
 	// test Reference Set
 	if expectedRS.Len() != context.RS.Len() {
@@ -1015,7 +894,7 @@ func TestResponseWithHuffman(t *testing.T) {
 		HeaderField{"set-cookie", "foo=ASDJKHQKBZXOQWEOPIUAXQWEOIU; max-age=3600; version=1"},
 	}
 
-	expectedHT = NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
+	expectedHT = NewHeaderTable(HeaderTableSize)
 	expectedHT.HeaderFields = []*HeaderField{
 		NewHeaderField("set-cookie", "foo=ASDJKHQKBZXOQWEOPIUAXQWEOIU; max-age=3600; version=1"),
 		NewHeaderField("content-encoding", "gzip"),
@@ -1031,23 +910,12 @@ func TestResponseWithHuffman(t *testing.T) {
 	context.Decode(buf)
 
 	// test Header Table
-	if context.HT.Size() != expectedHT.Size() {
-		t.Errorf("\n got %v\nwant %v", context.HT.Size(), expectedHT.Size())
-	}
-
-	// test Header Table
-	for i, hf := range expectedHT.HeaderFields {
-		if !(*context.HT.HeaderFields[i] == *hf) {
-			t.Errorf("\n got %v\nwant %v", *context.HT.HeaderFields[i], *hf)
-		}
-	}
+	assert.Equal(t, context.HT, expectedHT)
 
 	// test Emitted Set
 	sort.Sort(context.ES)
 	sort.Sort(expectedES)
-	if !reflect.DeepEqual(context.ES, expectedES) {
-		t.Errorf("\n got %v\nwant %v", context.ES, expectedES)
-	}
+	assert.Equal(t, context.ES, expectedES)
 
 	// test Reference Set
 	if expectedRS.Len() != context.RS.Len() {
@@ -1062,7 +930,7 @@ func TestResponseWithHuffman(t *testing.T) {
 	}
 }
 
-func TestEncode(t *testing.T) {
+func TestEncodeDecode(t *testing.T) {
 	context := NewContext(DEFAULT_HEADER_TABLE_SIZE)
 
 	hs := HeaderSet{
@@ -1075,16 +943,11 @@ func TestEncode(t *testing.T) {
 	}
 
 	encoded := context.Encode(hs)
-
 	context.Decode(encoded)
-	for i, v := range *context.ES {
-		if hs[i] != v {
-			t.Errorf("\n got %v\nwant %v", context.ES.Dump(), hs)
-		}
-	}
+	assert.Equal(t, hs, *context.ES)
 }
 
-func TestEncodeWithHuffman(t *testing.T) {
+func TestEncodeDecodeWithHuffman(t *testing.T) {
 	context := NewContext(DEFAULT_HEADER_TABLE_SIZE)
 	hs := HeaderSet{
 		*NewHeaderField(":method", "GET"),
@@ -1103,4 +966,6 @@ func TestEncodeWithHuffman(t *testing.T) {
 	if encoded[len(encoded)-1] == 255 {
 		t.Error("8bit EOS on huffman encoded result is error")
 	}
+	context.Decode(encoded)
+	assert.Equal(t, hs, *context.ES)
 }
