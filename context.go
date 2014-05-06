@@ -51,7 +51,7 @@ func (c *Context) Decode(wire []byte) {
 
 			if index == 0 {
 				// TODO: Decoding Error
-				log.Fatal("Decoding Error: The index value of 0 is not used.")
+				// log.Fatal("Decoding Error: The index value of 0 is not used.")
 			}
 
 			var headerField *HeaderField
@@ -220,7 +220,18 @@ func (c *Context) Decode(wire []byte) {
 				Debug(Blue("\tEmit"))
 				c.ES.Emit(headerField)
 			}
-
+		case *EmptyReferenceSet:
+			/**
+			 * Reference Set Emptying
+			 */
+			Debug(Red("Reference Set Emptying"))
+			c.RS.Empty()
+		case *ChangeHeaderTableSize:
+			/**
+			 * Maximum Header Table Size Change
+			 */
+			Debug(Red("Maximum Header Table Size Change"))
+			// TODO: change header table size
 		default:
 			log.Fatal("%T", f)
 		}

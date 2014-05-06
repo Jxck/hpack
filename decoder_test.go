@@ -7,11 +7,11 @@ import (
 )
 
 func TestStringLiteralDecode(t *testing.T) {
-	// D.1.1.  Literal Header Field with Indexing
+	// D.2.1.  Literal Header Field with Indexing
 	var indexing Indexing = WITH
 	var name, value string = "custom-key", "custom-header"
 	buf := []byte{
-		0x00, 0x0a,
+		0x40, 0x0a,
 		0x63, 0x75,
 		0x73, 0x74,
 		0x6f, 0x6d,
@@ -41,7 +41,7 @@ func TestIndexedLiteralDecode(t *testing.T) {
 	var index uint64 = 4
 	var value string = "/sample/path"
 	buf := []byte{
-		0x44, 0x0c,
+		0x04, 0x0c,
 		0x2f, 0x73,
 		0x61, 0x6d,
 		0x70, 0x6c,

@@ -35,7 +35,7 @@ func DecodeHeader(buf *swrap.SWrap) Frame {
 
 		if index == 0 {
 			// TODO: Decoding Error
-			log.Fatal("Decoding Error: The index value of 0 is not used.")
+			// log.Fatal("Decoding Error: The index value of 0 is not used.")
 		}
 		return frame
 	}
