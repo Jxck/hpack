@@ -1,6 +1,7 @@
 package hpack
 
 import (
+	assert "github.com/jxck/assertion"
 	"testing"
 )
 
@@ -16,14 +17,6 @@ func TestHeaderTableSizeLen(t *testing.T) {
 		},
 	}
 
-	size := ht.Size()
-	length := ht.Len()
-
-	if size != 200 {
-		t.Errorf("got %v\nwant %v", size, 200)
-	}
-
-	if length != 5 {
-		t.Errorf("got %v\nwant %v", length, 5)
-	}
+	assert.Equal(t, ht.Size(), 200)
+	assert.Equal(t, ht.Len(), 5)
 }
