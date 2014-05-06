@@ -165,7 +165,8 @@ func (c *Context) Decode(wire []byte) {
 			Debug(fmt.Sprintf("  Literal value (len = %v)", f.ValueLength))
 			Debug(fmt.Sprintf("  %v", f.ValueString))
 
-			if f.Indexing {
+			switch f.Indexing {
+			case WITH:
 				/**
 				 * HT に追加する場合
 				 */
@@ -182,7 +183,7 @@ func (c *Context) Decode(wire []byte) {
 				Debug(Blue("\tAdd to RS"))
 				c.RS.Add(headerField, EMITTED)
 
-			} else {
+			case WITHOUT:
 				/**
 				 * HT に追加しない場合
 				 */
@@ -196,7 +197,8 @@ func (c *Context) Decode(wire []byte) {
 			Debug(Red(fmt.Sprintf("== String Literal (%v) ==", f)))
 
 			headerField := NewHeaderField(f.NameString, f.ValueString)
-			if f.Indexing {
+			switch f.Indexing {
+			case WITH:
 				// HT に追加する場合
 
 				// Emit
@@ -211,7 +213,7 @@ func (c *Context) Decode(wire []byte) {
 				Debug(Blue("\tAdd to RS"))
 				c.RS.Add(headerField, EMITTED)
 
-			} else {
+			case WITHOUT:
 				// HT に追加しない場合
 
 				// Emit
@@ -272,7 +274,7 @@ func (c *Context) Encode(headerSet HeaderSet) []byte {
 
 	// 全て StringLiteral(Indexing = false) でエンコード
 	for _, h := range headerSet {
-		sl := NewStringLiteral(false, h.Name, h.Value)
+		sl := NewStringLiteral(WITHOUT, h.Name, h.Value)
 		buf.Merge(*sl.EncodeHuffman())
 	}
 
