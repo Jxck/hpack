@@ -2,6 +2,7 @@ package huffman
 
 import (
 	"fmt"
+	assert "github.com/jxck/assertion"
 	"reflect"
 	"testing"
 	"testing/quick"
@@ -52,9 +53,7 @@ func TestEncode(t *testing.T) {
 		expected := tc.hex
 		encoded := Encode(raw)
 		actual := toHexString(encoded)
-		if actual != expected {
-			t.Errorf("\ngot  %v\nwant %v", actual, expected)
-		}
+		assert.Equal(t, actual, expected)
 	}
 }
 
@@ -64,9 +63,7 @@ func TestDecode(t *testing.T) {
 	var code = []byte{0x98, 0xa7}
 	result := Decode(code)
 	actual := string(result)
-	if actual != expected {
-		t.Errorf("\ngot  %v\nwant %v", actual, expected)
-	}
+	assert.Equal(t, actual, expected)
 }
 
 func TestEncodeDecode(t *testing.T) {
@@ -74,10 +71,7 @@ func TestEncodeDecode(t *testing.T) {
 		expected := []byte(tc.str)
 		encoded := Encode(expected)
 		actual := Decode(encoded)
-
-		if reflect.DeepEqual(actual, expected) == false {
-			t.Errorf("\ngot  %v\nwant %v", actual, expected)
-		}
+		assert.Equal(t, actual, expected)
 	}
 }
 
