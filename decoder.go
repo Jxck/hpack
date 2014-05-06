@@ -40,12 +40,26 @@ func DecodeHeader(buf *swrap.SWrap) Frame {
 		return frame
 	}
 	if types == 0 { // 0000 0000
-		// StringLiteral (indexing = true)
+		// StringLiteral (indexing = WITHOUT)
 
 		// remove first byte defines type
 		buf.Shift()
 
-		indexing := true
+		indexing := WITHOUT
+		name := DecodeLiteral(buf)
+		Trace("StringLiteral name = %v", name)
+		value := DecodeLiteral(buf)
+		Trace("StringLiteral value = %v", value)
+		frame := NewStringLiteral(indexing, name, value)
+		return frame
+	}
+	if types == 0x10 { // 0001 0000
+		// StringLiteral (indexing = NEVER)
+
+		// remove first byte defines type
+		buf.Shift()
+
+		indexing := NEVER
 		name := DecodeLiteral(buf)
 		Trace("StringLiteral name = %v", name)
 		value := DecodeLiteral(buf)
@@ -54,12 +68,12 @@ func DecodeHeader(buf *swrap.SWrap) Frame {
 		return frame
 	}
 	if types == 0x40 { // 0100 0000
-		// StringLiteral (indexing = false)
+		// StringLiteral (indexing = WITH)
 
 		// remove first byte defines type
 		buf.Shift()
 
-		indexing := false
+		indexing := WITH
 		name := DecodeLiteral(buf)
 		Trace("StringLiteral name = %v", name)
 		value := DecodeLiteral(buf)
@@ -68,9 +82,9 @@ func DecodeHeader(buf *swrap.SWrap) Frame {
 		return frame
 	}
 	if types&0xc0 == 0x40 { // 01xx xxxx & 1100 0000 == 0100 0000
-		// IndexedLiteral (indexing = false)
+		// IndexedLiteral (indexing = WITH)
 
-		indexing := false
+		indexing := WITH
 		index := DecodePrefixedInteger(buf, 6)
 		Trace("IndexedLiteral index = %v", index)
 		value := DecodeLiteral(buf)
@@ -78,11 +92,22 @@ func DecodeHeader(buf *swrap.SWrap) Frame {
 		frame := NewIndexedLiteral(indexing, index, value)
 		return frame
 	}
-	if types&0xc0 == 0 { // 00xx xxxx & 1100 0000 == 0000 0000
-		// IndexedLiteral (indexing = true)
+	if types&0xf0 == 0 { // 0000 xxxx & 1111 0000 == 0000 0000
+		// IndexedLiteral (indexing = WITHOUT)
 
-		indexing := true
-		index := DecodePrefixedInteger(buf, 6)
+		indexing := WITHOUT
+		index := DecodePrefixedInteger(buf, 4)
+		Trace("IndexedLiteral index = %v", index)
+		value := DecodeLiteral(buf)
+		Trace("IndexedLiteral value = %v", value)
+		frame := NewIndexedLiteral(indexing, index, value)
+		return frame
+	}
+	if types&0xf0 == 0x10 { // 0000 xxxx & 1111 0000 == 0001 0000
+		// IndexedLiteral (indexing = NEVER)
+
+		indexing := NEVER
+		index := DecodePrefixedInteger(buf, 4)
 		Trace("IndexedLiteral index = %v", index)
 		value := DecodeLiteral(buf)
 		Trace("IndexedLiteral value = %v", value)
