@@ -1,8 +1,8 @@
 package hpack
 
 import (
-	assert "github.com/jxck/assertion"
-	"github.com/jxck/swrap"
+	assert "github.com/Jxck/assertion"
+	"github.com/Jxck/swrap"
 	"testing"
 )
 

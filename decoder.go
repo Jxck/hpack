@@ -1,10 +1,10 @@
 package hpack
 
 import (
-	"github.com/jxck/hpack/huffman"
-	integer "github.com/jxck/hpack/integer_representation"
-	. "github.com/jxck/logger"
-	"github.com/jxck/swrap"
+	"github.com/Jxck/hpack/huffman"
+	integer "github.com/Jxck/hpack/integer_representation"
+	. "github.com/Jxck/logger"
+	"github.com/Jxck/swrap"
 	"log"
 )
 

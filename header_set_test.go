@@ -1,7 +1,7 @@
 package hpack
 
 import (
-	assert "github.com/jxck/assertion"
+	assert "github.com/Jxck/assertion"
 	"net/http"
 	"sort"
 	"testing"

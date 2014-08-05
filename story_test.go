@@ -3,7 +3,7 @@ package hpack
 import (
 	"encoding/hex"
 	"encoding/json"
-	assert "github.com/jxck/assertion"
+	assert "github.com/Jxck/assertion"
 	"io/ioutil"
 	"log"
 	"os"
@@ -121,7 +121,7 @@ func writeJson(src, dst, filename string) {
 
 	testFile.Draft = Version
 	testFile.Description = "" +
-		"https://github.com/jxck/hpack implemeted in Golang. " +
+		"https://github.com/Jxck/hpack implemeted in Golang. " +
 		"Encoded using String Literal with Huffman, " +
 		"no Header/Static Table, " +
 		"and always start with emptied Reference Set. by Jxck."

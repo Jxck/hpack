@@ -1,7 +1,7 @@
 package hpack
 
 import (
-	"github.com/jxck/swrap"
+	"github.com/Jxck/swrap"
 )
 
 type Indexing int

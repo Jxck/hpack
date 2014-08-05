@@ -3,9 +3,9 @@ package hpack
 import (
 	"flag"
 	"fmt"
-	. "github.com/jxck/color"
-	. "github.com/jxck/logger"
-	"github.com/jxck/swrap"
+	. "github.com/Jxck/color"
+	. "github.com/Jxck/logger"
+	"github.com/Jxck/swrap"
 	"log"
 )
 

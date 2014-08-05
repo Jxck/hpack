@@ -1,9 +1,9 @@
 package hpack
 
 import (
-	assert "github.com/jxck/assertion"
-	. "github.com/jxck/color"
-	. "github.com/jxck/logger"
+	assert "github.com/Jxck/assertion"
+	. "github.com/Jxck/color"
+	. "github.com/Jxck/logger"
 	"sort"
 	"testing"
 )

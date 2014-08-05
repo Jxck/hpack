@@ -2,7 +2,7 @@ package huffman
 
 import (
 	"fmt"
-	assert "github.com/jxck/assertion"
+	assert "github.com/Jxck/assertion"
 	"reflect"
 	"testing"
 	"testing/quick"

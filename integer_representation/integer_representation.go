@@ -1,7 +1,7 @@
 package integer_representation
 
 import (
-	"github.com/jxck/swrap"
+	"github.com/Jxck/swrap"
 	"log"
 )
 
