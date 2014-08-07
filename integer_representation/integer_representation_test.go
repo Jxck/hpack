@@ -14,6 +14,7 @@ func TestEncode(t *testing.T) {
 	}{
 		{Encode(10, 5), []byte{10}},
 		{Encode(40, 5), []byte{31, 9}},
+		{Encode(42, 0), []byte{42}},
 		{Encode(1337, 5), []byte{31, 154, 10}},
 		{Encode(3000000, 5), []byte{31, 161, 141, 183, 1}},
 	}
@@ -29,6 +30,7 @@ func BenchmarkEncode(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		Encode(10, 5)
 		Encode(40, 5)
+		Encode(42, 0)
 		Encode(1337, 5)
 		Encode(3000000, 5)
 	}
