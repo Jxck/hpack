@@ -3,10 +3,16 @@ package huffman
 import (
 	"fmt"
 	assert "github.com/Jxck/assertion"
+	"log"
 	"reflect"
+	"strconv"
 	"testing"
 	"testing/quick"
 )
+
+func init() {
+	log.SetFlags(log.Lshortfile)
+}
 
 func toHexString(hex []byte) (hexstr string) {
 	for _, v := range hex {
