@@ -23,6 +23,10 @@ func init() {
 //     encode (I) on 8 bits
 func Encode(I uint64, N uint8) swrap.SWrap {
 	buf := swrap.New(make([]byte, 0))
+	if N == 0 {
+		buf.Add(byte(I))
+		return buf
+	}
 	boundary := uint64(1<<N - 1) // 2^N-1
 
 	if I < boundary {
