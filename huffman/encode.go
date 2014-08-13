@@ -91,7 +91,7 @@ func Encode(raw []byte) (encoded []byte) {
 		// 配列に移す
 		encoded = append(encoded, byte(b.value))
 		// 最後なのでゼロ値でGC
-		b = new(byt)
+		b = nil
 	}
 
 	return encoded
