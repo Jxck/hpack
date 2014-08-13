@@ -19,31 +19,44 @@ func toHexString(hex []byte) (hexstr string) {
 	return hexstr
 }
 
+func toHexBytes(hexstr string) (hexbytes []byte) {
+	for len(hexstr) > 0 {
+		hex := hexstr[:2]
+		b, _ := strconv.ParseInt(hex, 16, 64)
+		hexbytes = append(hexbytes, byte(b))
+		hexstr = hexstr[2:]
+	}
+	return hexbytes
+}
+
 var testCase = []struct {
 	str, hex string
 }{
-	{"www.example.com", "db6d883e68d1cb1225ba7f"},
-	{"no-cache", "63654a1398ff"},
-	{"custom-key", "4eb08b749790fa7f"},
-	{"custom-value", "4eb08b74979a17a8ff"},
-	{"302", "98a7"},
-	{"gzip", "cbd54e"},
-	{"private", "73d5cd111f"},
+	{"www.example.com", "f1e3c2e5f23a6ba0ab90f4ff"},
+	{"no-cache", "a8eb10649cbf"},
+	{"custom-key", "25a849e95ba97d7f"},
+	{"custom-value", "25a849e95bb8e8b4bf"},
+	{"302", "6402"},
+	{"private", "aec3771a4b"},
 	{
 		"Mon, 21 Oct 2013 20:13:21 GMT",
-		"ef6b3a7a0e6e8fa263d0729a6e8397d869bd873747bbbfc7",
-	},
-	{
-		"Mon, 21 Oct 2013 20:13:22 GMT",
-		"ef6b3a7a0e6e8fa263d0729a6e8397d869bd873f47bbbfc7",
+		"d07abe941054d444a8200595040b8166e082a62d1bff",
 	},
 	{
 		"https://www.example.com",
-		"ce31743d801b6db107cd1a396244b74f",
+		"9d29ad171863c78f0b97c8e9ae82ae43d3",
+	},
+	{
+		"307",
+		"640eff",
+	},
+	{
+		"Mon, 21 Oct 2013 20:13:22 GMT",
+		"d07abe941054d444a8200595040b8166e084a62d1bff",
 	},
 	{
 		"foo=ASDJKHQKBZXOQWEOPIUAXQWEOIU; max-age=3600; version=1",
-		"c5adb77f876fc7fbf7fdbfbebff3f7f4fb7ebbbe9f5f87e37fefedfaeefa7c3f1d5d1a23ce546436cd494bd5d1cc5f0535969b",
+		"94e7821dd7f2e6c7b335dfdfcd5b3960d5af27087f3672c1ab270fb5291f9587316065c003ed4ee5b1063d5007",
 	},
 }
 
@@ -58,12 +71,12 @@ func TestEncode(t *testing.T) {
 }
 
 func TestDecode(t *testing.T) {
-	expected := "302"
-	// Show(root)
-	var code = []byte{0x98, 0xa7}
-	result := Decode(code)
-	actual := string(result)
-	assert.Equal(t, actual, expected)
+	for _, tc := range testCase {
+		expected := tc.str
+		code := toHexBytes(tc.hex)
+		actual := string(Decode(code))
+		assert.Equal(t, actual, expected)
+	}
 }
 
 func TestEncodeDecode(t *testing.T) {
