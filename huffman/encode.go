@@ -19,7 +19,7 @@ func newByt() *byt {
 	return &byt{0, 8}
 }
 
-func (b *byt) Dump() string {
+func (b *byt) String() string {
 	return fmt.Sprintf("(v=%v, r=%v)", b.value, b.remain)
 }
 
