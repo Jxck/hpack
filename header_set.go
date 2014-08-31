@@ -56,7 +56,7 @@ func (hs HeaderSet) ToHeader() http.Header {
 	return header
 }
 
-func (hs HeaderSet) Dump() (str string) {
+func (hs HeaderSet) String() (str string) {
 	str += fmt.Sprintf("\n--------- HS ---------\n")
 	for i, v := range hs {
 		str += fmt.Sprintln(i, v)

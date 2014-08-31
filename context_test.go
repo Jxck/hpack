@@ -15,7 +15,6 @@ func TestRequestWithoutHuffman(t *testing.T) {
 		buf        []byte
 		expectedES *HeaderSet
 		expectedHT *HeaderTable
-		expectedRS ReferenceSet
 	)
 
 	context = NewContext(DEFAULT_HEADER_TABLE_SIZE)
@@ -53,13 +52,6 @@ func TestRequestWithoutHuffman(t *testing.T) {
 		NewHeaderField(":method", "GET"),
 	}
 
-	expectedRS = ReferenceSet{
-		{NewHeaderField(":authority", "www.example.com"), false},
-		{NewHeaderField(":path", "/"), false},
-		{NewHeaderField(":scheme", "http"), false},
-		{NewHeaderField(":method", "GET"), false},
-	}
-
 	context.Decode(buf)
 
 	// test Header Table
@@ -69,18 +61,6 @@ func TestRequestWithoutHuffman(t *testing.T) {
 	sort.Sort(context.ES)
 	sort.Sort(expectedES)
 	assert.Equal(t, context.ES, expectedES)
-
-	// test Reference Set
-	if expectedRS.Len() != context.RS.Len() {
-		t.Errorf("\n got %v\nwant %v", context.RS.Dump(), expectedRS.Dump())
-	}
-
-	for i, hf := range *context.RS {
-		i := len(expectedRS) - i - 1
-		if *expectedRS[i].HeaderField != *hf.HeaderField {
-			t.Errorf("\n got %v\nwant %v", context.RS.Dump(), expectedRS.Dump())
-		}
-	}
 
 	/**
 	 * D.3.2.  Second request
@@ -114,14 +94,6 @@ func TestRequestWithoutHuffman(t *testing.T) {
 		NewHeaderField(":method", "GET"),
 	}
 
-	expectedRS = ReferenceSet{
-		{NewHeaderField("cache-control", "no-cache"), false},
-		{NewHeaderField(":authority", "www.example.com"), false},
-		{NewHeaderField(":path", "/"), false},
-		{NewHeaderField(":scheme", "http"), false},
-		{NewHeaderField(":method", "GET"), false},
-	}
-
 	context.Decode(buf)
 
 	// test Header Table
@@ -131,18 +103,6 @@ func TestRequestWithoutHuffman(t *testing.T) {
 	sort.Sort(context.ES)
 	sort.Sort(expectedES)
 	assert.Equal(t, context.ES, expectedES)
-
-	// test Reference Set
-	if expectedRS.Len() != context.RS.Len() {
-		t.Errorf("\n got %v\nwant %v", context.RS.Dump(), expectedRS.Dump())
-	}
-
-	for i, hf := range *context.RS {
-		i := len(expectedRS) - i - 1
-		if *expectedRS[i].HeaderField != *hf.HeaderField {
-			t.Errorf("\n got %v\nwant %v", context.RS.Dump(), expectedRS.Dump())
-		}
-	}
 
 	/**
 	 * D.3.3.  Third request
@@ -187,14 +147,6 @@ func TestRequestWithoutHuffman(t *testing.T) {
 		NewHeaderField(":method", "GET"),
 	}
 
-	expectedRS = ReferenceSet{
-		{NewHeaderField("custom-key", "custom-value"), true},
-		{NewHeaderField(":authority", "www.example.com"), true},
-		{NewHeaderField(":path", "/index.html"), true},
-		{NewHeaderField(":scheme", "https"), true},
-		{NewHeaderField(":method", "GET"), true},
-	}
-
 	context.Decode(buf)
 
 	// test Header Table
@@ -204,18 +156,6 @@ func TestRequestWithoutHuffman(t *testing.T) {
 	sort.Sort(context.ES)
 	sort.Sort(expectedES)
 	assert.Equal(t, context.ES, expectedES)
-
-	// test Reference Set
-	if expectedRS.Len() != context.RS.Len() {
-		t.Errorf("\n got %v\nwant %v", context.RS.Dump(), expectedRS.Dump())
-	}
-
-	for i, hf := range *context.RS {
-		i := len(expectedRS) - i - 1
-		if *expectedRS[i].HeaderField != *hf.HeaderField {
-			t.Errorf("\n got %v\nwant %v", context.RS.Dump(), expectedRS.Dump())
-		}
-	}
 }
 
 func TestRequestWithHuffman(t *testing.T) {
@@ -225,7 +165,6 @@ func TestRequestWithHuffman(t *testing.T) {
 		buf        []byte
 		expectedES *HeaderSet
 		expectedHT *HeaderTable
-		expectedRS ReferenceSet
 	)
 
 	context = NewContext(DEFAULT_HEADER_TABLE_SIZE)
@@ -262,13 +201,6 @@ func TestRequestWithHuffman(t *testing.T) {
 		NewHeaderField(":method", "GET"),
 	}
 
-	expectedRS = ReferenceSet{
-		{NewHeaderField(":authority", "www.example.com"), false},
-		{NewHeaderField(":path", "/"), false},
-		{NewHeaderField(":scheme", "http"), false},
-		{NewHeaderField(":method", "GET"), false},
-	}
-
 	context.Decode(buf)
 
 	// test Header Table
@@ -278,18 +210,6 @@ func TestRequestWithHuffman(t *testing.T) {
 	sort.Sort(context.ES)
 	sort.Sort(expectedES)
 	assert.Equal(t, context.ES, expectedES)
-
-	// test Reference Set
-	if expectedRS.Len() != context.RS.Len() {
-		t.Errorf("\n got %v\nwant %v", context.RS.Dump(), expectedRS.Dump())
-	}
-
-	for i, hf := range *context.RS {
-		i := len(expectedRS) - i - 1
-		if *expectedRS[i].HeaderField != *hf.HeaderField {
-			t.Errorf("\n got %v\nwant %v", context.RS.Dump(), expectedRS.Dump())
-		}
-	}
 
 	/**
 	 * D.4.2.  Second request
@@ -322,14 +242,6 @@ func TestRequestWithHuffman(t *testing.T) {
 		NewHeaderField(":method", "GET"),
 	}
 
-	expectedRS = ReferenceSet{
-		{NewHeaderField("cache-control", "no-cache"), false},
-		{NewHeaderField(":authority", "www.example.com"), false},
-		{NewHeaderField(":path", "/"), false},
-		{NewHeaderField(":scheme", "http"), false},
-		{NewHeaderField(":method", "GET"), false},
-	}
-
 	context.Decode(buf)
 
 	// test Header Table
@@ -339,18 +251,6 @@ func TestRequestWithHuffman(t *testing.T) {
 	sort.Sort(context.ES)
 	sort.Sort(expectedES)
 	assert.Equal(t, context.ES, expectedES)
-
-	// test Reference Set
-	if expectedRS.Len() != context.RS.Len() {
-		t.Errorf("\n got %v\nwant %v", context.RS.Dump(), expectedRS.Dump())
-	}
-
-	for i, hf := range *context.RS {
-		i := len(expectedRS) - i - 1
-		if *expectedRS[i].HeaderField != *hf.HeaderField {
-			t.Errorf("\n got %v\nwant %v", context.RS.Dump(), expectedRS.Dump())
-		}
-	}
 
 	/**
 	 * D.4.3.  Third request
@@ -392,14 +292,6 @@ func TestRequestWithHuffman(t *testing.T) {
 		NewHeaderField(":method", "GET"),
 	}
 
-	expectedRS = ReferenceSet{
-		{NewHeaderField("custom-key", "custom-value"), true},
-		{NewHeaderField(":authority", "www.example.com"), true},
-		{NewHeaderField(":path", "/index.html"), true},
-		{NewHeaderField(":scheme", "https"), true},
-		{NewHeaderField(":method", "GET"), true},
-	}
-
 	context.Decode(buf)
 
 	// test Header Table
@@ -409,18 +301,6 @@ func TestRequestWithHuffman(t *testing.T) {
 	sort.Sort(context.ES)
 	sort.Sort(expectedES)
 	assert.Equal(t, context.ES, expectedES)
-
-	// test Reference Set
-	if expectedRS.Len() != context.RS.Len() {
-		t.Errorf("\n got %v\nwant %v", context.RS.Dump(), expectedRS.Dump())
-	}
-
-	for i, hf := range *context.RS {
-		i := len(expectedRS) - i - 1
-		if *expectedRS[i].HeaderField != *hf.HeaderField {
-			t.Errorf("\n got %v\nwant %v", context.RS.Dump(), expectedRS.Dump())
-		}
-	}
 }
 
 func TestResponseWithoutHuffman(t *testing.T) {
@@ -430,7 +310,6 @@ func TestResponseWithoutHuffman(t *testing.T) {
 		buf        []byte
 		expectedES *HeaderSet
 		expectedHT *HeaderTable
-		expectedRS ReferenceSet
 	)
 
 	var HeaderTableSize int = 256
@@ -494,13 +373,6 @@ func TestResponseWithoutHuffman(t *testing.T) {
 		NewHeaderField(":status", "302"),
 	}
 
-	expectedRS = ReferenceSet{
-		{NewHeaderField("location", "https://www.example.com"), false},
-		{NewHeaderField("date", "Mon, 21 Oct 2013 20:13:21 GMT"), false},
-		{NewHeaderField("cache-control", "private"), false},
-		{NewHeaderField(":status", "302"), false},
-	}
-
 	context.Decode(buf)
 
 	// test Header Table
@@ -510,18 +382,6 @@ func TestResponseWithoutHuffman(t *testing.T) {
 	sort.Sort(context.ES)
 	sort.Sort(expectedES)
 	assert.Equal(t, context.ES, expectedES)
-
-	// test Reference Set
-	if expectedRS.Len() != context.RS.Len() {
-		t.Errorf("\n got %v\nwant %v", context.RS.Dump(), expectedRS.Dump())
-	}
-
-	for i, hf := range *context.RS {
-		i := len(expectedRS) - i - 1
-		if *expectedRS[i].HeaderField != *hf.HeaderField {
-			t.Errorf("\n got %v\nwant %v", context.RS.Dump(), expectedRS.Dump())
-		}
-	}
 
 	/**
 	 * D.5.2.  Second response
@@ -550,13 +410,6 @@ func TestResponseWithoutHuffman(t *testing.T) {
 		NewHeaderField("cache-control", "private"),
 	}
 
-	expectedRS = ReferenceSet{
-		{NewHeaderField(":status", "200"), false},
-		{NewHeaderField("location", "https://www.example.com"), false},
-		{NewHeaderField("date", "Mon, 21 Oct 2013 20:13:21 GMT"), false},
-		{NewHeaderField("cache-control", "private"), false},
-	}
-
 	context.Decode(buf)
 
 	// test Header Table
@@ -566,18 +419,6 @@ func TestResponseWithoutHuffman(t *testing.T) {
 	sort.Sort(context.ES)
 	sort.Sort(expectedES)
 	assert.Equal(t, context.ES, expectedES)
-
-	// test Reference Set
-	if expectedRS.Len() != context.RS.Len() {
-		t.Errorf("\n got %v\nwant %v", context.RS.Dump(), expectedRS.Dump())
-	}
-
-	for i, hf := range *context.RS {
-		i := len(expectedRS) - i - 1
-		if *expectedRS[i].HeaderField != *hf.HeaderField {
-			t.Errorf("\n got %v\nwant %v", context.RS.Dump(), expectedRS.Dump())
-		}
-	}
 
 	/**
 	 * D.5.3.  Third response
@@ -652,12 +493,6 @@ func TestResponseWithoutHuffman(t *testing.T) {
 		NewHeaderField("date", "Mon, 21 Oct 2013 20:13:22 GMT"),
 	}
 
-	expectedRS = ReferenceSet{
-		{NewHeaderField("set-cookie", "foo=ASDJKHQKBZXOQWEOPIUAXQWEOIU; max-age=3600; version=1"), false},
-		{NewHeaderField("content-encoding", "gzip"), false},
-		{NewHeaderField("date", "Mon, 21 Oct 2013 20:13:22 GMT"), false},
-	}
-
 	context.Decode(buf)
 
 	// test Header Table
@@ -667,18 +502,6 @@ func TestResponseWithoutHuffman(t *testing.T) {
 	sort.Sort(context.ES)
 	sort.Sort(expectedES)
 	assert.Equal(t, context.ES, expectedES)
-
-	// test Reference Set
-	if expectedRS.Len() != context.RS.Len() {
-		t.Errorf("\n got %v\nwant %v", context.RS.Dump(), expectedRS.Dump())
-	}
-
-	for i, hf := range *context.RS {
-		i := len(expectedRS) - i - 1
-		if *expectedRS[i].HeaderField != *hf.HeaderField {
-			t.Errorf("\n got %v\nwant %v", context.RS.Dump(), expectedRS.Dump())
-		}
-	}
 }
 
 func TestResponseWithHuffman(t *testing.T) {
@@ -688,7 +511,6 @@ func TestResponseWithHuffman(t *testing.T) {
 		buf        []byte
 		expectedES *HeaderSet
 		expectedHT *HeaderTable
-		expectedRS ReferenceSet
 	)
 
 	var HeaderTableSize int = 256
@@ -744,13 +566,6 @@ func TestResponseWithHuffman(t *testing.T) {
 		NewHeaderField(":status", "302"),
 	}
 
-	expectedRS = ReferenceSet{
-		{NewHeaderField("location", "https://www.example.com"), false},
-		{NewHeaderField("date", "Mon, 21 Oct 2013 20:13:21 GMT"), false},
-		{NewHeaderField("cache-control", "private"), false},
-		{NewHeaderField(":status", "302"), false},
-	}
-
 	context.Decode(buf)
 
 	// test Header Table
@@ -760,18 +575,6 @@ func TestResponseWithHuffman(t *testing.T) {
 	sort.Sort(context.ES)
 	sort.Sort(expectedES)
 	assert.Equal(t, context.ES, expectedES)
-
-	// test Reference Set
-	if expectedRS.Len() != context.RS.Len() {
-		t.Errorf("\n got %v\nwant %v", context.RS.Dump(), expectedRS.Dump())
-	}
-
-	for i, hf := range *context.RS {
-		i := len(expectedRS) - i - 1
-		if *expectedRS[i].HeaderField != *hf.HeaderField {
-			t.Errorf("\n got %v\nwant %v", context.RS.Dump(), expectedRS.Dump())
-		}
-	}
 
 	/**
 	 * D.6.2.  Second response
@@ -800,13 +603,6 @@ func TestResponseWithHuffman(t *testing.T) {
 		NewHeaderField("cache-control", "private"),
 	}
 
-	expectedRS = ReferenceSet{
-		{NewHeaderField(":status", "200"), false},
-		{NewHeaderField("location", "https://www.example.com"), false},
-		{NewHeaderField("date", "Mon, 21 Oct 2013 20:13:21 GMT"), false},
-		{NewHeaderField("cache-control", "private"), false},
-	}
-
 	context.Decode(buf)
 
 	// test Header Table
@@ -816,18 +612,6 @@ func TestResponseWithHuffman(t *testing.T) {
 	sort.Sort(context.ES)
 	sort.Sort(expectedES)
 	assert.Equal(t, context.ES, expectedES)
-
-	// test Reference Set
-	if expectedRS.Len() != context.RS.Len() {
-		t.Errorf("\n got %v\nwant %v", context.RS.Dump(), expectedRS.Dump())
-	}
-
-	for i, hf := range *context.RS {
-		i := len(expectedRS) - i - 1
-		if *expectedRS[i].HeaderField != *hf.HeaderField {
-			t.Errorf("\n got %v\nwant %v", context.RS.Dump(), expectedRS.Dump())
-		}
-	}
 
 	/**
 	 * D.6.3.  Third response
@@ -893,12 +677,6 @@ func TestResponseWithHuffman(t *testing.T) {
 		NewHeaderField("date", "Mon, 21 Oct 2013 20:13:22 GMT"),
 	}
 
-	expectedRS = ReferenceSet{
-		{NewHeaderField("set-cookie", "foo=ASDJKHQKBZXOQWEOPIUAXQWEOIU; max-age=3600; version=1"), false},
-		{NewHeaderField("content-encoding", "gzip"), false},
-		{NewHeaderField("date", "Mon, 21 Oct 2013 20:13:22 GMT"), false},
-	}
-
 	context.Decode(buf)
 
 	// test Header Table
@@ -908,18 +686,6 @@ func TestResponseWithHuffman(t *testing.T) {
 	sort.Sort(context.ES)
 	sort.Sort(expectedES)
 	assert.Equal(t, context.ES, expectedES)
-
-	// test Reference Set
-	if expectedRS.Len() != context.RS.Len() {
-		t.Errorf("\n got %v\nwant %v", context.RS.Dump(), expectedRS.Dump())
-	}
-
-	for i, hf := range *context.RS {
-		i := len(expectedRS) - i - 1
-		if *expectedRS[i].HeaderField != *hf.HeaderField {
-			t.Errorf("\n got %v\nwant %v", context.RS.Dump(), expectedRS.Dump())
-		}
-	}
 }
 
 func TestEncodeDecode(t *testing.T) {
