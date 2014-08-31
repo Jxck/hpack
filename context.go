@@ -11,6 +11,8 @@ import (
 
 var loglevel int
 
+var STATIC_HEADER_TABLE_SIZE = len(StaticHeaderTable)
+
 func init() {
 	flag.IntVar(&loglevel, "l", 0, "log level (1 ERR, 2 WARNING, 3 NOTICE, 4 INFO, 5 DEBUG, 6 TRACE)")
 	flag.Parse()
@@ -20,14 +22,12 @@ func init() {
 
 type Context struct {
 	HT *HeaderTable
-	RS *ReferenceSet
 	ES *HeaderSet
 }
 
 func NewContext(SETTINGS_HEADER_TABLE_SIZE int) *Context {
 	return &Context{
 		HT: NewHeaderTable(SETTINGS_HEADER_TABLE_SIZE),
-		RS: NewReferenceSet(),
 		ES: NewHeaderSet(),
 	}
 }
@@ -35,7 +35,6 @@ func NewContext(SETTINGS_HEADER_TABLE_SIZE int) *Context {
 func (c *Context) Decode(wire []byte) {
 	// 各デコードごとに前回のをリセットする。
 	c.ES = NewHeaderSet()
-	c.RS.Reset()
 	Debug(Red("clean Emitted Set"))
 	Trace(Cyan(
 		"\n===== Before Decode =====")+
@@ -56,47 +55,20 @@ func (c *Context) Decode(wire []byte) {
 
 			var headerField *HeaderField
 
-			if index > c.HT.Len() {
+			if index < STATIC_HEADER_TABLE_SIZE {
 				/**
 				 * Static Header Table の中にある場合
 				 */
-				i := index - c.HT.Len() - 1
+				// 実態は配列なので 0 オリジン
+				i := index - 1
 				headerField = StaticHeaderTable[i]
 
-				if c.RS.Has(headerField) {
-					/**
-					 * 参照が Reference Set にあった場合
-					 * Reference Set から消す
-					 */
-
-					Debug(Red(fmt.Sprintf("== Indexed - Remove ==")))
-					Debug(fmt.Sprintf("  idx = %v", index))
-					Debug(fmt.Sprintf("  -> HT[%v] = %v", index, headerField))
-
-					// remove
-					c.RS.Remove(headerField)
-				} else {
-					/**
-					* 参照が Reference Set に無い場合
-					* 該当のエントリを取り出す
-					 */
-
-					Debug(Red("== Indexed - Add =="))
-					Debug(fmt.Sprintf("  idx = %v", index))
-					Debug(fmt.Sprintf("  -> ST[%v] = %v", index, headerField))
-
-					// Emit
-					Debug(Blue("\tEmit"))
-					c.ES.Emit(headerField)
-
-					// ヘッダテーブルにコピーする
-					Debug(Blue("\tAdd to HT"))
-					c.Push(headerField)
-
-					// その参照を RefSet に追加する
-					Debug(Blue("\tAdd to RS"))
-					c.RS.Add(headerField, EMITTED)
-				}
+				// Emit
+				Debug(Red(fmt.Sprintf("== Indexed ==")))
+				Debug(fmt.Sprintf("  idx = %v", i))
+				Debug(fmt.Sprintf("  -> ST[%v] = %v", i, headerField))
+				Debug(Blue("\tEmit"))
+				c.ES.Emit(headerField)
 			} else {
 				/**
 				 * Header Table の中にある場合
@@ -106,33 +78,16 @@ func (c *Context) Decode(wire []byte) {
 				i := index - 1
 				headerField = c.HT.HeaderFields[i]
 
-				if c.RS.Has(headerField) {
-					/**
-					 * 参照が Reference Set にあった場合
-					 * Reference Set から消す
-					 */
-					Debug(Red(fmt.Sprintf("== Indexed - Remove ==")))
-					Debug(fmt.Sprintf("  idx = %v", index))
-					Debug(fmt.Sprintf("  -> HT[%v] = %v", index, headerField))
+				/**
+				* 参照が Reference Set に無い場合
+				 */
+				Debug(Red("== Indexed - Add =="))
+				Debug(fmt.Sprintf("  idx = %v", index))
+				Debug(fmt.Sprintf("  -> HT[%v] = %v", index, headerField))
 
-					// remove
-					c.RS.Remove(headerField)
-				} else {
-					/**
-					* 参照が Reference Set に無い場合
-					 */
-					Debug(Red("== Indexed - Add =="))
-					Debug(fmt.Sprintf("  idx = %v", index))
-					Debug(fmt.Sprintf("  -> HT[%v] = %v", index, headerField))
-
-					// Emit
-					Debug(Blue("\tEmit"))
-					c.ES.Emit(headerField)
-
-					// その参照を RefSet に追加する
-					Debug(Blue("\tAdd to RS"))
-					c.RS.Add(headerField, EMITTED)
-				}
+				// Emit
+				Debug(Blue("\tEmit"))
+				c.ES.Emit(headerField)
 			}
 		case *IndexedLiteral:
 
@@ -140,7 +95,7 @@ func (c *Context) Decode(wire []byte) {
 			index := int(f.Index)
 			var name, value string
 
-			if index > c.HT.Len() {
+			if index < STATIC_HEADER_TABLE_SIZE {
 				/**
 				 * Static Header Table の中にある場合
 				 */
@@ -179,10 +134,6 @@ func (c *Context) Decode(wire []byte) {
 				Debug(Blue("\tAdd to HT"))
 				c.Push(headerField)
 
-				// その参照を RefSet に追加する
-				Debug(Blue("\tAdd to RS"))
-				c.RS.Add(headerField, EMITTED)
-
 			case WITHOUT:
 				/**
 				 * HT に追加しない場合
@@ -209,10 +160,6 @@ func (c *Context) Decode(wire []byte) {
 				Debug(Blue("\tAdd to HT"))
 				c.Push(headerField)
 
-				// その参照を RefSet に追加する
-				Debug(Blue("\tAdd to RS"))
-				c.RS.Add(headerField, EMITTED)
-
 			case WITHOUT:
 				// HT に追加しない場合
 
@@ -220,12 +167,6 @@ func (c *Context) Decode(wire []byte) {
 				Debug(Blue("\tEmit"))
 				c.ES.Emit(headerField)
 			}
-		case *EmptyReferenceSet:
-			/**
-			 * Reference Set Emptying
-			 */
-			Debug(Red("Reference Set Emptying"))
-			c.RS.Empty()
 		case *ChangeHeaderTableSize:
 			/**
 			 * Maximum Header Table Size Change
@@ -236,28 +177,17 @@ func (c *Context) Decode(wire []byte) {
 			log.Fatal("%T", f)
 		}
 	}
-
-	// reference set の残りを全て emit する
-	for _, referencedField := range *c.RS {
-		if !referencedField.Emitted {
-			headerField := referencedField.HeaderField
-			Debug(Blue("\tEmit rest entries ")+"%v", *headerField)
-			c.ES.Emit(headerField)
-		}
-	}
 }
 
 // removing entry from top
 // until make space of size in Header Table
-// Evict された参照を RS からも消すために、 Context の方でやる。
+// TODO: ? Evict された参照を RS からも消すために、 Context の方でやる。
 func (c *Context) Eviction() {
 	for c.HT.Size() > c.HT.HEADER_TABLE_SIZE {
 		// サイズが収まるまで減らす
 		Debug(Red("Eviction")+" %v", c.HT.HeaderFields[len(c.HT.HeaderFields)-1])
 		removed := c.HT.Remove(len(c.HT.HeaderFields) - 1)
-
-		// 消したエントリへの参照を RS からも消す
-		c.RS.Remove(removed)
+		Debug(Yellow(fmt.Sprintf("Removed while Eviction: %v", removed)))
 	}
 	return
 }
@@ -269,19 +199,13 @@ func (c *Context) Push(hf *HeaderField) {
 	c.Eviction()
 }
 
-// Dump for Debug
-func (c *Context) Dump() string {
-	return fmt.Sprintf("%v%v%v", c.HT.Dump(), c.RS.Dump(), c.ES.Dump())
+// String for Debug
+func (c *Context) String() string {
+	return fmt.Sprintf("%v%v", c.HT.String(), c.ES.String())
 }
 
 func (c *Context) Encode(headerSet HeaderSet) []byte {
 	var buf swrap.SWrap
-
-	// ReferenceSet を空にする
-	emptyReferenceSet := NewEmptyReferenceSet()
-
-	emptyRef := *emptyReferenceSet.Encode()
-	buf.Merge(emptyRef)
 
 	// 全て StringLiteral(Indexing = false) でエンコード
 	for _, h := range headerSet {
