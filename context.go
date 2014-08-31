@@ -41,7 +41,7 @@ func (c *Context) Decode(wire []byte) {
 		"\n===== Before Decode =====")+
 		"%v"+Cyan(
 		"==========================="),
-		c.Dump())
+		c.String())
 
 	frames := Decode(wire)
 	for _, frame := range frames {
