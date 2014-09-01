@@ -64,8 +64,8 @@ func (c *Context) Decode(wire []byte) {
 				headerField = StaticHeaderTable[i]
 
 				// Emit
-				Debug(Red(fmt.Sprintf("== Indexed ==")))
-				Debug(fmt.Sprintf("  idx = %v", i))
+				Debug(Red(fmt.Sprintf("== Indexed - Add ==")))
+				Debug(fmt.Sprintf("  idx = %v", index))
 				Debug(fmt.Sprintf("  -> ST[%v] = %v", i, headerField))
 				Debug(Blue("\tEmit"))
 				c.ES.Emit(headerField)
@@ -75,7 +75,7 @@ func (c *Context) Decode(wire []byte) {
 				 */
 
 				// 実態は配列なので 0 オリジン
-				i := index - 1
+				i := index - STATIC_HEADER_TABLE_SIZE - 1
 				headerField = c.HT.HeaderFields[i]
 
 				/**
@@ -99,13 +99,13 @@ func (c *Context) Decode(wire []byte) {
 				/**
 				 * Static Header Table の中にある場合
 				 */
-				i := index - c.HT.Len() - 1
+				i := index - 1
 				name = StaticHeaderTable[i].Name
 			} else {
 				/**
 				 * Header Table の中にある場合
 				 */
-				i := index - 1
+				i := index - STATIC_HEADER_TABLE_SIZE - 1
 				name = c.HT.HeaderFields[i].Name
 			}
 
