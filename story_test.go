@@ -129,15 +129,15 @@ func writeJson(src, dst, filename string) {
 	context := NewContext(DEFAULT_HEADER_TABLE_SIZE)
 	// 一つのケースごと
 	for i, c := range testFile.Cases {
-		hs := *new(HeaderList)
+		hl := *new(HeaderList)
 		// 一つのヘッダごと
 		for _, header := range c.Headers {
 			for key, value := range header {
-				hs = append(hs, *NewHeaderField(key, value))
+				hl = append(hl, *NewHeaderField(key, value))
 			}
 		}
 
-		hexdump := context.Encode(hs)
+		hexdump := context.Encode(hl)
 		wire := hex.EncodeToString(hexdump)
 		testFile.Cases[i].Seqno = i
 		testFile.Cases[i].Wire = wire

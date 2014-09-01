@@ -15,32 +15,32 @@ func NewHeaderList() *HeaderList {
 }
 
 func ToHeaderList(header http.Header) HeaderList {
-	hs := *new(HeaderList)
+	hl := *new(HeaderList)
 	for key, values := range header {
 		key := strings.ToLower(key)
 		for _, value := range values {
-			hs = append(hs, *NewHeaderField(key, value))
+			hl = append(hl, *NewHeaderField(key, value))
 		}
 	}
-	return hs
+	return hl
 }
 
-func (hs *HeaderList) Emit(hf *HeaderField) {
-	*hs = append(*hs, *hf)
+func (hl *HeaderList) Emit(hf *HeaderField) {
+	*hl = append(*hl, *hf)
 }
 
-func (hs *HeaderList) Len() int {
-	return len(*hs)
+func (hl *HeaderList) Len() int {
+	return len(*hl)
 }
 
 // Sort Interface
-func (hs *HeaderList) Swap(i, j int) {
-	h := *hs
+func (hl *HeaderList) Swap(i, j int) {
+	h := *hl
 	h[i], h[j] = h[j], h[i]
 }
 
-func (hs *HeaderList) Less(i, j int) bool {
-	h := *hs
+func (hl *HeaderList) Less(i, j int) bool {
+	h := *hl
 	if h[i].Name == h[j].Name {
 		return h[i].Value < h[j].Value
 	}
@@ -48,17 +48,17 @@ func (hs *HeaderList) Less(i, j int) bool {
 }
 
 // convert to http.Header
-func (hs HeaderList) ToHeader() http.Header {
+func (hl HeaderList) ToHeader() http.Header {
 	header := make(http.Header)
-	for _, hf := range hs {
+	for _, hf := range hl {
 		header.Add(hf.Name, hf.Value)
 	}
 	return header
 }
 
-func (hs HeaderList) String() (str string) {
-	str += fmt.Sprintf("\n--------- HS ---------\n")
-	for i, v := range hs {
+func (hl HeaderList) String() (str string) {
+	str += fmt.Sprintf("\n--------- HL ---------\n")
+	for i, v := range hl {
 		str += fmt.Sprintln(i, v)
 	}
 	str += "--------------------------------\n"

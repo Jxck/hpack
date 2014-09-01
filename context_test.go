@@ -669,7 +669,7 @@ func TestResponseWithHuffman(t *testing.T) {
 func TestEncodeDecode(t *testing.T) {
 	context := NewContext(DEFAULT_HEADER_TABLE_SIZE)
 
-	hs := HeaderList{
+	hl := HeaderList{
 		*NewHeaderField(":status", "200"),
 		*NewHeaderField("cache-control", "private"),
 		*NewHeaderField("date", "Mon, 21 Oct 2013 20:13:22 GMT"),
@@ -678,14 +678,14 @@ func TestEncodeDecode(t *testing.T) {
 		*NewHeaderField("set-cookie", "foo=ASDJKHQKBZXOQWEOPIUAXQWEOIU; max-age=3600; version=1"),
 	}
 
-	encoded := context.Encode(hs)
+	encoded := context.Encode(hl)
 	context.Decode(encoded)
-	assert.Equal(t, hs, *context.ES)
+	assert.Equal(t, hl, *context.ES)
 }
 
 func TestEncodeDecodeWithHuffman(t *testing.T) {
 	context := NewContext(DEFAULT_HEADER_TABLE_SIZE)
-	hs := HeaderList{
+	hl := HeaderList{
 		*NewHeaderField(":method", "GET"),
 		*NewHeaderField(":scheme", "http"),
 		*NewHeaderField(":authority", "g-ecx.images-amazon.com"),
@@ -698,10 +698,10 @@ func TestEncodeDecodeWithHuffman(t *testing.T) {
 		*NewHeaderField("referer", "http://www.amazon.com/"),
 	}
 
-	encoded := context.Encode(hs)
+	encoded := context.Encode(hl)
 	if encoded[len(encoded)-1] == 255 {
 		t.Error("8bit EOS on huffman encoded result is error")
 	}
 	context.Decode(encoded)
-	assert.Equal(t, hs, *context.ES)
+	assert.Equal(t, hl, *context.ES)
 }

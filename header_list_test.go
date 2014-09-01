@@ -46,23 +46,23 @@ func TestToHeader(t *testing.T) {
 }
 
 func TestEmit(t *testing.T) {
-	hs := NewHeaderList()
+	hl := NewHeaderList()
 	hf1 := NewHeaderField("key1", "value1")
 	hf2 := NewHeaderField("key2", "value2")
-	hs.Emit(hf1)
-	hs.Emit(hf2)
-	assert.Equal(t, hs.Len(), 2)
+	hl.Emit(hf1)
+	hl.Emit(hf2)
+	assert.Equal(t, hl.Len(), 2)
 }
 
 func TestEmitSort(t *testing.T) {
-	hs := &HeaderList{
+	hl := &HeaderList{
 		HeaderField{":method", "GET"},
 		HeaderField{":scheme", "http"},
 		HeaderField{":path", "/"},
 		HeaderField{":authority", "www.example.com"},
 		HeaderField{"cache-control", "no-cache"},
 	}
-	sort.Sort(hs)
+	sort.Sort(hl)
 
 	expected := &HeaderList{
 		HeaderField{":authority", "www.example.com"},
@@ -72,5 +72,5 @@ func TestEmitSort(t *testing.T) {
 		HeaderField{"cache-control", "no-cache"},
 	}
 
-	assert.Equal(t, hs, expected)
+	assert.Equal(t, hl, expected)
 }
