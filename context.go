@@ -61,7 +61,7 @@ func (c *Context) Decode(wire []byte) {
 				 */
 				// 実態は配列なので 0 オリジン
 				i := index - 1
-				headerField = StaticHeaderTable[i]
+				headerField = &StaticHeaderTable[i]
 
 				// Emit
 				Debug(Red(fmt.Sprintf("== Indexed - Add ==")))
