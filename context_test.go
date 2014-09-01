@@ -185,9 +185,6 @@ func TestRequestWithHuffman(t *testing.T) {
 	expectedHT = NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
 	expectedHT.HeaderFields = []*HeaderField{
 		NewHeaderField(":authority", "www.example.com"),
-		NewHeaderField(":path", "/"),
-		NewHeaderField(":scheme", "http"),
-		NewHeaderField(":method", "GET"),
 	}
 
 	context.Decode(buf)
@@ -226,9 +223,6 @@ func TestRequestWithHuffman(t *testing.T) {
 	expectedHT.HeaderFields = []*HeaderField{
 		NewHeaderField("cache-control", "no-cache"),
 		NewHeaderField(":authority", "www.example.com"),
-		NewHeaderField(":path", "/"),
-		NewHeaderField(":scheme", "http"),
-		NewHeaderField(":method", "GET"),
 	}
 
 	context.Decode(buf)
@@ -272,13 +266,8 @@ func TestRequestWithHuffman(t *testing.T) {
 	expectedHT = NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
 	expectedHT.HeaderFields = []*HeaderField{
 		NewHeaderField("custom-key", "custom-value"),
-		NewHeaderField(":path", "/index.html"),
-		NewHeaderField(":scheme", "https"),
 		NewHeaderField("cache-control", "no-cache"),
 		NewHeaderField(":authority", "www.example.com"),
-		NewHeaderField(":path", "/"),
-		NewHeaderField(":scheme", "http"),
-		NewHeaderField(":method", "GET"),
 	}
 
 	context.Decode(buf)
