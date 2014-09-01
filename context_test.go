@@ -567,7 +567,7 @@ func TestResponseWithHuffman(t *testing.T) {
 	}
 
 	expectedES = &HeaderSet{
-		HeaderField{":status", "200"},
+		HeaderField{":status", "307"},
 		HeaderField{"cache-control", "private"},
 		HeaderField{"date", "Mon, 21 Oct 2013 20:13:21 GMT"},
 		HeaderField{"location", "https://www.example.com"},
@@ -575,7 +575,7 @@ func TestResponseWithHuffman(t *testing.T) {
 
 	expectedHT = NewHeaderTable(HeaderTableSize)
 	expectedHT.HeaderFields = []*HeaderField{
-		NewHeaderField(":status", "200"),
+		NewHeaderField(":status", "307"),
 		NewHeaderField("location", "https://www.example.com"),
 		NewHeaderField("date", "Mon, 21 Oct 2013 20:13:21 GMT"),
 		NewHeaderField("cache-control", "private"),
