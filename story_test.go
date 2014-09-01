@@ -70,7 +70,7 @@ func RunStory(testfile TestFile, t *testing.T) {
 		}
 		context.Decode(wire)
 
-		expectedES := new(HeaderSet)
+		expectedES := new(HeaderList)
 		for _, header := range cases.Headers {
 			for key, value := range header {
 				expectedES.Emit(NewHeaderField(key, value))
@@ -90,20 +90,20 @@ func RunStory(testfile TestFile, t *testing.T) {
 
 func TestStory(t *testing.T) {
 	dirs := []string{
-		// "./hpack-test-case/go-hpack/",
-		// "./hpack-test-case/haskell-http2-diff/",
-		// "./hpack-test-case/haskell-http2-diff-huffman/",
-		// "./hpack-test-case/haskell-http2-linear/",
-		// "./hpack-test-case/haskell-http2-linear-huffman/",
-		// "./hpack-test-case/haskell-http2-naive/",
-		// "./hpack-test-case/haskell-http2-naive-huffman/",
-		// "./hpack-test-case/haskell-http2-static/",
-		// "./hpack-test-case/haskell-http2-static-huffman/",
-		// "./hpack-test-case/nghttp2/",
-		// "./hpack-test-case/nghttp2-16384-4096/",
-		// "./hpack-test-case/node-http2-hpack/",
-		// "./hpack-test-case/node-http2-protocol/",
-		// "./hpack-test-case/twitter-hpack/",
+	// "./hpack-test-case/go-hpack/",
+	// "./hpack-test-case/haskell-http2-diff/",
+	// "./hpack-test-case/haskell-http2-diff-huffman/",
+	// "./hpack-test-case/haskell-http2-linear/",
+	// "./hpack-test-case/haskell-http2-linear-huffman/",
+	// "./hpack-test-case/haskell-http2-naive/",
+	// "./hpack-test-case/haskell-http2-naive-huffman/",
+	// "./hpack-test-case/haskell-http2-static/",
+	// "./hpack-test-case/haskell-http2-static-huffman/",
+	// "./hpack-test-case/nghttp2/",
+	// "./hpack-test-case/nghttp2-16384-4096/",
+	// "./hpack-test-case/node-http2-hpack/",
+	// "./hpack-test-case/node-http2-protocol/",
+	// "./hpack-test-case/twitter-hpack/",
 	}
 
 	for _, dir := range dirs {
@@ -129,7 +129,7 @@ func writeJson(src, dst, filename string) {
 	context := NewContext(DEFAULT_HEADER_TABLE_SIZE)
 	// 一つのケースごと
 	for i, c := range testFile.Cases {
-		hs := *new(HeaderSet)
+		hs := *new(HeaderList)
 		// 一つのヘッダごと
 		for _, header := range c.Headers {
 			for key, value := range header {

@@ -13,7 +13,7 @@ func TestRequestWithoutHuffman(t *testing.T) {
 	var (
 		context    *Context
 		buf        []byte
-		expectedES *HeaderSet
+		expectedES *HeaderList
 		expectedHT *HeaderTable
 	)
 
@@ -37,7 +37,7 @@ func TestRequestWithoutHuffman(t *testing.T) {
 		0x6f, 0x6d,
 	}
 
-	expectedES = &HeaderSet{
+	expectedES = &HeaderList{
 		HeaderField{":method", "GET"},
 		HeaderField{":scheme", "http"},
 		HeaderField{":path", "/"},
@@ -74,7 +74,7 @@ func TestRequestWithoutHuffman(t *testing.T) {
 		0x68, 0x65,
 	}
 
-	expectedES = &HeaderSet{
+	expectedES = &HeaderList{
 		HeaderField{":method", "GET"},
 		HeaderField{":scheme", "http"},
 		HeaderField{":path", "/"},
@@ -121,7 +121,7 @@ func TestRequestWithoutHuffman(t *testing.T) {
 		0x65,
 	}
 
-	expectedES = &HeaderSet{
+	expectedES = &HeaderList{
 		HeaderField{":method", "GET"},
 		HeaderField{":scheme", "https"},
 		HeaderField{":path", "/index.html"},
@@ -152,7 +152,7 @@ func TestRequestWithHuffman(t *testing.T) {
 	var (
 		context    *Context
 		buf        []byte
-		expectedES *HeaderSet
+		expectedES *HeaderList
 		expectedHT *HeaderTable
 	)
 
@@ -175,7 +175,7 @@ func TestRequestWithHuffman(t *testing.T) {
 		0xff,
 	}
 
-	expectedES = &HeaderSet{
+	expectedES = &HeaderList{
 		HeaderField{":method", "GET"},
 		HeaderField{":scheme", "http"},
 		HeaderField{":path", "/"},
@@ -211,7 +211,7 @@ func TestRequestWithHuffman(t *testing.T) {
 		0x9c, 0xbf,
 	}
 
-	expectedES = &HeaderSet{
+	expectedES = &HeaderList{
 		HeaderField{":method", "GET"},
 		HeaderField{":scheme", "http"},
 		HeaderField{":path", "/"},
@@ -255,7 +255,7 @@ func TestRequestWithHuffman(t *testing.T) {
 		0xb4, 0xbf,
 	}
 
-	expectedES = &HeaderSet{
+	expectedES = &HeaderList{
 		HeaderField{":method", "GET"},
 		HeaderField{":scheme", "https"},
 		HeaderField{":path", "/index.html"},
@@ -286,7 +286,7 @@ func TestResponseWithoutHuffman(t *testing.T) {
 	var (
 		context    *Context
 		buf        []byte
-		expectedES *HeaderSet
+		expectedES *HeaderList
 		expectedHT *HeaderTable
 	)
 
@@ -336,7 +336,7 @@ func TestResponseWithoutHuffman(t *testing.T) {
 		0x6f, 0x6d,
 	}
 
-	expectedES = &HeaderSet{
+	expectedES = &HeaderList{
 		HeaderField{":status", "302"},
 		HeaderField{"cache-control", "private"},
 		HeaderField{"date", "Mon, 21 Oct 2013 20:13:21 GMT"},
@@ -373,7 +373,7 @@ func TestResponseWithoutHuffman(t *testing.T) {
 		0xc0, 0xbf,
 	}
 
-	expectedES = &HeaderSet{
+	expectedES = &HeaderList{
 		HeaderField{":status", "307"},
 		HeaderField{"cache-control", "private"},
 		HeaderField{"date", "Mon, 21 Oct 2013 20:13:21 GMT"},
@@ -455,7 +455,7 @@ func TestResponseWithoutHuffman(t *testing.T) {
 		0x3d, 0x31,
 	}
 
-	expectedES = &HeaderSet{
+	expectedES = &HeaderList{
 		HeaderField{":status", "200"},
 		HeaderField{"cache-control", "private"},
 		HeaderField{"date", "Mon, 21 Oct 2013 20:13:22 GMT"},
@@ -487,7 +487,7 @@ func TestResponseWithHuffman(t *testing.T) {
 	var (
 		context    *Context
 		buf        []byte
-		expectedES *HeaderSet
+		expectedES *HeaderList
 		expectedHT *HeaderTable
 	)
 
@@ -529,7 +529,7 @@ func TestResponseWithHuffman(t *testing.T) {
 		0x43, 0xd3,
 	}
 
-	expectedES = &HeaderSet{
+	expectedES = &HeaderList{
 		HeaderField{":status", "302"},
 		HeaderField{"cache-control", "private"},
 		HeaderField{"date", "Mon, 21 Oct 2013 20:13:21 GMT"},
@@ -566,7 +566,7 @@ func TestResponseWithHuffman(t *testing.T) {
 		0xc0, 0xbf,
 	}
 
-	expectedES = &HeaderSet{
+	expectedES = &HeaderList{
 		HeaderField{":status", "307"},
 		HeaderField{"cache-control", "private"},
 		HeaderField{"date", "Mon, 21 Oct 2013 20:13:21 GMT"},
@@ -639,7 +639,7 @@ func TestResponseWithHuffman(t *testing.T) {
 		0x07,
 	}
 
-	expectedES = &HeaderSet{
+	expectedES = &HeaderList{
 		HeaderField{":status", "200"},
 		HeaderField{"cache-control", "private"},
 		HeaderField{"date", "Mon, 21 Oct 2013 20:13:22 GMT"},
@@ -669,7 +669,7 @@ func TestResponseWithHuffman(t *testing.T) {
 func TestEncodeDecode(t *testing.T) {
 	context := NewContext(DEFAULT_HEADER_TABLE_SIZE)
 
-	hs := HeaderSet{
+	hs := HeaderList{
 		*NewHeaderField(":status", "200"),
 		*NewHeaderField("cache-control", "private"),
 		*NewHeaderField("date", "Mon, 21 Oct 2013 20:13:22 GMT"),
@@ -685,7 +685,7 @@ func TestEncodeDecode(t *testing.T) {
 
 func TestEncodeDecodeWithHuffman(t *testing.T) {
 	context := NewContext(DEFAULT_HEADER_TABLE_SIZE)
-	hs := HeaderSet{
+	hs := HeaderList{
 		*NewHeaderField(":method", "GET"),
 		*NewHeaderField(":scheme", "http"),
 		*NewHeaderField(":authority", "g-ecx.images-amazon.com"),

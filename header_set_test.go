@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestNewHeaderSet(t *testing.T) {
+func TestNewHeaderList(t *testing.T) {
 	header := make(http.Header)
 	header.Add("method", "get")
 	header.Add("host", "example.com")
@@ -15,14 +15,14 @@ func TestNewHeaderSet(t *testing.T) {
 	header.Add("cookie", "a")
 	header.Add("cookie", "b")
 
-	expected := HeaderSet{
+	expected := HeaderList{
 		{"method", "get"},
 		{"host", "example.com"},
 		{":authority", "example.com"},
 		{"cookie", "a"},
 		{"cookie", "b"},
 	}
-	actual := ToHeaderSet(header)
+	actual := ToHeaderList(header)
 	assert.Equal(t, actual, expected)
 }
 
@@ -34,19 +34,19 @@ func TestToHeader(t *testing.T) {
 	header.Add("cookie", "a")
 	header.Add("cookie", "b")
 
-	headerSet := HeaderSet{
+	headerList := HeaderList{
 		{"method", "get"},
 		{"host", "example.com"},
 		{":authority", "example.com"},
 		{"cookie", "a"},
 		{"cookie", "b"},
 	}
-	actual := headerSet.ToHeader()
+	actual := headerList.ToHeader()
 	assert.Equal(t, actual, header)
 }
 
 func TestEmit(t *testing.T) {
-	hs := NewHeaderSet()
+	hs := NewHeaderList()
 	hf1 := NewHeaderField("key1", "value1")
 	hf2 := NewHeaderField("key2", "value2")
 	hs.Emit(hf1)
@@ -55,7 +55,7 @@ func TestEmit(t *testing.T) {
 }
 
 func TestEmitSort(t *testing.T) {
-	hs := &HeaderSet{
+	hs := &HeaderList{
 		HeaderField{":method", "GET"},
 		HeaderField{":scheme", "http"},
 		HeaderField{":path", "/"},
@@ -64,7 +64,7 @@ func TestEmitSort(t *testing.T) {
 	}
 	sort.Sort(hs)
 
-	expected := &HeaderSet{
+	expected := &HeaderList{
 		HeaderField{":authority", "www.example.com"},
 		HeaderField{":method", "GET"},
 		HeaderField{":path", "/"},

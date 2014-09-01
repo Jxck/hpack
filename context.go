@@ -22,19 +22,19 @@ func init() {
 
 type Context struct {
 	HT *HeaderTable
-	ES *HeaderSet
+	ES *HeaderList
 }
 
 func NewContext(SETTINGS_HEADER_TABLE_SIZE int) *Context {
 	return &Context{
 		HT: NewHeaderTable(SETTINGS_HEADER_TABLE_SIZE),
-		ES: NewHeaderSet(),
+		ES: NewHeaderList(),
 	}
 }
 
 func (c *Context) Decode(wire []byte) {
 	// 各デコードごとに前回のをリセットする。
-	c.ES = NewHeaderSet()
+	c.ES = NewHeaderList()
 	Debug(Red("clean Emitted Set"))
 	Trace(Cyan(
 		"\n===== Before Decode =====")+
@@ -204,11 +204,11 @@ func (c *Context) String() string {
 	return fmt.Sprintf("%v%v", c.HT.String(), c.ES.String())
 }
 
-func (c *Context) Encode(headerSet HeaderSet) []byte {
+func (c *Context) Encode(headerList HeaderList) []byte {
 	var buf swrap.SWrap
 
 	// 全て StringLiteral(Indexing = false) でエンコード
-	for _, h := range headerSet {
+	for _, h := range headerList {
 		sl := NewStringLiteral(WITHOUT, h.Name, h.Value)
 		buf.Merge(*sl.EncodeHuffman())
 	}
