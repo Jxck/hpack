@@ -14,15 +14,19 @@ func TestNewHeaderList(t *testing.T) {
 	header.Add(":authority", "example.com")
 	header.Add("cookie", "a")
 	header.Add("cookie", "b")
+	actual := ToHeaderList(header)
 
-	expected := HeaderList{
+	expected := &HeaderList{
 		{"method", "get"},
 		{"host", "example.com"},
 		{":authority", "example.com"},
 		{"cookie", "a"},
 		{"cookie", "b"},
 	}
-	actual := ToHeaderList(header)
+
+	sort.Sort(actual)
+	sort.Sort(expected)
+
 	assert.Equal(t, actual, expected)
 }
 
@@ -56,20 +60,20 @@ func TestEmit(t *testing.T) {
 
 func TestEmitSort(t *testing.T) {
 	hl := &HeaderList{
-		HeaderField{":method", "GET"},
-		HeaderField{":scheme", "http"},
-		HeaderField{":path", "/"},
-		HeaderField{":authority", "www.example.com"},
-		HeaderField{"cache-control", "no-cache"},
+		NewHeaderField(":method", "GET"),
+		NewHeaderField(":scheme", "http"),
+		NewHeaderField(":path", "/"),
+		NewHeaderField(":authority", "www.example.com"),
+		NewHeaderField("cache-control", "no-cache"),
 	}
 	sort.Sort(hl)
 
 	expected := &HeaderList{
-		HeaderField{":authority", "www.example.com"},
-		HeaderField{":method", "GET"},
-		HeaderField{":path", "/"},
-		HeaderField{":scheme", "http"},
-		HeaderField{"cache-control", "no-cache"},
+		NewHeaderField(":authority", "www.example.com"),
+		NewHeaderField(":method", "GET"),
+		NewHeaderField(":path", "/"),
+		NewHeaderField(":scheme", "http"),
+		NewHeaderField("cache-control", "no-cache"),
 	}
 
 	assert.Equal(t, hl, expected)

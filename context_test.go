@@ -38,10 +38,10 @@ func TestRequestWithoutHuffman(t *testing.T) {
 	}
 
 	expectedES = &HeaderList{
-		HeaderField{":method", "GET"},
-		HeaderField{":scheme", "http"},
-		HeaderField{":path", "/"},
-		HeaderField{":authority", "www.example.com"},
+		NewHeaderField(":method", "GET"),
+		NewHeaderField(":scheme", "http"),
+		NewHeaderField(":path", "/"),
+		NewHeaderField(":authority", "www.example.com"),
 	}
 
 	expectedHT = NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
@@ -75,11 +75,11 @@ func TestRequestWithoutHuffman(t *testing.T) {
 	}
 
 	expectedES = &HeaderList{
-		HeaderField{":method", "GET"},
-		HeaderField{":scheme", "http"},
-		HeaderField{":path", "/"},
-		HeaderField{":authority", "www.example.com"},
-		HeaderField{"cache-control", "no-cache"},
+		NewHeaderField(":method", "GET"),
+		NewHeaderField(":scheme", "http"),
+		NewHeaderField(":path", "/"),
+		NewHeaderField(":authority", "www.example.com"),
+		NewHeaderField("cache-control", "no-cache"),
 	}
 
 	expectedHT = NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
@@ -122,11 +122,11 @@ func TestRequestWithoutHuffman(t *testing.T) {
 	}
 
 	expectedES = &HeaderList{
-		HeaderField{":method", "GET"},
-		HeaderField{":scheme", "https"},
-		HeaderField{":path", "/index.html"},
-		HeaderField{":authority", "www.example.com"},
-		HeaderField{"custom-key", "custom-value"},
+		NewHeaderField(":method", "GET"),
+		NewHeaderField(":scheme", "https"),
+		NewHeaderField(":path", "/index.html"),
+		NewHeaderField(":authority", "www.example.com"),
+		NewHeaderField("custom-key", "custom-value"),
 	}
 
 	expectedHT = NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
@@ -176,10 +176,10 @@ func TestRequestWithHuffman(t *testing.T) {
 	}
 
 	expectedES = &HeaderList{
-		HeaderField{":method", "GET"},
-		HeaderField{":scheme", "http"},
-		HeaderField{":path", "/"},
-		HeaderField{":authority", "www.example.com"},
+		NewHeaderField(":method", "GET"),
+		NewHeaderField(":scheme", "http"),
+		NewHeaderField(":path", "/"),
+		NewHeaderField(":authority", "www.example.com"),
 	}
 
 	expectedHT = NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
@@ -212,11 +212,11 @@ func TestRequestWithHuffman(t *testing.T) {
 	}
 
 	expectedES = &HeaderList{
-		HeaderField{":method", "GET"},
-		HeaderField{":scheme", "http"},
-		HeaderField{":path", "/"},
-		HeaderField{":authority", "www.example.com"},
-		HeaderField{"cache-control", "no-cache"},
+		NewHeaderField(":method", "GET"),
+		NewHeaderField(":scheme", "http"),
+		NewHeaderField(":path", "/"),
+		NewHeaderField(":authority", "www.example.com"),
+		NewHeaderField("cache-control", "no-cache"),
 	}
 
 	expectedHT = NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
@@ -256,11 +256,11 @@ func TestRequestWithHuffman(t *testing.T) {
 	}
 
 	expectedES = &HeaderList{
-		HeaderField{":method", "GET"},
-		HeaderField{":scheme", "https"},
-		HeaderField{":path", "/index.html"},
-		HeaderField{":authority", "www.example.com"},
-		HeaderField{"custom-key", "custom-value"},
+		NewHeaderField(":method", "GET"),
+		NewHeaderField(":scheme", "https"),
+		NewHeaderField(":path", "/index.html"),
+		NewHeaderField(":authority", "www.example.com"),
+		NewHeaderField("custom-key", "custom-value"),
 	}
 
 	expectedHT = NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
@@ -337,10 +337,10 @@ func TestResponseWithoutHuffman(t *testing.T) {
 	}
 
 	expectedES = &HeaderList{
-		HeaderField{":status", "302"},
-		HeaderField{"cache-control", "private"},
-		HeaderField{"date", "Mon, 21 Oct 2013 20:13:21 GMT"},
-		HeaderField{"location", "https://www.example.com"},
+		NewHeaderField(":status", "302"),
+		NewHeaderField("cache-control", "private"),
+		NewHeaderField("date", "Mon, 21 Oct 2013 20:13:21 GMT"),
+		NewHeaderField("location", "https://www.example.com"),
 	}
 
 	expectedHT = NewHeaderTable(HeaderTableSize)
@@ -374,10 +374,10 @@ func TestResponseWithoutHuffman(t *testing.T) {
 	}
 
 	expectedES = &HeaderList{
-		HeaderField{":status", "307"},
-		HeaderField{"cache-control", "private"},
-		HeaderField{"date", "Mon, 21 Oct 2013 20:13:21 GMT"},
-		HeaderField{"location", "https://www.example.com"},
+		NewHeaderField(":status", "307"),
+		NewHeaderField("cache-control", "private"),
+		NewHeaderField("date", "Mon, 21 Oct 2013 20:13:21 GMT"),
+		NewHeaderField("location", "https://www.example.com"),
 	}
 
 	expectedHT = NewHeaderTable(HeaderTableSize)
@@ -456,12 +456,12 @@ func TestResponseWithoutHuffman(t *testing.T) {
 	}
 
 	expectedES = &HeaderList{
-		HeaderField{":status", "200"},
-		HeaderField{"cache-control", "private"},
-		HeaderField{"date", "Mon, 21 Oct 2013 20:13:22 GMT"},
-		HeaderField{"location", "https://www.example.com"},
-		HeaderField{"content-encoding", "gzip"},
-		HeaderField{"set-cookie", "foo=ASDJKHQKBZXOQWEOPIUAXQWEOIU; max-age=3600; version=1"},
+		NewHeaderField(":status", "200"),
+		NewHeaderField("cache-control", "private"),
+		NewHeaderField("date", "Mon, 21 Oct 2013 20:13:22 GMT"),
+		NewHeaderField("location", "https://www.example.com"),
+		NewHeaderField("content-encoding", "gzip"),
+		NewHeaderField("set-cookie", "foo=ASDJKHQKBZXOQWEOPIUAXQWEOIU; max-age=3600; version=1"),
 	}
 
 	expectedHT = NewHeaderTable(HeaderTableSize)
@@ -530,10 +530,10 @@ func TestResponseWithHuffman(t *testing.T) {
 	}
 
 	expectedES = &HeaderList{
-		HeaderField{":status", "302"},
-		HeaderField{"cache-control", "private"},
-		HeaderField{"date", "Mon, 21 Oct 2013 20:13:21 GMT"},
-		HeaderField{"location", "https://www.example.com"},
+		NewHeaderField(":status", "302"),
+		NewHeaderField("cache-control", "private"),
+		NewHeaderField("date", "Mon, 21 Oct 2013 20:13:21 GMT"),
+		NewHeaderField("location", "https://www.example.com"),
 	}
 
 	expectedHT = NewHeaderTable(HeaderTableSize)
@@ -567,10 +567,10 @@ func TestResponseWithHuffman(t *testing.T) {
 	}
 
 	expectedES = &HeaderList{
-		HeaderField{":status", "307"},
-		HeaderField{"cache-control", "private"},
-		HeaderField{"date", "Mon, 21 Oct 2013 20:13:21 GMT"},
-		HeaderField{"location", "https://www.example.com"},
+		NewHeaderField(":status", "307"),
+		NewHeaderField("cache-control", "private"),
+		NewHeaderField("date", "Mon, 21 Oct 2013 20:13:21 GMT"),
+		NewHeaderField("location", "https://www.example.com"),
 	}
 
 	expectedHT = NewHeaderTable(HeaderTableSize)
@@ -640,12 +640,12 @@ func TestResponseWithHuffman(t *testing.T) {
 	}
 
 	expectedES = &HeaderList{
-		HeaderField{":status", "200"},
-		HeaderField{"cache-control", "private"},
-		HeaderField{"date", "Mon, 21 Oct 2013 20:13:22 GMT"},
-		HeaderField{"location", "https://www.example.com"},
-		HeaderField{"content-encoding", "gzip"},
-		HeaderField{"set-cookie", "foo=ASDJKHQKBZXOQWEOPIUAXQWEOIU; max-age=3600; version=1"},
+		NewHeaderField(":status", "200"),
+		NewHeaderField("cache-control", "private"),
+		NewHeaderField("date", "Mon, 21 Oct 2013 20:13:22 GMT"),
+		NewHeaderField("location", "https://www.example.com"),
+		NewHeaderField("content-encoding", "gzip"),
+		NewHeaderField("set-cookie", "foo=ASDJKHQKBZXOQWEOPIUAXQWEOIU; max-age=3600; version=1"),
 	}
 
 	expectedHT = NewHeaderTable(HeaderTableSize)
@@ -670,12 +670,12 @@ func TestEncodeDecode(t *testing.T) {
 	context := NewContext(DEFAULT_HEADER_TABLE_SIZE)
 
 	hl := HeaderList{
-		*NewHeaderField(":status", "200"),
-		*NewHeaderField("cache-control", "private"),
-		*NewHeaderField("date", "Mon, 21 Oct 2013 20:13:22 GMT"),
-		*NewHeaderField("location", "https://www.example.com"),
-		*NewHeaderField("content-encoding", "gzip"),
-		*NewHeaderField("set-cookie", "foo=ASDJKHQKBZXOQWEOPIUAXQWEOIU; max-age=3600; version=1"),
+		NewHeaderField(":status", "200"),
+		NewHeaderField("cache-control", "private"),
+		NewHeaderField("date", "Mon, 21 Oct 2013 20:13:22 GMT"),
+		NewHeaderField("location", "https://www.example.com"),
+		NewHeaderField("content-encoding", "gzip"),
+		NewHeaderField("set-cookie", "foo=ASDJKHQKBZXOQWEOPIUAXQWEOIU; max-age=3600; version=1"),
 	}
 
 	encoded := context.Encode(hl)
@@ -686,16 +686,16 @@ func TestEncodeDecode(t *testing.T) {
 func TestEncodeDecodeWithHuffman(t *testing.T) {
 	context := NewContext(DEFAULT_HEADER_TABLE_SIZE)
 	hl := HeaderList{
-		*NewHeaderField(":method", "GET"),
-		*NewHeaderField(":scheme", "http"),
-		*NewHeaderField(":authority", "g-ecx.images-amazon.com"),
-		*NewHeaderField(":path", "/images/G/01/gno/beacon/BeaconSprite-US-01._V401903535_.png"),
-		*NewHeaderField("user-agent", "Mozilla/5.0 NewHeaderField(Macintosh; Intel Mac OS X 10.8; rv:16.0) Gecko/20100101 Firefox/16.0"),
-		*NewHeaderField("accept", "image/png,image/*;q=0.8,*/*;q=0.5"),
-		*NewHeaderField("accept-language", "en-US,en;q=0.5"),
-		*NewHeaderField("accept-encoding", "gzip, deflate"),
-		*NewHeaderField("connection", "keep-alive"),
-		*NewHeaderField("referer", "http://www.amazon.com/"),
+		NewHeaderField(":method", "GET"),
+		NewHeaderField(":scheme", "http"),
+		NewHeaderField(":authority", "g-ecx.images-amazon.com"),
+		NewHeaderField(":path", "/images/G/01/gno/beacon/BeaconSprite-US-01._V401903535_.png"),
+		NewHeaderField("user-agent", "Mozilla/5.0 NewHeaderField(Macintosh; Intel Mac OS X 10.8; rv:16.0) Gecko/20100101 Firefox/16.0"),
+		NewHeaderField("accept", "image/png,image/*;q=0.8,*/*;q=0.5"),
+		NewHeaderField("accept-language", "en-US,en;q=0.5"),
+		NewHeaderField("accept-encoding", "gzip, deflate"),
+		NewHeaderField("connection", "keep-alive"),
+		NewHeaderField("referer", "http://www.amazon.com/"),
 	}
 
 	encoded := context.Encode(hl)

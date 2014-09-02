@@ -133,7 +133,7 @@ func writeJson(src, dst, filename string) {
 		// 一つのヘッダごと
 		for _, header := range c.Headers {
 			for key, value := range header {
-				hl = append(hl, *NewHeaderField(key, value))
+				hl = append(hl, NewHeaderField(key, value))
 			}
 		}
 
