@@ -108,7 +108,9 @@ func TestStory(t *testing.T) {
 		for _, f := range files {
 			t.Log("==== test", dir+f.Name())
 			testcases := readJsonFile(dir + f.Name())
-			RunStory(testcases, t)
+			if testcases.Draft == Version {
+				RunStory(testcases, t)
+			}
 		}
 	}
 }

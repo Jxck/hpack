@@ -7,7 +7,7 @@ import (
 type Indexing int
 
 const (
-	Version int      = 7
+	Version int      = 9
 	WITH    Indexing = iota
 	WITHOUT
 	NEVER
