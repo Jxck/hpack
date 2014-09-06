@@ -120,8 +120,10 @@ func DecodeHeader(buf *swrap.SWrap) Frame {
 		frame := NewEmptyReferenceSet()
 		return frame
 	}
-	if types&0xf0 == 0x20 { // 0010 xxxx & 1111 0000 == 0010 0000
-		maxSize := DecodePrefixedInteger(buf, 4)
+	if types&0xe0 == 0x20 { // 001x xxxx & 1110 0000 == 0010 0000
+		// Header Table Size Update
+		maxSize := DecodePrefixedInteger(buf, 5)
+		log.Println(maxSize)
 		frame := NewChangeHeaderTableSize(maxSize)
 		return frame
 	}

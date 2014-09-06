@@ -290,7 +290,7 @@ func TestResponseWithoutHuffman(t *testing.T) {
 		expectedHT *HeaderTable
 	)
 
-	var HeaderTableSize int = 256
+	var HeaderTableSize uint64 = 256
 	context = NewContext(HeaderTableSize)
 
 	/**
@@ -491,7 +491,7 @@ func TestResponseWithHuffman(t *testing.T) {
 		expectedHT *HeaderTable
 	)
 
-	var HeaderTableSize int = 256
+	var HeaderTableSize uint64 = 256
 	context = NewContext(HeaderTableSize)
 
 	/**

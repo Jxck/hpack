@@ -25,7 +25,7 @@ type Context struct {
 	ES *HeaderList
 }
 
-func NewContext(SETTINGS_HEADER_TABLE_SIZE int) *Context {
+func NewContext(SETTINGS_HEADER_TABLE_SIZE uint64) *Context {
 	return &Context{
 		HT: NewHeaderTable(SETTINGS_HEADER_TABLE_SIZE),
 		ES: NewHeaderList(),
@@ -179,9 +179,13 @@ func (c *Context) Decode(wire []byte) {
 	}
 }
 
+func (c *Context) ChangeSize(size uint64) {
+	c.HT.HEADER_TABLE_SIZE = size
+	c.Eviction()
+}
+
 // removing entry from top
 // until make space of size in Header Table
-// TODO: ? Evict された参照を RS からも消すために、 Context の方でやる。
 func (c *Context) Eviction() {
 	for c.HT.Size() > c.HT.HEADER_TABLE_SIZE {
 		// サイズが収まるまで減らす
