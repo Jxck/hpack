@@ -172,7 +172,7 @@ func (c *Context) Decode(wire []byte) {
 			 * Maximum Header Table Size Change
 			 */
 			Debug(Red("Maximum Header Table Size Change"))
-			// TODO: change header table size
+			c.ChangeSize(f.MaxSize)
 		default:
 			log.Fatal("%T", f)
 		}

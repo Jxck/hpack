@@ -121,7 +121,7 @@ func NewEmptyReferenceSet() (frame *EmptyReferenceSet) {
 //
 // 0   1   2   3   4   5   6   7
 // +---+---+---+---+---+---+---+---+
-// | 0 | 0 | 1 | 0 | Max size (4+) |
+// | 0 | 0 | 1 |   Max size (5+)   |
 // +---+---------------------------+
 // Maximum Header Table Size Change
 type ChangeHeaderTableSize struct {

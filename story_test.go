@@ -91,16 +91,16 @@ func RunStory(testfile TestFile, t *testing.T) {
 func TestStory(t *testing.T) {
 	dirs := []string{
 		// TODO: "./hpack-test-case/go-hpack/",
-		"./hpack-test-case/haskell-http2-linear-huffman/",
-		"./hpack-test-case/haskell-http2-linear/",
-		"./hpack-test-case/haskell-http2-naive-huffman/",
-		"./hpack-test-case/haskell-http2-naive/",
-		"./hpack-test-case/haskell-http2-static-huffman/",
-		"./hpack-test-case/haskell-http2-static/",
+		// "./hpack-test-case/haskell-http2-linear-huffman/",
+		// "./hpack-test-case/haskell-http2-linear/",
+		// "./hpack-test-case/haskell-http2-naive-huffman/",
+		// "./hpack-test-case/haskell-http2-naive/",
+		// "./hpack-test-case/haskell-http2-static-huffman/",
+		// "./hpack-test-case/haskell-http2-static/",
 		// TODO: "./hpack-test-case/nghttp2-16384-4096/",
-		// TODO: "./hpack-test-case/nghttp2-change-table-size/",
-		"./hpack-test-case/nghttp2/",
-		"./hpack-test-case/node-http2-hpack/",
+		"./hpack-test-case/nghttp2-change-table-size/",
+		// "./hpack-test-case/nghttp2/",
+		// "./hpack-test-case/node-http2-hpack/",
 	}
 
 	for _, dir := range dirs {
