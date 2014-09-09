@@ -19,7 +19,7 @@ func newByt() *byt {
 	return &byt{0, 8}
 }
 
-func (b *byt) Dump() string {
+func (b *byt) String() string {
 	return fmt.Sprintf("(v=%v, r=%v)", b.value, b.remain)
 }
 
@@ -91,7 +91,7 @@ func Encode(raw []byte) (encoded []byte) {
 		// 配列に移す
 		encoded = append(encoded, byte(b.value))
 		// 最後なのでゼロ値でGC
-		b = new(byt)
+		b = nil
 	}
 
 	return encoded

@@ -1,6 +1,6 @@
 package hpack
 
-var StaticHeaderTable = []*HeaderField{
+var StaticHeaderTable = [...]HeaderField{
 	/* 0*/ {":authority", ""},
 	/* 1*/ {":method", "GET"},
 	/* 2*/ {":method", "POST"},
@@ -16,7 +16,7 @@ var StaticHeaderTable = []*HeaderField{
 	/*12*/ {":status", "404"},
 	/*13*/ {":status", "500"},
 	/*14*/ {"accept-charset", ""},
-	/*15*/ {"accept-encoding", ""},
+	/*15*/ {"accept-encoding", "gzip, deflate"},
 	/*16*/ {"accept-language", ""},
 	/*17*/ {"accept-ranges", ""},
 	/*18*/ {"accept", ""},

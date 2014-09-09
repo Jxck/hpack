@@ -13,6 +13,6 @@ func NewHeaderField(name, value string) *HeaderField {
 
 // The size of an entry is the sum of its name's length in octets
 // of its value's length in octets and of 32 octets.
-func (h *HeaderField) Size() int {
-	return len(h.Name) + len(h.Value) + 32
+func (h *HeaderField) Size() uint64 {
+	return uint64(len(h.Name) + len(h.Value) + 32)
 }

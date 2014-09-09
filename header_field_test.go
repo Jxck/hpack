@@ -7,5 +7,6 @@ import (
 
 func TestHeaderFieldSize(t *testing.T) {
 	h := NewHeaderField("hello", "world")
-	assert.Equal(t, h.Size(), 42)
+	var actual uint64 = 42
+	assert.Equal(t, h.Size(), actual)
 }

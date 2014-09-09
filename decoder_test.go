@@ -36,7 +36,7 @@ func TestStringLiteralDecode(t *testing.T) {
 }
 
 func TestIndexedLiteralDecode(t *testing.T) {
-	// D.1.2.  Literal Header Field without Indexing
+	// D.2.2.  Literal Header Field without Indexing
 	var indexing Indexing = WITHOUT
 	var index uint64 = 4
 	var value string = "/sample/path"
@@ -49,6 +49,7 @@ func TestIndexedLiteralDecode(t *testing.T) {
 		0x70, 0x61,
 		0x74, 0x68,
 	}
+	// table size: empty
 
 	sw := swrap.New(buf)
 	decoded := DecodeHeader(&sw)
@@ -59,7 +60,7 @@ func TestIndexedLiteralDecode(t *testing.T) {
 }
 
 func TestIndexedHeaderDecode(t *testing.T) {
-	// D.1.3.  Indexed Header Field
+	// D.2.4.  Indexed Header Field
 	var index uint64 = 2
 	buf := []byte{0x82}
 

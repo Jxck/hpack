@@ -8,39 +8,39 @@ import (
 
 // A header set is a potentially ordered group of header fields that are encoded jointly.
 // A complete set of key-value pairs contained in a HTTP request or response is a header set.
-type HeaderSet []HeaderField
+type HeaderList []*HeaderField
 
-func NewHeaderSet() *HeaderSet {
-	return new(HeaderSet)
+func NewHeaderList() *HeaderList {
+	return new(HeaderList)
 }
 
-func ToHeaderSet(header http.Header) HeaderSet {
-	hs := *new(HeaderSet)
+func ToHeaderList(header http.Header) *HeaderList {
+	hl := *new(HeaderList)
 	for key, values := range header {
 		key := strings.ToLower(key)
 		for _, value := range values {
-			hs = append(hs, *NewHeaderField(key, value))
+			hl = append(hl, NewHeaderField(key, value))
 		}
 	}
-	return hs
+	return &hl
 }
 
-func (hs *HeaderSet) Emit(hf *HeaderField) {
-	*hs = append(*hs, *hf)
+func (hl *HeaderList) Emit(hf *HeaderField) {
+	*hl = append(*hl, hf)
 }
 
-func (hs *HeaderSet) Len() int {
-	return len(*hs)
+func (hl *HeaderList) Len() int {
+	return len(*hl)
 }
 
 // Sort Interface
-func (hs *HeaderSet) Swap(i, j int) {
-	h := *hs
+func (hl *HeaderList) Swap(i, j int) {
+	h := *hl
 	h[i], h[j] = h[j], h[i]
 }
 
-func (hs *HeaderSet) Less(i, j int) bool {
-	h := *hs
+func (hl *HeaderList) Less(i, j int) bool {
+	h := *hl
 	if h[i].Name == h[j].Name {
 		return h[i].Value < h[j].Value
 	}
@@ -48,17 +48,17 @@ func (hs *HeaderSet) Less(i, j int) bool {
 }
 
 // convert to http.Header
-func (hs HeaderSet) ToHeader() http.Header {
+func (hl HeaderList) ToHeader() http.Header {
 	header := make(http.Header)
-	for _, hf := range hs {
+	for _, hf := range hl {
 		header.Add(hf.Name, hf.Value)
 	}
 	return header
 }
 
-func (hs HeaderSet) Dump() (str string) {
-	str += fmt.Sprintf("\n--------- HS ---------\n")
-	for i, v := range hs {
+func (hl HeaderList) String() (str string) {
+	str += fmt.Sprintf("\n--------- HL ---------\n")
+	for i, v := range hl {
 		str += fmt.Sprintln(i, v)
 	}
 	str += "--------------------------------\n"
