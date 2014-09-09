@@ -4,10 +4,10 @@ import (
 	"fmt"
 	assert "github.com/Jxck/assertion"
 	"log"
-	_ "reflect"
+	"reflect"
 	"strconv"
 	"testing"
-	_ "testing/quick"
+	"testing/quick"
 )
 
 func init() {
@@ -95,19 +95,19 @@ func TestEncodeDecode(t *testing.T) {
 }
 
 // TODO: fixme
-// func TestQuickCheckEncodeDecode(t *testing.T) {
-// 	f := func(expected []byte) bool {
-// 		var encoded, actual []byte
-// 		encoded = Encode(expected)
-// 		actual = Decode(encoded)
-// 		return reflect.DeepEqual(actual, expected)
-// 	}
-//
-// 	c := &quick.Config{
-// 		MaxCountScale: 100,
-// 	}
-//
-// 	if err := quick.Check(f, c); err != nil {
-// 		t.Error(err)
-// 	}
-// }
+func TestQuickCheckEncodeDecode(t *testing.T) {
+	f := func(expected []byte) bool {
+		var encoded, actual []byte
+		encoded = Encode(expected)
+		actual = Decode(encoded)
+		return reflect.DeepEqual(actual, expected)
+	}
+
+	c := &quick.Config{
+		MaxCountScale: 1000,
+	}
+
+	if err := quick.Check(f, c); err != nil {
+		t.Error(err)
+	}
+}
