@@ -112,11 +112,6 @@ func (frame *StringLiteral) EncodeHuffman() (buf *swrap.SWrap) {
 	return buf
 }
 
-func (frame *EmptyReferenceSet) Encode() (buf *swrap.SWrap) {
-	buf = swrap.Make([]byte{0x30})
-	return buf
-}
-
 func (frame *ChangeHeaderTableSize) Encode() (buf *swrap.SWrap) {
 	buf = new(swrap.SWrap)
 	buf.Add(0x20) // 0010 0000
