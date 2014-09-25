@@ -3,6 +3,7 @@ package hpack
 import (
 	"github.com/Jxck/hpack/huffman"
 	integer "github.com/Jxck/hpack/integer_representation"
+	. "github.com/Jxck/logger"
 	"github.com/Jxck/swrap"
 )
 
@@ -107,6 +108,7 @@ func (frame *StringLiteral) EncodeHuffman() (buf *swrap.SWrap) {
 	buf.Merge(length)
 	buf.Merge(encoded)
 
+	Trace("huffman encoded %s %v", frame, *buf)
 	return buf
 }
 

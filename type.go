@@ -1,17 +1,27 @@
 package hpack
 
 import (
+	"fmt"
 	"github.com/Jxck/swrap"
 )
+
+const Version int = 9
 
 type Indexing int
 
 const (
-	Version int      = 9
-	WITH    Indexing = iota
+	WITH Indexing = iota
 	WITHOUT
 	NEVER
 )
+
+func (i Indexing) String() string {
+	return []string{
+		"WITH",
+		"WITHOUT",
+		"NEVER",
+	}[i]
+}
 
 type Frame interface {
 	Encode() *swrap.SWrap
@@ -66,14 +76,23 @@ func NewIndexedLiteral(indexing Indexing, index uint64, value string) (frame *In
 	return
 }
 
+func (f IndexedLiteral) String() string {
+	str := fmt.Sprintf("IL) %s {%d, %s(%d)}",
+		f.Indexing,
+		f.Index,
+		f.ValueString, f.ValueLength,
+	)
+	return str
+}
+
 // Literal Header Field with Incremental Indexing - New Name
-// Flag = 64 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 |
+// | 0 | 1 |           0           | = 64
 //
 // Literal Header Field without Indexing - New Name
-// Flag =  0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+// |               0               | =  0
 //
 // Literal Header Field never Indexed - New Name
-// Flag = 16 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 |
+// |     0     | 1 |       0       | = 16
 //
 //   0   1   2   3   4   5   6   7
 // +---+---+---+---+---+---+---+---+
@@ -106,16 +125,13 @@ func NewStringLiteral(indexing Indexing, name, value string) (frame *StringLiter
 	return
 }
 
-// 0   1   2   3   4   5   6   7
-// +---+---+---+---+---+---+---+---+
-// | 0 | 0 | 1 | 1 |       0       |
-// +---+---------------------------+
-// Reference Set Emptying
-type EmptyReferenceSet struct{}
-
-func NewEmptyReferenceSet() (frame *EmptyReferenceSet) {
-	frame = new(EmptyReferenceSet)
-	return frame
+func (f StringLiteral) String() string {
+	str := fmt.Sprintf("SL) %s {%s(%d), %s(%d)}",
+		f.Indexing,
+		f.NameString, f.NameLength,
+		f.ValueString, f.ValueLength,
+	)
+	return str
 }
 
 //
@@ -132,4 +148,9 @@ func NewChangeHeaderTableSize(maxSize uint64) (frame *ChangeHeaderTableSize) {
 	frame = new(ChangeHeaderTableSize)
 	frame.MaxSize = maxSize
 	return
+}
+
+func (f ChangeHeaderTableSize) String() string {
+	str := fmt.Sprintf("%s Header Table Size Change to: %d", f.MaxSize)
+	return str
 }
