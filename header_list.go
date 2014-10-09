@@ -15,13 +15,21 @@ func NewHeaderList() *HeaderList {
 }
 
 func ToHeaderList(header http.Header) *HeaderList {
-	hl := *new(HeaderList)
+	normal := *new(HeaderList)
+	pseuds := *new(HeaderList)
 	for key, values := range header {
 		key := strings.ToLower(key)
-		for _, value := range values {
-			hl = append(hl, NewHeaderField(key, value))
+		if strings.HasPrefix(key, ":") {
+			// Pseudo Header Fields
+			pseuds = append(pseuds, NewHeaderField(key, values[0]))
+		} else {
+			// Normal Header Fields
+			for _, value := range values {
+				normal = append(normal, NewHeaderField(key, value))
+			}
 		}
 	}
+	hl := append(pseuds, normal...)
 	return &hl
 }
 
