@@ -6,18 +6,12 @@ import (
 	. "github.com/Jxck/color"
 	. "github.com/Jxck/logger"
 	"github.com/Jxck/swrap"
-	"log"
 )
-
-var loglevel int
 
 var STATIC_HEADER_TABLE_SIZE = len(StaticHeaderTable)
 
 func init() {
-	flag.IntVar(&loglevel, "l", 0, "log level (1 ERR, 2 WARNING, 3 NOTICE, 4 INFO, 5 DEBUG, 6 TRACE)")
 	flag.Parse()
-	LogLevel(loglevel)
-	log.SetFlags(log.Lshortfile)
 }
 
 type Context struct {
@@ -50,7 +44,7 @@ func (c *Context) Decode(wire []byte) {
 
 			if index == 0 {
 				// TODO: Decoding Error
-				// log.Fatal("Decoding Error: The index value of 0 is not used.")
+				// FATAL("Decoding Error: The index value of 0 is not used.")
 			}
 
 			var headerField *HeaderField
@@ -174,7 +168,7 @@ func (c *Context) Decode(wire []byte) {
 			Debug(Red("Maximum Header Table Size Change"))
 			c.ChangeSize(f.MaxSize)
 		default:
-			log.Fatal("%T", f)
+			Fatal("%T", f)
 		}
 	}
 }
