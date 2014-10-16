@@ -36,7 +36,7 @@ func init() {
 // }
 type TestCase struct {
 	Seqno           int                 `json:"seqno"`
-	HeaderTableSize uint64              `json:"header_table_size,omitempty"`
+	HeaderTableSize uint32              `json:"header_table_size,omitempty"`
 	Wire            string              `json:"wire"`
 	Headers         []map[string]string `json:"headers"`
 }

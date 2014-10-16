@@ -19,7 +19,7 @@ type Context struct {
 	ES *HeaderList
 }
 
-func NewContext(SETTINGS_HEADER_TABLE_SIZE uint64) *Context {
+func NewContext(SETTINGS_HEADER_TABLE_SIZE uint32) *Context {
 	return &Context{
 		HT: NewHeaderTable(SETTINGS_HEADER_TABLE_SIZE),
 		ES: NewHeaderList(),
@@ -173,7 +173,7 @@ func (c *Context) Decode(wire []byte) {
 	}
 }
 
-func (c *Context) ChangeSize(size uint64) {
+func (c *Context) ChangeSize(size uint32) {
 	c.HT.HEADER_TABLE_SIZE = size
 	c.Eviction()
 }

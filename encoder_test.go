@@ -34,7 +34,7 @@ func TestStringLiteralEncode(t *testing.T) {
 func TestIndexedLiteralEncode(t *testing.T) {
 	// D.2.2.  Literal Header Field without Indexing
 	var indexing Indexing = WITHOUT
-	var index uint64 = 4
+	var index uint32 = 4
 	var value string = "/sample/path"
 	buf := []byte{
 		0x04, 0x0c,
@@ -53,7 +53,7 @@ func TestIndexedLiteralEncode(t *testing.T) {
 
 func TestIndexedHeaderEncode(t *testing.T) {
 	// D.2.3.  Indexed Header Field
-	var index uint64 = 2
+	var index uint32 = 2
 	buf := []byte{0x82}
 
 	frame := NewIndexedHeader(index)

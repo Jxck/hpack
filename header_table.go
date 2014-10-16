@@ -9,17 +9,15 @@ func init() {
 	log.SetFlags(log.Lshortfile)
 }
 
-const DEFAULT_HEADER_TABLE_SIZE uint64 = 4096
-
 // The header table is a component used to associate stored header
 // fields to index values.
 // The data stored in this table is in first-in, first-out order.
 type HeaderTable struct {
-	HEADER_TABLE_SIZE uint64
+	HEADER_TABLE_SIZE uint32
 	HeaderFields      []*HeaderField
 }
 
-func NewHeaderTable(SETTINGS_HEADER_TABLE_SIZE uint64) *HeaderTable {
+func NewHeaderTable(SETTINGS_HEADER_TABLE_SIZE uint32) *HeaderTable {
 	return &HeaderTable{
 		SETTINGS_HEADER_TABLE_SIZE,
 		make([]*HeaderField, 0),
@@ -27,8 +25,8 @@ func NewHeaderTable(SETTINGS_HEADER_TABLE_SIZE uint64) *HeaderTable {
 }
 
 // get total size of Header Table
-func (ht *HeaderTable) Size() uint64 {
-	var size uint64
+func (ht *HeaderTable) Size() uint32 {
+	var size uint32
 	for _, h := range ht.HeaderFields {
 		size += h.Size()
 	}

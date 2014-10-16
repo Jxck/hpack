@@ -8,6 +8,8 @@ import (
 	"testing"
 )
 
+const DEFAULT_HEADER_TABLE_SIZE uint32 = 4096
+
 func TestRequestWithoutHuffman(t *testing.T) {
 	// D.3.  Request Examples without Huffman
 	var (
@@ -290,7 +292,7 @@ func TestResponseWithoutHuffman(t *testing.T) {
 		expectedHT *HeaderTable
 	)
 
-	var HeaderTableSize uint64 = 256
+	var HeaderTableSize uint32 = 256
 	context = NewContext(HeaderTableSize)
 
 	/**
@@ -491,7 +493,7 @@ func TestResponseWithHuffman(t *testing.T) {
 		expectedHT *HeaderTable
 	)
 
-	var HeaderTableSize uint64 = 256
+	var HeaderTableSize uint32 = 256
 	context = NewContext(HeaderTableSize)
 
 	/**

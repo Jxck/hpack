@@ -51,7 +51,7 @@ func (frame *IndexedLiteral) EncodeHuffman() (buf *swrap.SWrap) {
 
 	// Value With Huffman
 	encoded = huffman.Encode([]byte(frame.ValueString))
-	length = integer.Encode(uint64(len(encoded)), 7)
+	length = integer.Encode(uint32(len(encoded)), 7)
 	length[0] += 0x80 // 1000 0000 (huffman flag)
 	buf.Merge(length)
 	buf.Merge(encoded)
@@ -96,14 +96,14 @@ func (frame *StringLiteral) EncodeHuffman() (buf *swrap.SWrap) {
 
 	// Name With Huffman
 	encoded = huffman.Encode([]byte(frame.NameString))
-	length = integer.Encode(uint64(len(encoded)), 7)
+	length = integer.Encode(uint32(len(encoded)), 7)
 	length[0] += 0x80 // 1000 0000 (huffman flag)
 	buf.Merge(length)
 	buf.Merge(encoded)
 
 	// Value With Huffman
 	encoded = huffman.Encode([]byte(frame.ValueString))
-	length = integer.Encode(uint64(len(encoded)), 7)
+	length = integer.Encode(uint32(len(encoded)), 7)
 	length[0] += 0x80 // 1000 0000 (huffman flag)
 	buf.Merge(length)
 	buf.Merge(encoded)

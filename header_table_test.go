@@ -17,7 +17,7 @@ func TestHeaderTableSizeLen(t *testing.T) {
 		},
 	}
 
-	var actual uint64 = 200
+	var actual uint32 = 200
 	assert.Equal(t, ht.Size(), actual)
 	assert.Equal(t, ht.Len(), 5)
 }

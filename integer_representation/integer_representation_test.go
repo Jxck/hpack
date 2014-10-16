@@ -38,7 +38,7 @@ func BenchmarkEncode(b *testing.B) {
 
 func TestDecode(t *testing.T) {
 	testcases := []struct {
-		expected, actual uint64
+		expected, actual uint32
 	}{
 		{Decode(swrap.New([]byte{10}), 5), 10},
 		{Decode(swrap.New([]byte{31, 9}), 5), 40},
@@ -63,7 +63,7 @@ func BenchmarkDecode(b *testing.B) {
 }
 
 func TestEncodeDecodeQuickCheck(t *testing.T) {
-	f := func(I uint64) bool {
+	f := func(I uint32) bool {
 		var N uint8 = 5
 		buf := Encode(I, N)
 		actual := Decode(buf, N)

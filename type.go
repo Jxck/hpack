@@ -34,10 +34,10 @@ type Frame interface {
 // | 1 |        Index (7+)         |
 // +---+---------------------------+
 type IndexedHeader struct {
-	Index uint64
+	Index uint32
 }
 
-func NewIndexedHeader(index uint64) (frame *IndexedHeader) {
+func NewIndexedHeader(index uint32) (frame *IndexedHeader) {
 	frame = new(IndexedHeader)
 	frame.Index = index
 	return
@@ -62,16 +62,16 @@ func NewIndexedHeader(index uint64) (frame *IndexedHeader) {
 // +-------------------------------+
 type IndexedLiteral struct {
 	Indexing    Indexing
-	Index       uint64
-	ValueLength uint64
+	Index       uint32
+	ValueLength uint32
 	ValueString string
 }
 
-func NewIndexedLiteral(indexing Indexing, index uint64, value string) (frame *IndexedLiteral) {
+func NewIndexedLiteral(indexing Indexing, index uint32, value string) (frame *IndexedLiteral) {
 	frame = new(IndexedLiteral)
 	frame.Indexing = indexing
 	frame.Index = index
-	frame.ValueLength = uint64(len(value))
+	frame.ValueLength = uint32(len(value))
 	frame.ValueString = value
 	return
 }
@@ -108,19 +108,19 @@ func (f IndexedLiteral) String() string {
 // +-------------------------------+
 type StringLiteral struct {
 	Indexing    Indexing
-	Index       uint64
-	NameLength  uint64
+	Index       uint32
+	NameLength  uint32
 	NameString  string
-	ValueLength uint64
+	ValueLength uint32
 	ValueString string
 }
 
 func NewStringLiteral(indexing Indexing, name, value string) (frame *StringLiteral) {
 	frame = new(StringLiteral)
 	frame.Indexing = indexing
-	frame.NameLength = uint64(len(name))
+	frame.NameLength = uint32(len(name))
 	frame.NameString = name
-	frame.ValueLength = uint64(len(value))
+	frame.ValueLength = uint32(len(value))
 	frame.ValueString = value
 	return
 }
@@ -141,10 +141,10 @@ func (f StringLiteral) String() string {
 // +---+---------------------------+
 // Maximum Header Table Size Change
 type ChangeHeaderTableSize struct {
-	MaxSize uint64
+	MaxSize uint32
 }
 
-func NewChangeHeaderTableSize(maxSize uint64) (frame *ChangeHeaderTableSize) {
+func NewChangeHeaderTableSize(maxSize uint32) (frame *ChangeHeaderTableSize) {
 	frame = new(ChangeHeaderTableSize)
 	frame.MaxSize = maxSize
 	return

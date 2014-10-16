@@ -21,13 +21,13 @@ func init() {
 //          Encode (I % 128 + 128) on 8 bits
 //          I = I / 128
 //     encode (I) on 8 bits
-func Encode(I uint64, N uint8) swrap.SWrap {
+func Encode(I uint32, N uint8) swrap.SWrap {
 	buf := swrap.New(make([]byte, 0))
 	if N == 0 {
 		buf.Add(byte(I))
 		return buf
 	}
-	boundary := uint64(1<<N - 1) // 2^N-1
+	boundary := uint32(1<<N - 1) // 2^N-1
 
 	if I < boundary {
 		// If I < 2^N - 1, encode I on N bits
@@ -66,9 +66,9 @@ func Encode(I uint64, N uint8) swrap.SWrap {
 //     While b > 128
 //         I += (b - 128) * 128^(i-1)
 //         i++
-func Decode(buf swrap.SWrap, N uint8) uint64 {
-	boundary := uint64(1<<N - 1) // 2^N-1
-	I := uint64(buf.Shift())     // Read N bit from first 1 byte as I
+func Decode(buf swrap.SWrap, N uint8) uint32 {
+	boundary := uint32(1<<N - 1) // 2^N-1
+	I := uint32(buf.Shift())     // Read N bit from first 1 byte as I
 	if I < boundary {            // less than 2^N-1
 		return I // as is
 	}
@@ -78,11 +78,11 @@ func Decode(buf swrap.SWrap, N uint8) uint64 {
 		if b >= 128 { // if first bit is 1
 			// to 0 at first bit (- 128) and shift 7*i bit
 			// and add
-			I += uint64(b-128) << shift
+			I += uint32(b-128) << shift
 		} else { // if first bit is 0
 			// shit 7*i shift
 			// and add
-			I += uint64(b) << shift
+			I += uint32(b) << shift
 			break
 		}
 	}

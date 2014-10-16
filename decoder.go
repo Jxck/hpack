@@ -123,14 +123,14 @@ func DecodeHeader(buf *swrap.SWrap) Frame {
 	return nil
 }
 
-// read N prefixed Integer from buffer as uint64
-func DecodePrefixedInteger(buf *swrap.SWrap, N uint8) uint64 {
+// read N prefixed Integer from buffer as uint32
+func DecodePrefixedInteger(buf *swrap.SWrap, N uint8) uint32 {
 	tmp := integer.ReadPrefixedInteger(buf, N)
 	return integer.Decode(tmp, N)
 }
 
 // read n byte from buffer as string
-func DecodeString(buf *swrap.SWrap, n uint64) string {
+func DecodeString(buf *swrap.SWrap, n uint32) string {
 	valueBytes := make([]byte, 0, n)
 	for i := n; i > 0; i-- {
 		valueBytes = append(valueBytes, buf.Shift())
