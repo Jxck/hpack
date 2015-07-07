@@ -16,7 +16,7 @@ func TestRequestWithoutHuffman(t *testing.T) {
 		context    *Context
 		buf        []byte
 		expectedES *HeaderList
-		expectedHT *HeaderTable
+		expectedHT *DynamicTable
 	)
 
 	context = NewContext(DEFAULT_HEADER_TABLE_SIZE)
@@ -46,7 +46,7 @@ func TestRequestWithoutHuffman(t *testing.T) {
 		NewHeaderField(":authority", "www.example.com"),
 	}
 
-	expectedHT = NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
+	expectedHT = NewDynamicTable(DEFAULT_HEADER_TABLE_SIZE)
 	expectedHT.HeaderFields = []*HeaderField{
 		NewHeaderField(":authority", "www.example.com"),
 	}
@@ -84,7 +84,7 @@ func TestRequestWithoutHuffman(t *testing.T) {
 		NewHeaderField("cache-control", "no-cache"),
 	}
 
-	expectedHT = NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
+	expectedHT = NewDynamicTable(DEFAULT_HEADER_TABLE_SIZE)
 	expectedHT.HeaderFields = []*HeaderField{
 		NewHeaderField("cache-control", "no-cache"),
 		NewHeaderField(":authority", "www.example.com"),
@@ -131,7 +131,7 @@ func TestRequestWithoutHuffman(t *testing.T) {
 		NewHeaderField("custom-key", "custom-value"),
 	}
 
-	expectedHT = NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
+	expectedHT = NewDynamicTable(DEFAULT_HEADER_TABLE_SIZE)
 	expectedHT.HeaderFields = []*HeaderField{
 		NewHeaderField("custom-key", "custom-value"),
 		NewHeaderField("cache-control", "no-cache"),
@@ -155,7 +155,7 @@ func TestRequestWithHuffman(t *testing.T) {
 		context    *Context
 		buf        []byte
 		expectedES *HeaderList
-		expectedHT *HeaderTable
+		expectedHT *DynamicTable
 	)
 
 	context = NewContext(DEFAULT_HEADER_TABLE_SIZE)
@@ -184,7 +184,7 @@ func TestRequestWithHuffman(t *testing.T) {
 		NewHeaderField(":authority", "www.example.com"),
 	}
 
-	expectedHT = NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
+	expectedHT = NewDynamicTable(DEFAULT_HEADER_TABLE_SIZE)
 	expectedHT.HeaderFields = []*HeaderField{
 		NewHeaderField(":authority", "www.example.com"),
 	}
@@ -221,7 +221,7 @@ func TestRequestWithHuffman(t *testing.T) {
 		NewHeaderField("cache-control", "no-cache"),
 	}
 
-	expectedHT = NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
+	expectedHT = NewDynamicTable(DEFAULT_HEADER_TABLE_SIZE)
 	expectedHT.HeaderFields = []*HeaderField{
 		NewHeaderField("cache-control", "no-cache"),
 		NewHeaderField(":authority", "www.example.com"),
@@ -265,7 +265,7 @@ func TestRequestWithHuffman(t *testing.T) {
 		NewHeaderField("custom-key", "custom-value"),
 	}
 
-	expectedHT = NewHeaderTable(DEFAULT_HEADER_TABLE_SIZE)
+	expectedHT = NewDynamicTable(DEFAULT_HEADER_TABLE_SIZE)
 	expectedHT.HeaderFields = []*HeaderField{
 		NewHeaderField("custom-key", "custom-value"),
 		NewHeaderField("cache-control", "no-cache"),
@@ -289,11 +289,11 @@ func TestResponseWithoutHuffman(t *testing.T) {
 		context    *Context
 		buf        []byte
 		expectedES *HeaderList
-		expectedHT *HeaderTable
+		expectedHT *DynamicTable
 	)
 
-	var HeaderTableSize uint32 = 256
-	context = NewContext(HeaderTableSize)
+	var DynamicTableSize uint32 = 256
+	context = NewContext(DynamicTableSize)
 
 	/**
 	 * D.5.1.  First response
@@ -345,7 +345,7 @@ func TestResponseWithoutHuffman(t *testing.T) {
 		NewHeaderField("location", "https://www.example.com"),
 	}
 
-	expectedHT = NewHeaderTable(HeaderTableSize)
+	expectedHT = NewDynamicTable(DynamicTableSize)
 	expectedHT.HeaderFields = []*HeaderField{
 		NewHeaderField("location", "https://www.example.com"),
 		NewHeaderField("date", "Mon, 21 Oct 2013 20:13:21 GMT"),
@@ -382,7 +382,7 @@ func TestResponseWithoutHuffman(t *testing.T) {
 		NewHeaderField("location", "https://www.example.com"),
 	}
 
-	expectedHT = NewHeaderTable(HeaderTableSize)
+	expectedHT = NewDynamicTable(DynamicTableSize)
 	expectedHT.HeaderFields = []*HeaderField{
 		NewHeaderField(":status", "307"),
 		NewHeaderField("location", "https://www.example.com"),
@@ -466,7 +466,7 @@ func TestResponseWithoutHuffman(t *testing.T) {
 		NewHeaderField("set-cookie", "foo=ASDJKHQKBZXOQWEOPIUAXQWEOIU; max-age=3600; version=1"),
 	}
 
-	expectedHT = NewHeaderTable(HeaderTableSize)
+	expectedHT = NewDynamicTable(DynamicTableSize)
 	expectedHT.HeaderFields = []*HeaderField{
 		NewHeaderField("set-cookie", "foo=ASDJKHQKBZXOQWEOPIUAXQWEOIU; max-age=3600; version=1"),
 		NewHeaderField("content-encoding", "gzip"),
@@ -490,11 +490,11 @@ func TestResponseWithHuffman(t *testing.T) {
 		context    *Context
 		buf        []byte
 		expectedES *HeaderList
-		expectedHT *HeaderTable
+		expectedHT *DynamicTable
 	)
 
-	var HeaderTableSize uint32 = 256
-	context = NewContext(HeaderTableSize)
+	var DynamicTableSize uint32 = 256
+	context = NewContext(DynamicTableSize)
 
 	/**
 	 * D.6.1.  First response
@@ -538,7 +538,7 @@ func TestResponseWithHuffman(t *testing.T) {
 		NewHeaderField("location", "https://www.example.com"),
 	}
 
-	expectedHT = NewHeaderTable(HeaderTableSize)
+	expectedHT = NewDynamicTable(DynamicTableSize)
 	expectedHT.HeaderFields = []*HeaderField{
 		NewHeaderField("location", "https://www.example.com"),
 		NewHeaderField("date", "Mon, 21 Oct 2013 20:13:21 GMT"),
@@ -575,7 +575,7 @@ func TestResponseWithHuffman(t *testing.T) {
 		NewHeaderField("location", "https://www.example.com"),
 	}
 
-	expectedHT = NewHeaderTable(HeaderTableSize)
+	expectedHT = NewDynamicTable(DynamicTableSize)
 	expectedHT.HeaderFields = []*HeaderField{
 		NewHeaderField(":status", "307"),
 		NewHeaderField("location", "https://www.example.com"),
@@ -650,7 +650,7 @@ func TestResponseWithHuffman(t *testing.T) {
 		NewHeaderField("set-cookie", "foo=ASDJKHQKBZXOQWEOPIUAXQWEOIU; max-age=3600; version=1"),
 	}
 
-	expectedHT = NewHeaderTable(HeaderTableSize)
+	expectedHT = NewDynamicTable(DynamicTableSize)
 	expectedHT.HeaderFields = []*HeaderField{
 		NewHeaderField("set-cookie", "foo=ASDJKHQKBZXOQWEOPIUAXQWEOIU; max-age=3600; version=1"),
 		NewHeaderField("content-encoding", "gzip"),

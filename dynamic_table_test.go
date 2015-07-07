@@ -5,8 +5,8 @@ import (
 	"testing"
 )
 
-func TestHeaderTableSizeLen(t *testing.T) {
-	ht := HeaderTable{
+func TestDynamicTableSizeLen(t *testing.T) {
+	ht := DynamicTable{
 		DEFAULT_HEADER_TABLE_SIZE,
 		[]*HeaderField{
 			NewHeaderField("1234", "1234"),

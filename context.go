@@ -15,13 +15,13 @@ func init() {
 }
 
 type Context struct {
-	HT *HeaderTable
+	HT *DynamicTable
 	ES *HeaderList
 }
 
 func NewContext(SETTINGS_HEADER_TABLE_SIZE uint32) *Context {
 	return &Context{
-		HT: NewHeaderTable(SETTINGS_HEADER_TABLE_SIZE),
+		HT: NewDynamicTable(SETTINGS_HEADER_TABLE_SIZE),
 		ES: NewHeaderList(),
 	}
 }
@@ -174,14 +174,14 @@ func (c *Context) Decode(wire []byte) {
 }
 
 func (c *Context) ChangeSize(size uint32) {
-	c.HT.HEADER_TABLE_SIZE = size
+	c.HT.DYNAMIC_TABLE_SIZE = size
 	c.Eviction()
 }
 
 // removing entry from top
 // until make space of size in Header Table
 func (c *Context) Eviction() {
-	for c.HT.Size() > c.HT.HEADER_TABLE_SIZE {
+	for c.HT.Size() > c.HT.DYNAMIC_TABLE_SIZE {
 		// サイズが収まるまで減らす
 		Debug(Red("Eviction")+" %v", c.HT.HeaderFields[len(c.HT.HeaderFields)-1])
 		removed := c.HT.Remove(len(c.HT.HeaderFields) - 1)
