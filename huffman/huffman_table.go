@@ -8,8 +8,8 @@ type HuffmanCode struct {
 type HuffmanTable [257]HuffmanCode
 
 /*
-  HuffmanTable  [257]HuffmanCode
-*/
+ * Huffman Code Table
+ */
 var huffmanTable = &HuffmanTable{
 	{0x1ff8, 13},
 	{0x7fffd8, 23},
