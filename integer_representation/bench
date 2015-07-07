@@ -1,4 +1,4 @@
 PASS
-BenchmarkEncode	 1000000	      1504 ns/op
-BenchmarkDecode	 5000000	       400 ns/op
-ok  	github.com/jxck/hpack/integer_representation	4.006s
+BenchmarkEncode	 3000000	       510 ns/op
+BenchmarkDecode	10000000	       149 ns/op
+ok  	github.com/Jxck/hpack/integer_representation	3.704s
