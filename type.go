@@ -139,18 +139,18 @@ func (f StringLiteral) String() string {
 // +---+---+---+---+---+---+---+---+
 // | 0 | 0 | 1 |   Max size (5+)   |
 // +---+---------------------------+
-// Maximum Header Table Size Change
-type ChangeHeaderTableSize struct {
+// Maximum Dynamic Table Size Update
+type DynamicTableSizeUpdate struct {
 	MaxSize uint32
 }
 
-func NewChangeHeaderTableSize(maxSize uint32) (frame *ChangeHeaderTableSize) {
-	frame = new(ChangeHeaderTableSize)
+func NewDynamicTableSizeUpdate(maxSize uint32) (frame *DynamicTableSizeUpdate) {
+	frame = new(DynamicTableSizeUpdate)
 	frame.MaxSize = maxSize
 	return
 }
 
-func (f ChangeHeaderTableSize) String() string {
+func (f DynamicTableSizeUpdate) String() string {
 	str := fmt.Sprintf("%s Header Table Size Change to: %d", f.MaxSize)
 	return str
 }

@@ -112,7 +112,7 @@ func (frame *StringLiteral) EncodeHuffman() (buf *swrap.SWrap) {
 	return buf
 }
 
-func (frame *ChangeHeaderTableSize) Encode() (buf *swrap.SWrap) {
+func (frame *DynamicTableSizeUpdate) Encode() (buf *swrap.SWrap) {
 	buf = new(swrap.SWrap)
 	buf.Add(0x20) // 0010 0000
 	buf.Merge(integer.Encode(frame.MaxSize, 4))

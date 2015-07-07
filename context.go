@@ -161,9 +161,9 @@ func (c *Context) Decode(wire []byte) {
 				Debug(Blue("\tEmit"))
 				c.ES.Emit(headerField)
 			}
-		case *ChangeHeaderTableSize:
+		case *DynamicTableSizeUpdate:
 			/**
-			 * Maximum Header Table Size Change
+			 * Maximum Dynamic Table Size Change
 			 */
 			Debug(Red("Maximum Header Table Size Change"))
 			c.ChangeSize(f.MaxSize)

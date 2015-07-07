@@ -117,7 +117,7 @@ func DecodeHeader(buf *swrap.SWrap) Frame {
 	if types&0xe0 == 0x20 { // 001x xxxx & 1110 0000 == 0010 0000
 		// Header Table Size Update
 		maxSize := DecodePrefixedInteger(buf, 5)
-		frame := NewChangeHeaderTableSize(maxSize)
+		frame := NewDynamicTableSizeUpdate(maxSize)
 		return frame
 	}
 	return nil
