@@ -1,7 +1,7 @@
 package hpack
 
-// A name-value pair.
-// Both name and value are sequences of octets.
+// A name-value pair. Both the name and value are
+// treated as opaque sequences of octets.
 type HeaderField struct {
 	Name  string
 	Value string

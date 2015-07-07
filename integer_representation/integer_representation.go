@@ -13,14 +13,14 @@ func init() {
 // Integer Representation
 //
 // [Logic]
-// If I < 2^N - 1, encode I on N bits
-// Else
-//     encode 2^N - 1 on N bits
+// if I < 2^N - 1, encode I on N bits
+// else
+//     encode (2^N - 1) on N bits
 //     I = I - (2^N - 1)
-//     While I >= 128
-//          Encode (I % 128 + 128) on 8 bits
+//     while I >= 128
+//          encode (I % 128 + 128) on 8 bits
 //          I = I / 128
-//     encode (I) on 8 bits
+//     encode I on 8 bits
 func Encode(I uint32, N uint8) swrap.SWrap {
 	buf := swrap.New(make([]byte, 0))
 	if N == 0 {

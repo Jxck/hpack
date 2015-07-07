@@ -6,8 +6,9 @@ import (
 	"strings"
 )
 
-// A header set is a potentially ordered group of header fields that are encoded jointly.
-// A complete set of key-value pairs contained in a HTTP request or response is a header set.
+// A header list is an ordered collection of header fields that are encoded jointly
+// and can contain duplicate header fields.
+// A complete list of header fields contained in an HTTP/2 header block is a header list.
 type HeaderList []*HeaderField
 
 func NewHeaderList() *HeaderList {
