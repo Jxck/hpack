@@ -8,7 +8,7 @@ import (
 	"github.com/Jxck/swrap"
 )
 
-var STATIC_HEADER_TABLE_SIZE = len(StaticHeaderTable)
+var STATIC_HEADER_TABLE_SIZE = len(StaticTable)
 
 func init() {
 	flag.Parse()
@@ -55,7 +55,7 @@ func (c *Context) Decode(wire []byte) {
 				 */
 				// 実態は配列なので 0 オリジン
 				i := index - 1
-				headerField = &StaticHeaderTable[i]
+				headerField = &StaticTable[i]
 
 				// Emit
 				Debug(Red(fmt.Sprintf("== Indexed - Add ==")))
@@ -94,7 +94,7 @@ func (c *Context) Decode(wire []byte) {
 				 * Static Header Table の中にある場合
 				 */
 				i := index - 1
-				name = StaticHeaderTable[i].Name
+				name = StaticTable[i].Name
 			} else {
 				/**
 				 * Header Table の中にある場合
