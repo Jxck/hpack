@@ -30,10 +30,9 @@ func (c *Context) Decode(wire []byte) {
 	// 各デコードごとに前回のをリセットする。
 	c.ES = NewHeaderList()
 	Debug(Red("clean Emitted Set"))
-	Trace(Cyan(
-		"\n===== Before Decode =====")+
-		"%v"+Cyan(
-		"==========================="),
+	Trace(Cyan("\n==== Before Decode ====")+
+		"%v"+
+		Cyan("======================="),
 		c.String())
 
 	frames := Decode(wire)
@@ -44,7 +43,7 @@ func (c *Context) Decode(wire []byte) {
 
 			if index == 0 {
 				// TODO: Decoding Error
-				// FATAL("Decoding Error: The index value of 0 is not used.")
+				Fatal("Decoding Error: The index value of 0 is not used.")
 			}
 
 			var headerField *HeaderField
@@ -57,10 +56,11 @@ func (c *Context) Decode(wire []byte) {
 				i := index - 1
 				headerField = &StaticTable[i]
 
+				Debug(Red("== Indexed - Add =="))
+				Debug("\tidx = %v", index)
+				Debug("\t-> ST[%v] = %v", i, headerField)
+
 				// Emit
-				Debug(Red(fmt.Sprintf("== Indexed - Add ==")))
-				Debug(fmt.Sprintf("  idx = %v", index))
-				Debug(fmt.Sprintf("  -> ST[%v] = %v", i, headerField))
 				Debug(Blue("\tEmit"))
 				c.ES.Emit(headerField)
 			} else {
@@ -76,8 +76,8 @@ func (c *Context) Decode(wire []byte) {
 				* 参照が Reference Set に無い場合
 				 */
 				Debug(Red("== Indexed - Add =="))
-				Debug(fmt.Sprintf("  idx = %v", index))
-				Debug(fmt.Sprintf("  -> HT[%v] = %v", index, headerField))
+				Debug("\tidx = %v", index)
+				Debug("\t-> HT[%v] = %v", index, headerField)
 
 				// Emit
 				Debug(Blue("\tEmit"))
@@ -109,10 +109,10 @@ func (c *Context) Decode(wire []byte) {
 			headerField := NewHeaderField(name, value)
 
 			Debug(Red("== Indexed Literal =="))
-			Debug(fmt.Sprintf("  Indexed name (idx = %v)", index))
-			Debug(fmt.Sprintf("  -> ST[%v].Name = %v", index, name))
-			Debug(fmt.Sprintf("  Literal value (len = %v)", f.ValueLength))
-			Debug(fmt.Sprintf("  %v", f.ValueString))
+			Debug("\tIndexed name (idx = %v)", index)
+			Debug("\t-> ST[%v].Name = %v", index, name)
+			Debug("\tLiteral value (len = %v)", f.ValueLength)
+			Debug("\t%v", f.ValueString)
 
 			switch f.Indexing {
 			case WITH:
@@ -139,7 +139,8 @@ func (c *Context) Decode(wire []byte) {
 			}
 
 		case *StringLiteral:
-			Debug(Red(fmt.Sprintf("== String Literal (%v) ==", f)))
+			Debug(Red("== String Literal =="))
+			Debug("%v", f)
 
 			headerField := NewHeaderField(f.NameString, f.ValueString)
 			switch f.Indexing {
@@ -185,7 +186,7 @@ func (c *Context) Eviction() {
 		// サイズが収まるまで減らす
 		Debug(Red("Eviction")+" %v", c.HT.HeaderFields[len(c.HT.HeaderFields)-1])
 		removed := c.HT.Remove(len(c.HT.HeaderFields) - 1)
-		Debug(Yellow(fmt.Sprintf("Removed while Eviction: %v", removed)))
+		Debug(Yellow("Removed while Eviction: %v"), removed)
 	}
 	return
 }

@@ -134,7 +134,6 @@ func (f StringLiteral) String() string {
 	return str
 }
 
-//
 // 0   1   2   3   4   5   6   7
 // +---+---+---+---+---+---+---+---+
 // | 0 | 0 | 1 |   Max size (5+)   |
@@ -151,6 +150,6 @@ func NewDynamicTableSizeUpdate(maxSize uint32) (frame *DynamicTableSizeUpdate) {
 }
 
 func (f DynamicTableSizeUpdate) String() string {
-	str := fmt.Sprintf("%s Header Table Size Change to: %d", f.MaxSize)
+	str := fmt.Sprintf("Header Table Size Change to: %d", f.MaxSize)
 	return str
 }

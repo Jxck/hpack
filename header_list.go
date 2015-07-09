@@ -66,10 +66,10 @@ func (hl HeaderList) ToHeader() http.Header {
 }
 
 func (hl HeaderList) String() (str string) {
-	str += fmt.Sprintf("\n--------- HL ---------\n")
+	str += "\n--------- HL ---------\n"
 	for i, v := range hl {
 		str += fmt.Sprintln(i, v)
 	}
-	str += "--------------------------------\n"
+	str += "\n----------------------\n"
 	return str
 }

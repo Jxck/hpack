@@ -58,11 +58,12 @@ func (ht *DynamicTable) Remove(index int) *HeaderField {
 
 // String for Debug
 func (ht *DynamicTable) String() (str string) {
-	str += fmt.Sprintf("\n--------- HT(%v/%v) ---------\n",
-		ht.Size(), ht.DYNAMIC_TABLE_SIZE)
+	size := ht.Size()
+	max := ht.DYNAMIC_TABLE_SIZE
+	str += fmt.Sprintf("\n------ HT(%v/%v) ------\n", size, max)
 	for i, v := range ht.HeaderFields {
 		str += fmt.Sprintln(i, v)
 	}
-	str += "--------------------------------\n"
+	str += "---------------------\n"
 	return str
 }
