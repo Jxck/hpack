@@ -1,7 +1,7 @@
 # hpack-go
 
 HPACK implementation in Golang
-(under heavy developping)
+(under heavy development)
 
 
 ## version
