@@ -61,7 +61,7 @@ func (c *Context) Decode(wire []byte) {
 				Debug("\t-> ST[%v] = %v", i, headerField)
 
 				// Emit
-				Debug(Blue("\tEmit"))
+				Debug(Navy("\tEmit"))
 				c.ES.Emit(headerField)
 			} else {
 				/**
@@ -80,7 +80,7 @@ func (c *Context) Decode(wire []byte) {
 				Debug("\t-> HT[%v] = %v", index, headerField)
 
 				// Emit
-				Debug(Blue("\tEmit"))
+				Debug(Navy("\tEmit"))
 				c.ES.Emit(headerField)
 			}
 		case *IndexedLiteral:
@@ -121,11 +121,11 @@ func (c *Context) Decode(wire []byte) {
 				 */
 
 				// Emit
-				Debug(Blue("\tEmit"))
+				Debug(Navy("\tEmit"))
 				c.ES.Emit(headerField)
 
 				// ヘッダテーブルにコピーする
-				Debug(Blue("\tAdd to HT"))
+				Debug(Navy("\tAdd to HT"))
 				c.Push(headerField)
 
 			case WITHOUT:
@@ -134,7 +134,7 @@ func (c *Context) Decode(wire []byte) {
 				 */
 
 				// Emit
-				Debug(Blue("\tEmit"))
+				Debug(Navy("\tEmit"))
 				c.ES.Emit(headerField)
 			}
 
@@ -148,18 +148,18 @@ func (c *Context) Decode(wire []byte) {
 				// HT に追加する場合
 
 				// Emit
-				Debug(Blue("\tEmit"))
+				Debug(Navy("\tEmit"))
 				c.ES.Emit(headerField)
 
 				// ヘッダテーブルにコピーする
-				Debug(Blue("\tAdd to HT"))
+				Debug(Navy("\tAdd to HT"))
 				c.Push(headerField)
 
 			case WITHOUT:
 				// HT に追加しない場合
 
 				// Emit
-				Debug(Blue("\tEmit"))
+				Debug(Navy("\tEmit"))
 				c.ES.Emit(headerField)
 			}
 		case *DynamicTableSizeUpdate:
