@@ -27,7 +27,7 @@ func DecodeHeader(buf *swrap.SWrap) Frame {
 	types := (*buf)[0]
 	Trace("types = %v", types)
 	if types >= 0x80 { // 1xxx xxxx
-		// Indexed Header Representation
+		Debug("Indexed Header Representation")
 
 		index := DecodePrefixedInteger(buf, 7)
 		Trace("Indexed = %v", index)
@@ -40,7 +40,7 @@ func DecodeHeader(buf *swrap.SWrap) Frame {
 		return frame
 	}
 	if types == 0 { // 0000 0000
-		// StringLiteral (indexing = WITHOUT)
+		Debug("StringLiteral (indexing = WITHOUT)")
 
 		// remove first byte defines type
 		buf.Shift()
@@ -54,7 +54,7 @@ func DecodeHeader(buf *swrap.SWrap) Frame {
 		return frame
 	}
 	if types == 0x10 { // 0001 0000
-		// StringLiteral (indexing = NEVER)
+		Debug("StringLiteral (indexing = NEVER)")
 
 		// remove first byte defines type
 		buf.Shift()
@@ -68,7 +68,7 @@ func DecodeHeader(buf *swrap.SWrap) Frame {
 		return frame
 	}
 	if types == 0x40 { // 0100 0000
-		// StringLiteral (indexing = WITH)
+		Debug("StringLiteral (indexing = WITH)")
 
 		// remove first byte defines type
 		buf.Shift()
@@ -82,7 +82,7 @@ func DecodeHeader(buf *swrap.SWrap) Frame {
 		return frame
 	}
 	if types&0xc0 == 0x40 { // 01xx xxxx & 1100 0000 == 0100 0000
-		// IndexedLiteral (indexing = WITH)
+		Debug("IndexedLiteral (indexing = WITH)")
 
 		indexing := WITH
 		index := DecodePrefixedInteger(buf, 6)
@@ -93,7 +93,7 @@ func DecodeHeader(buf *swrap.SWrap) Frame {
 		return frame
 	}
 	if types&0xf0 == 0 { // 0000 xxxx & 1111 0000 == 0000 0000
-		// IndexedLiteral (indexing = WITHOUT)
+		Debug("IndexedLiteral (indexing = WITHOUT)")
 
 		indexing := WITHOUT
 		index := DecodePrefixedInteger(buf, 4)
@@ -104,7 +104,7 @@ func DecodeHeader(buf *swrap.SWrap) Frame {
 		return frame
 	}
 	if types&0xf0 == 0x10 { // 0000 xxxx & 1111 0000 == 0001 0000
-		// IndexedLiteral (indexing = NEVER)
+		Debug("IndexedLiteral (indexing = NEVER)")
 
 		indexing := NEVER
 		index := DecodePrefixedInteger(buf, 4)
@@ -115,7 +115,8 @@ func DecodeHeader(buf *swrap.SWrap) Frame {
 		return frame
 	}
 	if types&0xe0 == 0x20 { // 001x xxxx & 1110 0000 == 0010 0000
-		// Header Table Size Update
+		Debug("Header Table Size Update")
+
 		maxSize := DecodePrefixedInteger(buf, 5)
 		frame := NewDynamicTableSizeUpdate(maxSize)
 		return frame
@@ -152,7 +153,7 @@ func DecodeLiteral(buf *swrap.SWrap) (value string) {
 
 		// ここで prefixed Integer 7 で読む。
 		b := DecodePrefixedInteger(buf, 7)
-		Trace("Literal Length = %v", b)
+		Trace("Literal Length = %v, buf size=%v", b, buf.Len())
 
 		// その長さの分だけバイト値を取り出す
 		code := make([]byte, 0)
